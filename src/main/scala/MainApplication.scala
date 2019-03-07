@@ -1,13 +1,13 @@
-import drawingpane.DrawingPane
+import infrastructure.drawingpane.DrawingPane
 import javafx.application.Application
 import javafx.scene.{Node, Scene}
 import javafx.scene.control.{Button, MenuButton, ToolBar}
 import javafx.scene.layout.{BorderPane, GridPane, StackPane, VBox}
 import javafx.stage.Stage
-import propertybox.PropertiesBox
-import toolbar.MainToolBar
-import toolbox.ToolBox
-import viewbar.ViewBar
+import infrastructure.propertybox.PropertiesBox
+import infrastructure.toolbar.MainToolBar
+import infrastructure.toolbox.ToolBox
+import infrastructure.viewbar.ViewBar
 
 class MainApplication extends Application {
   val Width = 400

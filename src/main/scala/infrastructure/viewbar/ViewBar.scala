@@ -1,4 +1,4 @@
-package viewbar
+package infrastructure.viewbar
 
 import javafx.scene.control.ToolBar
 import javafx.scene.layout.{Background, BackgroundFill}

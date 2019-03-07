@@ -1,4 +1,4 @@
-package toolbox.sections.`object`.fsm
+package infrastructure.toolbox.sections.`object`.fsm
 
 import javafx.scene.control.ToggleButton
 

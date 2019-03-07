@@ -1,8 +1,8 @@
-package toolbar
+package infrastructure.toolbar
 
 import javafx.scene.control.ToolBar
-import toolbar.items.FileMenuButton
-import viewbar.ViewBar.setStyle
+import infrastructure.toolbar.items.FileMenuButton
+import infrastructure.viewbar.ViewBar.setStyle
 
 object MainToolBar extends ToolBar {
   setStyle("-fx-background-color: #b3bfc6")
