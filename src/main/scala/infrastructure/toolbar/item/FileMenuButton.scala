@@ -1,4 +1,4 @@
-package infrastructure.toolbar.items
+package infrastructure.toolbar.item
 
 import javafx.scene.control.{MenuButton, MenuItem}
 

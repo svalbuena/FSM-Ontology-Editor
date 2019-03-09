@@ -1,8 +1,8 @@
-package infrastructure.toolbox.sections.selector
+package infrastructure.toolbox.section.selector
 
 import javafx.scene.control.Label
 import javafx.scene.layout.{FlowPane, VBox}
-import infrastructure.toolbox.sections.selector.mouses.NormalMouseSelector
+import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
 
 object SelectorsSection extends VBox {
   val sectionTitle = new Label

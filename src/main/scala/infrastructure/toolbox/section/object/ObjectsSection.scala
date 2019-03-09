@@ -1,8 +1,8 @@
-package infrastructure.toolbox.sections.`object`
+package infrastructure.toolbox.section.`object`
 
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
-import infrastructure.toolbox.sections.`object`.fsm._
+import infrastructure.toolbox.section.`object`.fsm._
 
 object ObjectsSection extends VBox {
   val sectionTitle = new Label()

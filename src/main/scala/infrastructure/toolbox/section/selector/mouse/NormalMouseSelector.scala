@@ -1,4 +1,4 @@
-package infrastructure.toolbox.sections.selector.mouses
+package infrastructure.toolbox.section.selector.mouse
 
 import javafx.scene.control.ToggleButton
 

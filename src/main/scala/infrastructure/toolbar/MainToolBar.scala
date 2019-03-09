@@ -1,7 +1,7 @@
 package infrastructure.toolbar
 
 import javafx.scene.control.ToolBar
-import infrastructure.toolbar.items.FileMenuButton
+import infrastructure.toolbar.item.FileMenuButton
 import infrastructure.viewbar.ViewBar.setStyle
 
 object MainToolBar extends ToolBar {
