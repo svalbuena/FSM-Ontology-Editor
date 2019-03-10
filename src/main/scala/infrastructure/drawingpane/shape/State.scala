@@ -1,30 +1,55 @@
 package infrastructure.drawingpane.shape
 
+import javafx.scene.control.TextField
+import javafx.scene.layout.Pane
 import javafx.scene.paint.{Color, Paint}
-import javafx.scene.shape.{Line, Rectangle, Shape}
+import javafx.scene.shape.{Line, Rectangle, Shape, StrokeType}
 
 
-object State {
+class State(width: Double, height: Double) extends Pane {
+  private val SeparatorOffset: Double = 0.20
+  private val SeparatorY = height * SeparatorOffset
+  private val StrokeWidth:Double = 2.0
 
-  def apply: Shape = {
-    val stateX = 0
-    val stateY = 0
-    val stateWidth = 40
-    val stateHeight = 20
-    val separatorY = stateY + 8
+  var transitionList: List[Transition] = List[Transition]()
+
+  getChildren.add(createShape())
+  getChildren.add(createTitle())
+
+  setStyle("-fx-background-color: #f4f4f4")
 
 
-    val rectangle = new Rectangle(stateX, stateY, stateWidth, stateHeight)
-    rectangle.setFill(Color.GREY)
-    rectangle.setStroke(Color.GREY)
+  def addTransition(transition: Transition): Unit = {
+    transitionList = transition :: transitionList
+  }
 
-    val separator = new Line(stateX, separatorY, stateX + stateWidth, separatorY)
-    separator.setStroke(Color.BLACK)
+  def getCenterCoordinates: (Double, Double) = {
+    val bounds = getBoundsInParent
 
-    val shape = Shape.union(rectangle, separator)
-    shape.setTranslateX(10)
-    shape.setTranslateY(10)
+    (bounds.getCenterX, bounds.getCenterY)
+  }
 
-    shape
+  private def createShape(): Shape = {
+    val rectangle = new Rectangle(0, 0, width, height)
+    rectangle.setFill(null)
+    rectangle.setStroke(Color.BLACK)
+    rectangle.setStrokeType(StrokeType.INSIDE)
+    rectangle.setStrokeWidth(StrokeWidth)
+
+    val separator = new Line(StrokeWidth, SeparatorY, width - StrokeWidth, SeparatorY)
+    separator.setStrokeWidth(StrokeWidth)
+
+    Shape.union(rectangle, separator)
+  }
+
+  private def createTitle(): TextField = {
+    val stateTitle = new TextField()
+
+    stateTitle.setText("State")
+    stateTitle.setTranslateX(StrokeWidth)
+    stateTitle.setTranslateY(StrokeWidth)
+    stateTitle.setPrefSize(width - StrokeWidth * 2, SeparatorY - StrokeWidth * 2)
+
+    stateTitle
   }
 }

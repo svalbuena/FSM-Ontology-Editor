@@ -1,13 +1,12 @@
 package infrastructure.drawingpane
 
-import infrastructure.drawingpane.DrawingPane.shape
-import infrastructure.drawingpane.shape.State
+import infrastructure.drawingpane.shape.{State, Transition}
 import javafx.event.EventHandler
-import javafx.geometry.Point2D
-import javafx.scene.Group
+import javafx.scene.{Group, Node}
 import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.Pane
-import javafx.scene.shape.{Rectangle, Shape}
+import javafx.scene.paint.Color
+import javafx.scene.shape.{Line, Rectangle, Shape}
 
 object DrawingPane extends Pane {
   var mouseX: Double = 0.0
@@ -15,11 +14,21 @@ object DrawingPane extends Pane {
   var posX: Double = 0.0
   var posY: Double = 0.0
 
-  val shape = State.apply
+  val state1 = new State(200, 150)
+  val state2 = new State(200, 150)
 
-  drawShape(shape)
+  state2.setTranslateX(300)
 
-  def drawShape(shape: Shape): Unit = {
+  val transition = new Transition(state1, state2)
+
+  drawNode(transition)
+  drawNode(state1)
+  drawNode(state2)
+
+  state1.addTransition(transition)
+  state2.addTransition(transition)
+
+  def drawNode(shape: Node): Unit = {
     shape.setOnMousePressed(mousePressed())
     shape.setOnMouseDragged(mouseDragged())
 
@@ -32,41 +41,9 @@ object DrawingPane extends Pane {
       mouseY = event.getSceneY
     } else if (event.getButton == MouseButton.SECONDARY) {
       event.getSource match {
-        case shape:Shape =>
-          println()
-          println()
-          /*println("--- Layout ---")
-          println("\tLayoutX = " + shape.getLayoutX)
-          println("\tLayoutY = " + shape.getLayoutY)
-
-          println("--- Bounds In Local ---")
-          println("\tCenterX = " + shape.getBoundsInLocal.getCenterX)
-          println("\tCenterY = " + shape.getBoundsInLocal.getCenterY)
-
-          println("--- Bounds In Parent ---")
-          println("\tCenterX = " + shape.getBoundsInParent.getCenterX)
-          println("\tCenterY = " + shape.getBoundsInParent.getCenterY)
-
-          println("--- Layout Bounds ---")
-          println("\tCenterX = " + shape.getLayoutBounds.getCenterX)
-          println("\tCenterY = " + shape.getLayoutBounds.getCenterY)
-
-          println("--- Size in Local ---")
-          println("\tWidth = " + shape.getBoundsInLocal.getWidth)
-          println("\tHeight = " + shape.getBoundsInLocal.getHeight)
-
-          println("--- Size in Parent ---")
-          println("\tWidth = " + shape.getBoundsInParent.getWidth)
-          println("\tHeight = " + shape.getBoundsInParent.getHeight)
-
-          println("--- Size in Layout ---")
-          println("\tWidth = " + shape.getLayoutBounds.getWidth)
-          println("\tHeight = " + shape.getLayoutBounds.getHeight)*/
-
-          shape.setTranslateX(0)
-          shape.setTranslateY(0)
-
-          printShapePosition(shape)
+        case node:Node =>
+          node.setTranslateX(0)
+          node.setTranslateY(0)
       }
     }
   }
@@ -74,56 +51,33 @@ object DrawingPane extends Pane {
   private def mouseDragged(): EventHandler[MouseEvent] = (event: MouseEvent) => {
     val source = event.getSource
     source match {
-      case shape: Shape =>
+      case node: State =>
         val deltaX = event.getSceneX - mouseX
         val deltaY = event.getSceneY - mouseY
 
-        val shapeBounds = shape.getBoundsInParent
+        val shapeBounds = node.getBoundsInParent
 
-        val shapeX = shape.getTranslateX
-        val shapeY = shape.getTranslateY
+        val shapeX = node.getTranslateX
+        val shapeY = node.getTranslateY
 
         val newX = shapeX + deltaX
         val newY = shapeY + deltaY
 
-        if (shape.getParent.getLayoutBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
-          shape.setTranslateX(newX)
-          shape.setTranslateY(newY)
+        if (node.getParent.getLayoutBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
+          node.setTranslateX(newX)
+          node.setTranslateY(newY)
+
+          node.transitionList.foreach(t => {
+            val (state1X, state1Y) = state1.getCenterCoordinates
+            val (state2X, state2Y) = state2.getCenterCoordinates
+
+            t.moveLine(state1X, state1Y, state2X, state2Y)
+          })
         }
       case _ => println("hola")
     }
 
     mouseX = event.getSceneX
     mouseY = event.getSceneY
-  }
-
-  def printShapePosition(shape: Shape) = {
-    def shapeBounds = shape.getBoundsInParent
-
-    def shapeX = shapeBounds.getCenterX - shapeBounds.getWidth/2
-    def shapeY = shapeBounds.getCenterY - shapeBounds.getHeight/2
-
-    println("--- Shape Position ---")
-    println("ShapeX = " + shapeX)
-    println("ShapeY = " + shapeY)
-
-    println("--- Layout Position ---")
-    println("LayoutX = " + shape.getLayoutX)
-    println("LayoutY = " + shape.getLayoutY)
-  }
-
-  def getShapePosition(shape: Shape): (Double, Double) = {
-    def shapeBounds = shape.getBoundsInParent
-
-    def shapeX = shapeBounds.getCenterX - shapeBounds.getWidth/2
-    def shapeY = shapeBounds.getCenterY - shapeBounds.getHeight/2
-
-    (shapeX, shapeY)
-  }
-
-  def getShapeSize(shape: Shape): (Double, Double) = {
-    def shapeBounds = shape.getBoundsInParent
-
-    (shapeBounds.getWidth, shapeBounds.getHeight)
   }
 }

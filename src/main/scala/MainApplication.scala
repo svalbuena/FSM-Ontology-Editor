@@ -10,8 +10,8 @@ import infrastructure.toolbox.ToolBox
 import infrastructure.viewbar.ViewBar
 
 class MainApplication extends Application {
-  val Width = 400
-  val Height = 300
+  val Width = 800
+  val Height = 600
 
   override def start(stage: Stage): Unit = {
     stage.setTitle("This is the title")
