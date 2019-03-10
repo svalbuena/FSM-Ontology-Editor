@@ -19,24 +19,29 @@ class MainApplication extends Application {
     val layout = new BorderPane()
 
     //Adding the ToolBar
-    MainToolBar.setPrefSize(Width * 1.0, Height * 0.1)
-    layout.setTop(MainToolBar)
+    val mainToolBar = new MainToolBar
+    mainToolBar.setPrefSize(Width * 1.0, Height * 0.1)
+    layout.setTop(mainToolBar)
 
     //Adding the ViewBar
-    ViewBar.setPrefSize(Width * 1.0, Height * 0.1)
-    layout.setBottom(ViewBar)
+    val viewBar = new ViewBar
+    viewBar.setPrefSize(Width * 1.0, Height * 0.1)
+    layout.setBottom(viewBar)
 
     //Adding the ToolBox
-    ToolBox.setPrefSize(Width * 0.20, Height * 0.8)
-    layout.setLeft(ToolBox)
+    val toolBox = new ToolBox
+    toolBox.setPrefSize(Width * 0.20, Height * 0.8)
+    layout.setLeft(toolBox)
 
     //Adding the PropertiesBox
-    PropertiesBox.setPrefSize(Width * 0.20, Height * 0.8)
-    layout.setRight(PropertiesBox)
+    val propertiesBox = new PropertiesBox
+    propertiesBox.setPrefSize(Width * 0.20, Height * 0.8)
+    layout.setRight(propertiesBox)
 
-    //Adding the Canvas
-    DrawingPane.setPrefSize(Width * 0.6, Height * 0.8)
-    layout.setCenter(DrawingPane)
+    //Adding the DrawingPane
+    val drawingPane = new DrawingPane(toolBox)
+    drawingPane.setPrefSize(Width * 0.6, Height * 0.8)
+    layout.setCenter(drawingPane)
 
     //Creating the main Scene
     val scene = new Scene(layout, Width, Height)

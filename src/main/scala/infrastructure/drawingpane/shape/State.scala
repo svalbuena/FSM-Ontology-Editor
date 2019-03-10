@@ -18,7 +18,6 @@ class State(width: Double, height: Double) extends Pane {
 
   setStyle("-fx-background-color: #f4f4f4")
 
-
   def addTransition(transition: Transition): Unit = {
     transitionList = transition :: transitionList
   }

@@ -2,9 +2,8 @@ package infrastructure.propertybox
 
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
-import infrastructure.viewbar.ViewBar.setStyle
 
-object PropertiesBox extends VBox {
+class PropertiesBox extends VBox {
   setStyle("-fx-background-color: #b3c6b3")
 
   val boxTitle = new Label()

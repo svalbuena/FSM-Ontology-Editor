@@ -1,6 +1,5 @@
 package infrastructure.drawingpane.shape
 
-import infrastructure.drawingpane.DrawingPane.{state1, state2}
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Line
 
