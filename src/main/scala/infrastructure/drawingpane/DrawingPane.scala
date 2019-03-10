@@ -119,7 +119,6 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
     val end = new End(DefaultEndRadius)
     end.setTranslateX(event.getX)
     end.setTranslateY(event.getY)
-    println("Pressed")
 
     drawNode(end)
 
