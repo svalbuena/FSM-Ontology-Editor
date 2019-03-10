@@ -1,8 +1,8 @@
 package infrastructure.drawingpane
 
-import infrastructure.drawingpane.shape.{State, Transition}
+import infrastructure.drawingpane.shape.{End, Start, State, Transition}
 import infrastructure.toolbox.ToolBox
-import infrastructure.toolbox.section.item.fsm.{StateItem, TransitionItem}
+import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
 import javafx.event.EventHandler
 import javafx.scene.Node
@@ -11,15 +11,17 @@ import javafx.scene.layout.Pane
 import javafx.scene.shape.Line
 
 class DrawingPane(toolBox: ToolBox) extends Pane {
-  val DefaultStateWidth = 200
-  val DefaultStateHeight = 150
+  val DefaultStateWidth = 200.0
+  val DefaultStateHeight = 150.0
+  val DefaultStartRadius = 20.0
+  val DefaultEndRadius = 20.0
 
   var mouseX: Double = 0.0
   var mouseY: Double = 0.0
   var posX: Double = 0.0
   var posY: Double = 0.0
 
-  var newTransitionState: Option[State] = None
+  var newTransitionNode: Option[Node] = None
   var newTransitionLine = new Line()
   newTransitionLine.setVisible(false)
 
@@ -60,11 +62,19 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
         case _: TransitionItem =>
           event.getSource match {
             case state: State =>
-              statePressedWithTransitionTool(state)
+              nodePressedWithTransitionTool(state)
+            case start: Start =>
+              nodePressedWithTransitionTool(start)
+            case end: End =>
+              nodePressedWithTransitionTool(end)
             case _ =>
           }
         case _: StateItem =>
-          mousePressedWithStateTool(event)
+          mousePressedWithStateItem(event)
+        case _: EndItem =>
+          mousePressedWithEndTool(event)
+        case _: StartItem =>
+          mousePressedWithStartItem(event)
         case _ =>
       }
     } else if (event.getButton == MouseButton.SECONDARY) {
@@ -82,6 +92,10 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
         event.getSource match {
           case state: State =>
             stateDragged(event, state)
+          case start: Start =>
+            startDragged(event, start)
+          case end: End =>
+            endDragged(event, end)
           case _ =>
         }
       case _ =>
@@ -91,34 +105,28 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
     mouseY = event.getSceneY
   }
 
-  private def mouseMovedWithTransitionTool(event: MouseEvent): Unit = {
-    if (newTransitionState.isDefined) {
-      val (startX, startY) = newTransitionState.get.getCenterCoordinates
-      newTransitionLine.setStartX(startX)
-      newTransitionLine.setStartY(startY)
-      newTransitionLine.setEndX(event.getX)
-      newTransitionLine.setEndY(event.getY)
-      newTransitionLine.setVisible(true)
-    }
+  private def mousePressedWithStartItem(event: MouseEvent): Unit = {
+    val start = new Start(DefaultStartRadius)
+    start.setTranslateX(event.getX)
+    start.setTranslateY(event.getY)
+
+    drawNode(start)
+
+    toolBox.setToolToDefault()
   }
 
-  private def statePressedWithTransitionTool(state: State): Unit = {
-    if (newTransitionState.isEmpty) {
-      newTransitionState = Some(state)
-    } else {
-      val transition = new Transition(newTransitionState.get, state)
-      newTransitionState.get.addTransition(transition)
-      state.addTransition(transition)
-      drawNode(transition)
-      transition.toBack()
+  private def mousePressedWithEndTool(event: MouseEvent): Unit = {
+    val end = new End(DefaultEndRadius)
+    end.setTranslateX(event.getX)
+    end.setTranslateY(event.getY)
+    println("Pressed")
 
-      newTransitionState = None
-      newTransitionLine.setVisible(false)
-      toolBox.setToolToDefault()
-    }
+    drawNode(end)
+
+    toolBox.setToolToDefault()
   }
 
-  private def mousePressedWithStateTool(event: MouseEvent): Unit = {
+  private def mousePressedWithStateItem(event: MouseEvent): Unit = {
     val state = new State(DefaultStateWidth, DefaultStateHeight)
     state.setTranslateX(event.getX)
     state.setTranslateY(event.getY)
@@ -128,28 +136,87 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
     toolBox.setToolToDefault()
   }
 
+  private def mouseMovedWithTransitionTool(event: MouseEvent): Unit = {
+    if (newTransitionNode.isDefined) {
+      val nodeBounds = newTransitionNode.get.getBoundsInParent
+      val (startX, startY) = (nodeBounds.getCenterX, nodeBounds.getCenterY)
+      newTransitionLine.setStartX(startX)
+      newTransitionLine.setStartY(startY)
+      newTransitionLine.setEndX(event.getX)
+      newTransitionLine.setEndY(event.getY)
+      newTransitionLine.setVisible(true)
+    }
+  }
+
+  private def nodePressedWithTransitionTool(node: Node): Option[Transition] = {
+    var transition: Option[Transition] = None
+
+    if (newTransitionNode.isEmpty) {
+      newTransitionNode = Some(node)
+    } else {
+      transition = Some(new Transition(newTransitionNode.get, node))
+
+      node match {
+        case state: State => state.addTransition(transition.get)
+        case start: Start => start.addTransition(transition.get)
+        case end: End => end.addTransition(transition.get)
+      }
+
+      newTransitionNode.get match {
+        case state: State => state.addTransition(transition.get)
+        case start: Start => start.addTransition(transition.get)
+        case end: End => end.addTransition(transition.get)
+      }
+
+      drawNode(transition.get)
+      transition.get.toBack()
+
+      newTransitionNode = None
+      newTransitionLine.setVisible(false)
+      toolBox.setToolToDefault()
+    }
+
+    transition
+  }
+
   private def stateDragged(event: MouseEvent, state: State): Unit = {
+    if (moveNode(event, state)) {
+      state.transitionList.foreach(transition => transition.redraw())
+    }
+  }
+
+  private def startDragged(event: MouseEvent, start: Start): Unit = {
+    if (moveNode(event, start)) {
+      start.transitionList.foreach(transition => transition.redraw())
+    }
+  }
+
+  private def endDragged(event: MouseEvent, end: End): Unit = {
+    if (moveNode(event, end)) {
+      println("End dragged")
+      end.transitionList.foreach(transition => transition.redraw())
+    }
+  }
+
+  private def moveNode(event: MouseEvent, node: Node): Boolean = {
     val deltaX = event.getSceneX - mouseX
     val deltaY = event.getSceneY - mouseY
 
-    val shapeBounds = state.getBoundsInParent
+    val shapeBounds = node.getBoundsInParent
 
-    val shapeX = state.getTranslateX
-    val shapeY = state.getTranslateY
+    val shapeX = node.getTranslateX
+    val shapeY = node.getTranslateY
 
     val newX = shapeX + deltaX
     val newY = shapeY + deltaY
 
-    if (state.getParent.getLayoutBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
-      state.setTranslateX(newX)
-      state.setTranslateY(newY)
-
-      state.transitionList.foreach(transition => {
-        val (state1X, state1Y) = transition.state1.getCenterCoordinates
-        val (state2X, state2Y) = transition.state2.getCenterCoordinates
-
-        transition.moveLine(state1X, state1Y, state2X, state2Y)
-      })
+    var moved = false
+    if (node.getParent.getLayoutBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
+      node.setTranslateX(newX)
+      node.setTranslateY(newY)
+      moved = true
     }
+
+    moved
   }
 }

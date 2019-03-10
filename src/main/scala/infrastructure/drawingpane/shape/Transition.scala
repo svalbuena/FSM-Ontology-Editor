@@ -1,17 +1,22 @@
 package infrastructure.drawingpane.shape
 
+import javafx.scene.Node
 import javafx.scene.layout.Pane
 import javafx.scene.shape.Line
 
-class Transition(val state1: State, val state2: State) extends Pane {
-  val state1Bounds = state1.getBoundsInParent
-  val state2Bounds = state2.getBoundsInParent
+class Transition(val node1: Node, val node2: Node) extends Pane {
+  private def node1Bounds = node1.getBoundsInParent
+  private def node2Bounds = node2.getBoundsInParent
 
-  val line = new Line(state1Bounds.getCenterX, state1Bounds.getCenterY, state2Bounds.getCenterX, state2Bounds.getCenterY)
+  private val line = new Line(node1Bounds.getCenterX, node1Bounds.getCenterY, node2Bounds.getCenterX, node2Bounds.getCenterY)
 
   getChildren.add(line)
 
-  def moveLine(startX: Double, startY: Double, endX: Double, endY: Double): Unit = {
+
+  def redraw(): Unit = {
+    val (startX, startY) = (node1Bounds.getCenterX, node1Bounds.getCenterY)
+    val (endX, endY) = (node2Bounds.getCenterX, node2Bounds.getCenterY)
+
     line.setStartX(startX)
     line.setStartY(startY)
     line.setEndX(endX)
