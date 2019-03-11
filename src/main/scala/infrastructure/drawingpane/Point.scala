@@ -1,5 +1,5 @@
 package infrastructure.drawingpane
 
-class Point {
+class Point(val x: Int, val y: Int) {
 
 }

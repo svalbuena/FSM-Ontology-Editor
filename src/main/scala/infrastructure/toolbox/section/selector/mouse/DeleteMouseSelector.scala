@@ -1,6 +1,7 @@
 package infrastructure.toolbox.section.selector.mouse
 
-class DeleteMouseSelector
-{
+import javafx.scene.control.ToggleButton
 
+class DeleteMouseSelector extends ToggleButton {
+  setText("Delete mouse")
 }
