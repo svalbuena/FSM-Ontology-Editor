@@ -2,7 +2,7 @@ package infrastructure.toolbox.section.selector
 
 import javafx.scene.control.{Label, ToggleButton, ToggleGroup}
 import javafx.scene.layout.{FlowPane, VBox}
-import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
+import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
 
 class SelectorsSection(toggleGroup: ToggleGroup) extends VBox {
   val sectionTitle = new Label
@@ -10,7 +10,7 @@ class SelectorsSection(toggleGroup: ToggleGroup) extends VBox {
 
   val normalMouseSelector = new NormalMouseSelector
 
-  val mouseList = List(normalMouseSelector, new DeleteMouseSelector)
+  val mouseList = List(normalMouseSelector)
 
   val flowPane = new FlowPane()
 
@@ -22,7 +22,7 @@ class SelectorsSection(toggleGroup: ToggleGroup) extends VBox {
   getChildren.add(sectionTitle)
   getChildren.add(flowPane)
 
-  def setMouseToDefault(): Unit = {
+  def setMouseToDefault: Unit = {
     normalMouseSelector.setSelected(true)
   }
 }
