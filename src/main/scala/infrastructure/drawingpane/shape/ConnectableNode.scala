@@ -1,7 +1,5 @@
 package infrastructure.drawingpane.shape
 
-import com.sun.javafx.scene.paint.GradientUtils.Point
-import javafx.scene.input.MouseEvent
 import javafx.scene.layout.Pane
 
 class ConnectableNode extends Pane {
@@ -9,6 +7,10 @@ class ConnectableNode extends Pane {
 
   def addTransition(transition: Transition): Unit = {
     transitions = transition :: transitions
+  }
+
+  def removeTransition(transitionToDelete: Transition): Unit = {
+    transitions = transitions.filterNot(transition => transition == transitionToDelete)
   }
 
   def drag(deltaX: Double, deltaY: Double): Unit = {
