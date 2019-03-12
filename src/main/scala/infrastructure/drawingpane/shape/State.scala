@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.shape
 
 import javafx.scene.control.TextField
-import javafx.scene.layout.Pane
+import javafx.scene.layout.{Pane, VBox}
 import javafx.scene.paint.{Color, Paint}
 import javafx.scene.shape.{Line, Rectangle, Shape, StrokeType}
 
@@ -10,7 +10,14 @@ class State(width: Double = 200.0, height: Double = 150.0) extends ConnectableNo
   private val SeparatorOffset: Double = 0.20
   private val SeparatorY = height * SeparatorOffset
   private val StrokeWidth:Double = 2.0
+  private val titleArea = new Pane()
+  private val actionsArea = new Pane()
+  private val mainPane = new VBox()
 
+  setPrefSize(width, height)
+  getChildren.add(mainPane)
+  mainPane.getChildren.addAll(titleArea, actionsArea)
+  
   getChildren.add(createShape())
   getChildren.add(createTitle())
 
@@ -38,5 +45,11 @@ class State(width: Double = 200.0, height: Double = 150.0) extends ConnectableNo
     stateTitle.setPrefSize(width - StrokeWidth * 2, SeparatorY - StrokeWidth * 2)
 
     stateTitle
+  }
+
+  private def addEntryAction(): Unit = {
+    val textField = new TextField()
+    textField.setText("do/Action")
+
   }
 }

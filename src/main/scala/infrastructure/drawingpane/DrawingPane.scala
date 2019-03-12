@@ -29,6 +29,7 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
   setOnMouseMoved(mouseMoved())
 
   private def mouseMoved(): EventHandler[MouseEvent] = (event: MouseEvent) => {
+    event.consume()
     toolBox.getSelectedTool match {
       case _: TransitionItem =>
         mouseMovedWithTransitionItem(event.getSceneX - mouseX, event.getSceneY - mouseY)
@@ -39,6 +40,7 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
   }
 
   private def mousePressed(): EventHandler[MouseEvent] = (event: MouseEvent) => {
+    event.consume()
     if (event.getButton == MouseButton.PRIMARY) {
       updateMousePosition(event)
 
@@ -49,20 +51,12 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
               eraseConnectableNode(connectableNode)
             case _ =>
           }
-        case _: NormalMouseSelector =>
-          if (event.getSource == this) {
-            println("Normal click on DrawingPane")
-          } else {
-            println("Normal click on a Node")
-          }
         case _: TransitionItem =>
           event.getSource match {
             case connectableNode: ConnectableNode =>
-              println("Pressing with connectableNode")
               val point = connectableNode.getLocalToParentTransform.transform(event.getX, event.getY)
               connectableNodePressedWithTransitionItem(connectableNode, point.getX, point.getY)
             case _ =>
-              println("Pressing with default")
               cancelActionWithTransitionItem()
           }
         case _: StateItem =>
@@ -86,10 +80,10 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
           node.setTranslateY(0)
       }
     }
-    event.consume()
   }
 
   private def mouseDragged(): EventHandler[MouseEvent] = (event: MouseEvent) => {
+    event.consume()
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         event.getSource match {
