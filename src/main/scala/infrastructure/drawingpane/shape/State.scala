@@ -6,7 +6,9 @@ import javafx.scene.paint.{Color, Paint}
 import javafx.scene.shape.{Line, Rectangle, Shape, StrokeType}
 
 
-class State(width: Double = 200.0, height: Double = 150.0) extends ConnectableNode {
+// TODO Move shape and text area
+class State(width: Double = 200.0, height: Double = 150.0) extends VBox with ConnectableNode {
+
   private val SeparatorOffset: Double = 0.20
   private val SeparatorY = height * SeparatorOffset
   private val StrokeWidth:Double = 2.0

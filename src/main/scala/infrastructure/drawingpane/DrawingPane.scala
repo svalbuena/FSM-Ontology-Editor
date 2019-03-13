@@ -7,7 +7,7 @@ import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, Norma
 import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.input.{MouseButton, MouseEvent}
-import javafx.scene.layout.Pane
+import javafx.scene.layout.{Pane, VBox}
 import javafx.scene.shape.Line
 
 class DrawingPane(toolBox: ToolBox) extends Pane {
@@ -118,7 +118,7 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
 
   private def connectableNodePressedWithTransitionItem(connectableNode: ConnectableNode, x: Double, y:Double): Unit = {
     if (temporalTransition.isEmpty) {
-      val tempNode = new ConnectableNode
+      val tempNode = GhostNode()
       tempNode.setTranslateX(x)
       tempNode.setTranslateY(y)
       tempNode.setVisible(false)
