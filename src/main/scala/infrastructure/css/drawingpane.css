@@ -1,0 +1,5 @@
+.state {
+    -fx-border-color: black;
+    -fx-border-radius: 2px;
+    -fx-border-width: 2px;
+}

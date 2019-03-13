@@ -47,6 +47,8 @@ class MainApplication extends Application {
     val scene = new Scene(layout, Width, Height)
     stage.setScene(scene)
 
+    scene.getStylesheets.add("infrastructure/css/drawingpane.css")
+
     stage.show()
   }
 }

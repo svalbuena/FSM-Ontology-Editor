@@ -7,8 +7,7 @@ import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, Norma
 import javafx.event.EventHandler
 import javafx.scene.Node
 import javafx.scene.input.{MouseButton, MouseEvent}
-import javafx.scene.layout.{Pane, VBox}
-import javafx.scene.shape.Line
+import javafx.scene.layout.Pane
 
 class DrawingPane(toolBox: ToolBox) extends Pane {
   private var mouseX: Double = 0.0
