@@ -1,5 +1,9 @@
-.state {
+.state1 {
+    -fx-background-color: green;
+}
+
+.state2 {
+    -fx-background-color: green;
     -fx-border-color: black;
-    -fx-border-radius: 2px;
-    -fx-border-width: 2px;
+    -fx-border-width: 10px;
 }

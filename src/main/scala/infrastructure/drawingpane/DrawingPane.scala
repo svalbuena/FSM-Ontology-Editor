@@ -15,8 +15,8 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
 
   private var temporalTransition: Option[Transition] = None
 
-  val state1 = new State()
-  val state2 = new State()
+  val state1 = new State(id = 1)
+  val state2 = new State(id = 2)
 
   state2.setTranslateX(300)
 
@@ -75,8 +75,7 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
     } else if (event.getButton == MouseButton.SECONDARY) {
       event.getSource match {
         case node: Node =>
-          node.setTranslateX(0)
-          node.setTranslateY(0)
+          printInfo
       }
     }
   }
@@ -189,5 +188,37 @@ class DrawingPane(toolBox: ToolBox) extends Pane {
     shape.setOnMousePressed(mousePressed())
     shape.setOnMouseDragged(mouseDragged())
     getChildren.add(shape)
+  }
+
+  private def printInfo(): Unit = {
+    println()
+    println("--- Id " + 1 + " ---")
+    println("--- Title ---")
+    println("PrefWidth = " + state1.title.prefWidthProperty().get())
+    println("PrefHeight = " + state1.title.prefHeightProperty().get())
+    println("Width = " + state1.title.widthProperty().get())
+    println("Height = " + state1.title.heightProperty().get())
+
+    println()
+    println("--- Pane ---")
+    println("PrefWidth = " + state1.titleArea.prefWidthProperty().get())
+    println("PrefHeight = " + state1.titleArea.prefHeightProperty().get())
+    println("Width = " + state1.titleArea.widthProperty().get())
+    println("Height = " + state1.titleArea.heightProperty().get())
+
+    println()
+    println("--- Id " + 1 + " ---")
+    println("--- Title ---")
+    println("PrefWidth = " + state2.title.prefWidthProperty().get())
+    println("PrefHeight = " + state2.title.prefHeightProperty().get())
+    println("Width = " + state2.title.widthProperty().get())
+    println("Height = " + state2.title.heightProperty().get())
+
+    println()
+    println("--- Pane ---")
+    println("PrefWidth = " + state2.titleArea.prefWidthProperty().get())
+    println("PrefHeight = " + state2.titleArea.prefHeightProperty().get())
+    println("Width = " + state2.titleArea.widthProperty().get())
+    println("Height = " + state2.titleArea.heightProperty().get())
   }
 }
