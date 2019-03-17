@@ -1,65 +1,56 @@
 package infrastructure.drawingpane.shape
 
 import javafx.beans.binding.Bindings
-import javafx.geometry.Insets
+import javafx.geometry.{Insets, Pos}
 import javafx.scene.Node
-import javafx.scene.control.TextField
-import javafx.scene.layout.{Pane, VBox}
+import javafx.scene.control.{Label, TextField}
+import javafx.scene.layout.{HBox, Pane, StackPane, VBox}
 import javafx.scene.paint.{Color, Paint}
 import javafx.scene.shape.{Line, Rectangle, Shape, StrokeType}
 
 
 // TODO Move shape and text area
-class State(width: Double = 400.0, height: Double = 300.0, var id: Int = 0) extends VBox with ConnectableNode {
-  private val SeparatorOffset: Double = 0.20
-  private val SeparatorY = height * SeparatorOffset
-  private val StrokeWidth: Double = 2.0
-  val title = new TextField()
+class State extends VBox with ConnectableNode {
+  private val ActionHeight = 25.0
+  private val Width = 250.0
+  private val Height = ActionHeight * 4
 
+  private val TitleAreaHeightRatio = 0.20
+  private val ActionsAreaHeightRatio = 1 - TitleAreaHeightRatio
 
-  val titleArea = createTitleArea()
+  setPrefSize(Width, Height)
+  getStyleClass.add("state")
+
+  private val titleArea = createTitleArea()
+  titleArea.prefHeightProperty.bind(heightProperty.multiply(TitleAreaHeightRatio))
+
   private val actionsArea = createActionsArea()
-
-
-  //setPrefSize(width, height)
-
-  //titleArea.prefHeightProperty.bind(prefHeightProperty().multiply(0.2))
-  titleArea.setPrefHeight(height)
-  titleArea.setPrefWidth(width)
-  //actionsArea.setPrefHeight(100)
+  actionsArea.prefHeightProperty.bind(heightProperty.multiply(ActionsAreaHeightRatio))
 
   getChildren.addAll(titleArea, actionsArea)
-  //setPrefWidth(width)
 
-  //getChildren.add(createShape())
-  //getChildren.add(createTitle())
-  getStyleClass.add("state" + id)
+  def addAction(actionMsg: String): Unit = {
+    val action = new TextField()
+    action.setPrefHeight(ActionHeight)
+    //action.setStyle("-fx-background-color: yellow")
+    action.setText(actionMsg)
 
-  private def createShape(): Shape = {
-    val rectangle = new Rectangle(0, 0, width, height)
-    rectangle.setFill(null)
-    rectangle.setStroke(Color.BLACK)
-    rectangle.setStrokeType(StrokeType.INSIDE)
-    rectangle.setStrokeWidth(StrokeWidth)
-
-    val separator = new Line(StrokeWidth, SeparatorY, width - StrokeWidth, SeparatorY)
-    separator.setStrokeWidth(StrokeWidth)
-
-    Shape.union(rectangle, separator)
+    actionsArea.getChildren.add(action)
   }
 
   private def createTitleArea(): Pane = {
-    val Padding = 10
-    val pane = new Pane()
+    val Padding = 10.0
 
+    val pane = new StackPane()
+    pane.getStyleClass.add("title-area")
+    pane.setPadding(new Insets(Padding))
+
+    val title = new TextField()
+    title.setAlignment(Pos.CENTER)
     title.setText("State")
-    //title.setPadding(new Insets(Padding, Padding, Padding, Padding))
 
-    title.prefWidthProperty.bind(pane.widthProperty.subtract(Padding * 2.0))
-    title.prefHeightProperty.bind(pane.heightProperty.subtract(Padding * 2.0))
-
-    title.layoutXProperty.bind(pane.widthProperty.subtract(title.widthProperty).divide(2))
-    title.layoutYProperty.bind(pane.heightProperty.subtract(title.heightProperty).divide(2))
+    title.prefWidthProperty.bind(pane.widthProperty)
+    title.prefHeightProperty.bind(pane.heightProperty)
 
     pane.getChildren.add(title)
 
@@ -67,14 +58,12 @@ class State(width: Double = 400.0, height: Double = 300.0, var id: Int = 0) exte
   }
 
   private def createActionsArea(): VBox = {
+    val Padding = 10.0
+
     val pane = new VBox()
+    pane.getStyleClass.add("actions-area")
+    pane.setPadding(new Insets(Padding))
 
     pane
-  }
-
-  private def addEntryAction(): Unit = {
-    val textField = new TextField()
-    textField.setText("do/Action")
-
   }
 }

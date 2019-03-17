@@ -1,9 +1,23 @@
-.state1 {
-    -fx-background-color: green;
+.state {
+    -fx-background-color: white;
+    -fx-background-insets: 1px;
+    -fx-background-radius: 15px;
+
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+    -fx-border-radius: 15px;
 }
 
-.state2 {
-    -fx-background-color: green;
-    -fx-border-color: black;
-    -fx-border-width: 10px;
+.title-area {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
 }
+
+.actions-area {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+
+    -fx-border-color: black;
+    -fx-border-width: 5px 0px 0px 0px;
+}
+

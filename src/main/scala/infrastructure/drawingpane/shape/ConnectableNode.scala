@@ -13,17 +13,4 @@ trait ConnectableNode extends Pane {
   def removeTransition(transitionToDelete: Transition): Unit = {
     transitions = transitions.filterNot(transition => transition == transitionToDelete)
   }
-
-  def drag(deltaX: Double, deltaY: Double): Unit = {
-    Option(getBoundsInParent).foreach { shapeBounds =>
-      val newX = getTranslateX + deltaX
-      val newY = getTranslateY + deltaY
-
-      if (getParent.getLayoutBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
-        setTranslateX(newX)
-        setTranslateY(newY)
-        transitions.foreach(transition => transition.redraw())
-      }
-    }
-  }
 }
