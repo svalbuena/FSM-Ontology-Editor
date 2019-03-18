@@ -16,7 +16,9 @@ class EraseConnectableNodeUseCase(drawingPane: DrawingPane) {
 
       otherNode.removeTransition(transition)
 
-      drawingPane.getChildren.remove(connectableNode)
+      drawingPane.getChildren.remove(transition)
     })
+
+    drawingPane.getChildren.remove(connectableNode)
   }
 }

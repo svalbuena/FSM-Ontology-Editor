@@ -14,6 +14,11 @@ class DragConnectableNodeUseCase(drawingPane: DrawingPane) {
       if (parentBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
         connectableNode.setTranslateX(newX)
         connectableNode.setTranslateY(newY)
+
+        connectableNode.transitions.foreach(transition => {
+          transition.computeCoordinates()
+          transition.toBack()
+        })
       }
     }
   }
