@@ -1,4 +1,4 @@
-package infrastructure.drawingpane.shape
+package infrastructure.drawingpane.element
 
 import javafx.beans.binding.Bindings
 import javafx.geometry.{Insets, Pos}

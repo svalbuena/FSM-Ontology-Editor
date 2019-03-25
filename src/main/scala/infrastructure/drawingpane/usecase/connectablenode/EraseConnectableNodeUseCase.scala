@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.usecase.connectablenode
 
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.drawingpane.shape.ConnectableNode
+import infrastructure.drawingpane.element.ConnectableNode
 
 class EraseConnectableNodeUseCase(drawingPane: DrawingPane) {
   def erase(connectableNode: ConnectableNode): Unit = {

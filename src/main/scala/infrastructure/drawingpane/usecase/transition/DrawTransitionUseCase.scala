@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.usecase.transition
 
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.drawingpane.shape.Transition
+import infrastructure.drawingpane.element.Transition
 
 class DrawTransitionUseCase(drawingPane: DrawingPane) {
   def draw(transition: Transition): Unit = {

@@ -14,8 +14,8 @@ osName := (System.getProperty("os.name") match {
 })
 
 libraryDependencies ++= Seq (
-  "org.openjfx" % "javafx-controls" % "11.0.2" classifier osName.value withSources() withJavadoc(),
-  "org.openjfx" % "javafx-base" % "11.0.2" classifier osName.value withSources() withJavadoc(),
-  "org.openjfx" % "javafx-graphics" % "11.0.2" classifier osName.value withSources() withJavadoc()
+  "org.openjfx" % "javafx-controls" % "12" classifier osName.value withSources() withJavadoc(),
+  "org.openjfx" % "javafx-base" % "12" classifier osName.value withSources() withJavadoc(),
+  "org.openjfx" % "javafx-graphics" % "12" classifier osName.value withSources() withJavadoc()
 )
 

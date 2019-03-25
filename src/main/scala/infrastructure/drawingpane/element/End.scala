@@ -1,4 +1,4 @@
-package infrastructure.drawingpane.shape
+package infrastructure.drawingpane.element
 
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color

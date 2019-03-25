@@ -1,9 +1,7 @@
 import infrastructure.drawingpane.{DrawingPane, DrawingPaneController}
-import infrastructure.drawingpane.usecase.UseCaseContainer
 import javafx.application.Application
-import javafx.scene.{Node, Scene}
-import javafx.scene.control.{Button, MenuButton, ToolBar}
-import javafx.scene.layout.{BorderPane, GridPane, StackPane, VBox}
+import javafx.scene.Scene
+import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbar.MainToolBar
@@ -45,8 +43,7 @@ class MainApplication extends Application {
     layout.setCenter(drawingPane)
 
     //Create the DrawingPaneController
-    val useCaseContainer = new UseCaseContainer(drawingPane)
-    val drawingPaneController = new DrawingPaneController(toolBox, useCaseContainer)
+    val drawingPaneController = new DrawingPaneController(drawingPane, toolBox)
 
     //Creating the main Scene
     val scene = new Scene(layout, Width, Height)

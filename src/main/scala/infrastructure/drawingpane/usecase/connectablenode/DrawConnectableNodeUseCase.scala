@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.usecase.connectablenode
 
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.drawingpane.shape.ConnectableNode
+import infrastructure.drawingpane.element.ConnectableNode
 
 class DrawConnectableNodeUseCase(drawingPane: DrawingPane) {
   def draw(connectableNode: ConnectableNode, x: Double, y: Double): Unit = {

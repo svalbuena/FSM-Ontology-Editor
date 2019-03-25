@@ -1,26 +1,30 @@
 package infrastructure.drawingpane
 
-import infrastructure.drawingpane.shape._
-import infrastructure.drawingpane.usecase.UseCaseContainer
+import java.awt.MenuBar
+
+import infrastructure.drawingpane.element._
+import infrastructure.drawingpane.usecase.connectablenode._
+import infrastructure.drawingpane.usecase.transition._
+import infrastructure.menu.StateOptions
 import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.event.EventHandler
 import javafx.scene.input.{MouseButton, MouseEvent}
 
-class DrawingPaneController(toolBox: ToolBox, useCaseContainer: UseCaseContainer) {
+class DrawingPaneController(drawingPane: DrawingPane, toolBox: ToolBox) {
   private var mouseX: Double = 0.0
   private var mouseY: Double = 0.0
 
   private var temporalTransition: Option[Transition] = None
 
-  private val drawConnectableNodeUseCase = useCaseContainer.drawConnectableNodeUseCase
-  private val dragConnectableNodeUseCase = useCaseContainer.dragConnectableNodeUseCase
-  private val eraseConnectableNodeUseCase = useCaseContainer.eraseConnectableNodeUseCase
-  private val drawTransitionUseCase = useCaseContainer.drawTransitionUseCase
-  private val eraseTransitionUseCase = useCaseContainer.eraseTransitionUseCase
-  private val linkDrawingPaneMouseClickedEventUseCase = useCaseContainer.linkDrawingPaneMouseClickedEventUseCase
-  private val linkDrawingPaneMouseMovedEventUseCase = useCaseContainer.linkDrawingPaneMouseMovedEventUseCase
+  private var actualMenuBar: Option[MenuBar] = None
+
+  private val drawConnectableNodeUseCase = new DrawConnectableNodeUseCase(drawingPane)
+  private val dragConnectableNodeUseCase = new DragConnectableNodeUseCase(drawingPane)
+  private val eraseConnectableNodeUseCase = new EraseConnectableNodeUseCase(drawingPane)
+  private val drawTransitionUseCase = new DrawTransitionUseCase(drawingPane)
+  private val eraseTransitionUseCase = new EraseTransitionUseCase(drawingPane)
 
   val state1 = new State()
   val state2 = new State()
@@ -33,8 +37,8 @@ class DrawingPaneController(toolBox: ToolBox, useCaseContainer: UseCaseContainer
   state1.addAction("entry/Action 1")
   state1.addAction("entry/Action 1")
 
-  linkDrawingPaneMouseClickedEventUseCase.link(drawingPaneMouseClickedListener)
-  linkDrawingPaneMouseMovedEventUseCase.link(drawingPaneMouseMovedListener)
+  drawingPane.setOnMouseClicked(drawingPaneMouseClickedListener)
+  drawingPane.setOnMouseMoved(drawingPaneMouseMovedListener)
 
   private def drawingPaneMouseClickedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
     updateMousePosition(event)
@@ -45,6 +49,10 @@ class DrawingPaneController(toolBox: ToolBox, useCaseContainer: UseCaseContainer
           if (temporalTransition.isDefined) {
             cancelTransitionCreation()
             toolBox.setToolToDefault()
+          }
+          if (actualMenuBar.isDefined) {
+            drawingPane.getChildren.remove(actualMenuBar.get)
+            actualMenuBar = None
           }
         case _: StateItem =>
           addState(new State(), event.getX, event.getY)
@@ -78,25 +86,42 @@ class DrawingPaneController(toolBox: ToolBox, useCaseContainer: UseCaseContainer
 
     updateMousePosition(event)
 
+    val clickedButton = event.getButton
+    val selectedTool = toolBox.getSelectedTool
+    val clickedNode = event.getSource
+
     event.getSource match {
       case connectableNode: ConnectableNode =>
-        if (event.getButton == MouseButton.PRIMARY) {
-          toolBox.getSelectedTool match {
-            case _: TransitionItem =>
-              if (temporalTransition.isDefined) {
-                establishTemporalTransition(connectableNode)
+        event.getButton match {
+          case MouseButton.PRIMARY =>
+            toolBox.getSelectedTool match {
+              case _: TransitionItem =>
+                if (temporalTransition.isDefined) {
+                  establishTemporalTransition(connectableNode)
+                  toolBox.setToolToDefault()
+                } else {
+                  val point = connectableNode.getLocalToParentTransform.transform(event.getX, event.getY)
+                  addTemporalTransition(connectableNode, point.getX, point.getY)
+                }
+
+              case _: DeleteMouseSelector =>
+                eraseConnectableNodeUseCase.erase(connectableNode)
                 toolBox.setToolToDefault()
-              } else {
-                val point = connectableNode.getLocalToParentTransform.transform(event.getX, event.getY)
-                addTemporalTransition(connectableNode, point.getX, point.getY)
-              }
-            case _: DeleteMouseSelector =>
-              eraseConnectableNodeUseCase.erase(connectableNode)
-              toolBox.setToolToDefault()
-            case _ =>
-          }
+
+              case _ =>
+            }
+
+          case MouseButton.SECONDARY =>
+            clickedNode match {
+              case _: State =>
+                val menu = new StateOptions()
+                menu.setTranslateX(event.getX)
+                menu.setTranslateY(event.getY)
+                drawingPane.getChildren.add(menu)
+              case _ =>
+            }
+          case  _ =>
         }
-      case _ =>
     }
   }
 
