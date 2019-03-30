@@ -1,4 +1,5 @@
-import infrastructure.drawingpane.{DrawingPane, DrawingPaneController}
+import infrastructure.InfrastructureController
+import infrastructure.drawingpane.DrawingPane
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
@@ -43,7 +44,7 @@ class MainApplication extends Application {
     layout.setCenter(drawingPane)
 
     //Create the DrawingPaneController
-    val drawingPaneController = new DrawingPaneController(drawingPane, toolBox)
+    val infrastrucutreController = new InfrastructureController(drawingPane, toolBox, propertiesBox)
 
     //Creating the main Scene
     val scene = new Scene(layout, Width, Height)
