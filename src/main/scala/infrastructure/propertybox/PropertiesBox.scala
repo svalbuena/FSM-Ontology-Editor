@@ -1,6 +1,7 @@
 package infrastructure.propertybox
 
-import javafx.scene.control.Label
+import javafx.scene.Group
+import javafx.scene.control.{Label, ScrollPane}
 import javafx.scene.layout.{Pane, VBox}
 
 class PropertiesBox extends VBox {
@@ -9,12 +10,18 @@ class PropertiesBox extends VBox {
   val boxTitle = new Label()
   boxTitle.setText("Properties")
 
-  val propertiesSection = new Pane
+  val propertiesSection = new ScrollPane()
+  removeContent()
 
   getChildren.addAll(boxTitle, propertiesSection)
 
   def setContent(pane: Pane): Unit = {
-    propertiesSection.getChildren.removeAll(propertiesSection.getChildren)
-    propertiesSection.getChildren.add(pane)
+    propertiesSection.setContent(pane)
+    propertiesSection.setVisible(true)
+  }
+
+  def removeContent(): Unit = {
+    propertiesSection.setContent _
+    propertiesSection.setVisible(false)
   }
 }

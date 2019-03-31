@@ -1,6 +1,8 @@
 package infrastructure.propertybox.state.section
 
 import infrastructure.elements.action.Action
+import infrastructure.propertybox.action.ActionPropertiesBox
+import javafx.scene.control.ScrollPane.ScrollBarPolicy
 import javafx.scene.control.{Label, ScrollPane, TextField}
 import javafx.scene.layout.{HBox, Pane, VBox}
 
@@ -14,37 +16,23 @@ class ActionsSection(entryActions: List[Action], exitActions: List[Action]) exte
   private val actionsSection = new VBox()
   actionsSection.getChildren.addAll(entryActionsSection, exitActionsSection)
 
-  private val actionScrollPane = new ScrollPane()
-  actionScrollPane.setContent(actionsSection)
-
-  getChildren.addAll(titleLabel, actionScrollPane)
+  getChildren.addAll(titleLabel, actionsSection)
 
   setEntryActions(entryActions)
   setExitActions(exitActions)
 
-  def setEntryActions(entryActions: List[Action]): Unit = {
-    entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
-    entryActions.foreach(entryAction => addActionToSection(entryAction.id, "entry/", entryAction.text, entryActionsSection))
+  def setEntryActions(entryActions: List[Action]): Unit = setActionsOnSection(entryActions, entryActionsSection)
+
+  def setExitActions(exitActions: List[Action]): Unit = setActionsOnSection(exitActions, exitActionsSection)
+
+  def setActionsOnSection(actions: List[Action], section: Pane): Unit = {
+    section.getChildren.removeAll(section.getChildren)
+    actions.foreach(action => addActionToSection(action, section))
   }
 
-  def setExitActions(exitActions: List[Action]): Unit = {
-    exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
-    exitActions.foreach(exitAction => addActionToSection(exitAction.id, "exit/", exitAction.text, exitActionsSection))
-  }
+  def addActionToSection(action: Action, section: Pane): Unit = {
+    val actionSection = new ActionSection(action)
 
-  private def addActionToSection(id: String, actionType: String, actionText: String, section: Pane): Unit = {
-    val actionPane = new HBox()
-
-    val actionTypeLabel = new Label()
-    actionTypeLabel.setText(actionType)
-
-    val actionTextField = new TextField()
-    //actionTextField.setPrefHeight(ActionHeight)
-    actionTextField.setText(actionText)
-    actionTextField.setId(id)
-
-    actionPane.getChildren.addAll(actionTypeLabel, actionTextField)
-
-    section.getChildren.add(actionPane)
+    section.getChildren.add(actionSection)
   }
 }

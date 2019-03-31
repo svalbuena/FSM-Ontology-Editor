@@ -20,12 +20,12 @@ class ActionsSection(val ActionHeight: Double) extends VBox {
 
   def setEntryActions(entryActions: List[Action]): Unit = {
     entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
-    entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.text, entryActionsSection))
+    entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.name, entryActionsSection))
   }
 
   def setExitActions(exitActions: List[Action]): Unit = {
     exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
-    exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.text, exitActionsSection))
+    exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.name, exitActionsSection))
   }
 
   private def addActionToSection(actionType: String, actionText: String, section: Pane): Unit = {

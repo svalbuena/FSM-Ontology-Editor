@@ -9,9 +9,19 @@ class DragConnectableNodeUseCase(drawingPane: DrawingPane) {
     Option(connectableNode.getBoundsInParent).foreach { shapeBounds =>
       val newX = connectableNode.getTranslateX + deltaX
       val newY = connectableNode.getTranslateY + deltaY
-      val parentBounds = connectableNode.getParent.getLayoutBounds
+      val drawingPaneBounds = drawingPane.getLayoutBounds
 
-      if (parentBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
+      println()
+      println("BoundsWidth = " + drawingPaneBounds.getWidth)
+      println("BoundsHeight = " + drawingPaneBounds.getHeight)
+      println("NewX = " + newX)
+      println("NewY = " + newY)
+      println("ShapeWidth = " + shapeBounds.getWidth)
+      println("ShapeHeight = " + shapeBounds.getHeight)
+      println()
+
+      if (drawingPaneBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
+        println("Moving..")
         connectableNode.setTranslateX(newX)
         connectableNode.setTranslateY(newY)
       }
