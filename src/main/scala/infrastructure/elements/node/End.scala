@@ -2,6 +2,6 @@ package infrastructure.elements.node
 
 import infrastructure.drawingpane.shape.EndShape
 
-class End extends ConnectableElement {
+class End(id: String) extends ConnectableElement(id) {
   val shape = new EndShape()
 }

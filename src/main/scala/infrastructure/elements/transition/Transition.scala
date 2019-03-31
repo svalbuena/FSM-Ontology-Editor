@@ -1,9 +1,10 @@
 package infrastructure.elements.transition
 
 import infrastructure.drawingpane.shape.{ConnectableShape, Shape, TransitionShape}
+import infrastructure.elements.Element
 import infrastructure.elements.node.{ConnectableElement, End, GhostElement, Start, State}
 
-class Transition(val source: ConnectableElement, val destination: ConnectableElement) {
+class Transition(id: String, val source: ConnectableElement, val destination: ConnectableElement) extends Element(id) {
   val shape = new TransitionShape()
 
   def getSourceShape: ConnectableShape = getShape(source)

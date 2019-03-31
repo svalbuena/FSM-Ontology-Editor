@@ -1,4 +1,4 @@
 package infrastructure.elements
 
-abstract class Element {
+abstract class Element(val id: String) {
 }

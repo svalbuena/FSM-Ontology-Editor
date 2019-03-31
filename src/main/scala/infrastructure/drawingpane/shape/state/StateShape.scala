@@ -2,7 +2,7 @@ package infrastructure.drawingpane.shape.state
 
 import infrastructure.drawingpane.shape.ConnectableShape
 import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
-import infrastructure.elements.action.{EntryAction, ExitAction}
+import infrastructure.elements.action.Action
 import infrastructure.elements.node.State
 import javafx.scene.layout.{Pane, StackPane, VBox}
 
@@ -39,6 +39,6 @@ class StateShape(val state: State) extends ConnectableShape {
   }
 
   def setName(name: String): Unit = nameSection.setName(name)
-  def setEntryActions(entryActions: List[EntryAction]): Unit = actionsSection.setEntryActions(entryActions)
-  def setExitActions(exitActions: List[ExitAction]): Unit = actionsSection.setExitActions(exitActions)
+  def setEntryActions(entryActions: List[Action]): Unit = actionsSection.setEntryActions(entryActions)
+  def setExitActions(exitActions: List[Action]): Unit = actionsSection.setExitActions(exitActions)
 }

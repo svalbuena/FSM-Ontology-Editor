@@ -6,9 +6,10 @@ import infrastructure.drawingpane.DrawingPane
 import infrastructure.drawingpane.shape._
 import infrastructure.drawingpane.usecase.connectablenode._
 import infrastructure.drawingpane.usecase.transition._
-import infrastructure.elements.action.EntryAction
+import infrastructure.elements.action.{Action, ActionType}
 import infrastructure.elements.node.{ConnectableElement, End, GhostElement, Start, State}
 import infrastructure.elements.transition.Transition
+import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbox.ToolBox
@@ -32,9 +33,10 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   private val drawTransitionUseCase = new DrawTransitionUseCase(drawingPane)
   private val dragTransitionUseCase = new DragTransitionUseCase(drawingPane)
   private val eraseTransitionUseCase = new EraseTransitionUseCase(drawingPane)
+  private val idGenerator = new IdGenerator
 
-  val state1 = new State(entryActions = List(new EntryAction("Action 1"), new EntryAction("Action 2")))
-  val state2 = new State()
+  val state1 = new State(id = idGenerator.getId, entryActions = List(new Action(idGenerator.getId, ActionType.ENTRY,"Action 1"), new Action(idGenerator.getId, ActionType.ENTRY, "Action 2")))
+  val state2 = new State(idGenerator.getId)
 
   addState(state1, 0, 0)
   addState(state2, 300, 0)
@@ -58,13 +60,13 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
             actualMenuBar = None
           }
         case _: StateItem =>
-          addState(new State(), event.getX, event.getY)
+          addState(new State(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _: StartItem =>
-          addStart(new Start(), event.getX, event.getY)
+          addStart(new Start(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _: EndItem =>
-          addEnd(new End(), event.getX, event.getY)
+          addEnd(new End(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _ =>
       }
@@ -104,11 +106,11 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   }
 
   private def addTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
-    ghostElement = Some(new GhostElement())
+    ghostElement = Some(new GhostElement(idGenerator.getId))
 
     drawConnectableNodeUseCase.draw(ghostElement.get.shape, x, y)
 
-    val transition = new Transition(source, ghostElement.get)
+    val transition = new Transition(idGenerator.getId, source, ghostElement.get)
 
     ghostElement.get.addInTransition(transition)
 
@@ -120,7 +122,7 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   private def establishTemporalTransition(destination: ConnectableElement): Unit = {
     val source = temporalTransition.get.source
 
-    val newTransition = new Transition(source, destination)
+    val newTransition = new Transition(idGenerator.getId, source, destination)
     source.addOutTransition(newTransition)
     destination.addInTransition(newTransition)
 
@@ -209,11 +211,11 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
 
       event.getSource match {
         case _: AddEntryActionMenuItem =>
-          state.addEntryAction()
+          state.addEntryAction(new Action(idGenerator.getId, ActionType.ENTRY, "Action"))
         //TODO: call the model
 
         case _: AddExitActionMenuItem =>
-          state.addExitAction()
+          state.addExitAction(new Action(idGenerator.getId, ActionType.EXIT, "Action"))
         //TODO: call the model
 
         case _ =>

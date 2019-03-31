@@ -1,11 +1,11 @@
 package infrastructure.elements.node
 
 import infrastructure.drawingpane.shape.state.StateShape
-import infrastructure.elements.action.{EntryAction, ExitAction}
+import infrastructure.elements.action.Action
 import infrastructure.menu.contextmenu.state.StateContextMenu
 import infrastructure.propertybox.state.StatePropertiesBox
 
-class State(var name: String = "State", var entryActions: List[EntryAction] = List(), var exitActions: List[ExitAction] = List()) extends ConnectableElement {
+class State(id: String, var name: String = "State", var entryActions: List[Action] = List(), var exitActions: List[Action] = List()) extends ConnectableElement(id) {
   val shape = new StateShape(this)
   val propertiesBox = new StatePropertiesBox(this)
   val contextMenu = new StateContextMenu
@@ -21,17 +21,13 @@ class State(var name: String = "State", var entryActions: List[EntryAction] = Li
     propertiesBox.updateContent()
   }
 
-  def addEntryAction(): Unit = {
-    val entryAction = new EntryAction("Action")
-
+  def addEntryAction(entryAction: Action): Unit = {
     entryActions = entryAction :: entryActions
 
     updateContent()
   }
 
-  def addExitAction(): Unit = {
-    val exitAction = new ExitAction("Action")
-
+  def addExitAction(exitAction: Action): Unit = {
     exitActions = exitAction :: exitActions
 
     updateContent()

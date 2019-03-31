@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.shape.state.section
 
 
-import infrastructure.elements.action.{EntryAction, ExitAction}
+import infrastructure.elements.action.Action
 import javafx.collections.ObservableList
 import javafx.geometry.Insets
 import javafx.scene.control.{Label, TextField}
@@ -18,12 +18,12 @@ class ActionsSection(val ActionHeight: Double) extends VBox {
 
   getChildren.addAll(entryActionsSection, exitActionsSection)
 
-  def setEntryActions(entryActions: List[EntryAction]): Unit = {
+  def setEntryActions(entryActions: List[Action]): Unit = {
     entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
     entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.text, entryActionsSection))
   }
 
-  def setExitActions(exitActions: List[ExitAction]): Unit = {
+  def setExitActions(exitActions: List[Action]): Unit = {
     exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
     exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.text, exitActionsSection))
   }

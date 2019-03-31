@@ -1,4 +1,8 @@
 package infrastructure.elements.action
 
-class Action(var text: String) {
+import infrastructure.elements.Element
+import infrastructure.elements.action.ActionType.ActionType
+
+class Action(id: String, var actionType: ActionType, var text: String) extends Element(id) {
+
 }

@@ -1,10 +1,10 @@
 package infrastructure.propertybox.state.section
 
-import infrastructure.elements.action.{EntryAction, ExitAction}
+import infrastructure.elements.action.Action
 import javafx.scene.control.{Label, ScrollPane, TextField}
 import javafx.scene.layout.{HBox, Pane, VBox}
 
-class ActionsSection(entryActions: List[EntryAction], exitActions: List[ExitAction]) extends VBox {
+class ActionsSection(entryActions: List[Action], exitActions: List[Action]) extends VBox {
   private val titleLabel = new Label()
   titleLabel.setText("Actions")
 
@@ -22,18 +22,17 @@ class ActionsSection(entryActions: List[EntryAction], exitActions: List[ExitActi
   setEntryActions(entryActions)
   setExitActions(exitActions)
 
-
-  def setEntryActions(entryActions: List[EntryAction]): Unit = {
+  def setEntryActions(entryActions: List[Action]): Unit = {
     entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
-    entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.text, entryActionsSection))
+    entryActions.foreach(entryAction => addActionToSection(entryAction.id, "entry/", entryAction.text, entryActionsSection))
   }
 
-  def setExitActions(exitActions: List[ExitAction]): Unit = {
+  def setExitActions(exitActions: List[Action]): Unit = {
     exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
-    exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.text, exitActionsSection))
+    exitActions.foreach(exitAction => addActionToSection(exitAction.id, "exit/", exitAction.text, exitActionsSection))
   }
 
-  private def addActionToSection(actionType: String, actionText: String, section: Pane): Unit = {
+  private def addActionToSection(id: String, actionType: String, actionText: String, section: Pane): Unit = {
     val actionPane = new HBox()
 
     val actionTypeLabel = new Label()
@@ -42,6 +41,7 @@ class ActionsSection(entryActions: List[EntryAction], exitActions: List[ExitActi
     val actionTextField = new TextField()
     //actionTextField.setPrefHeight(ActionHeight)
     actionTextField.setText(actionText)
+    actionTextField.setId(id)
 
     actionPane.getChildren.addAll(actionTypeLabel, actionTextField)
 
