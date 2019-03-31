@@ -1,6 +1,6 @@
 package infrastructure.drawingpane.shape
 
-class GhostNode extends ConnectableNode {
+class GhostShape extends ConnectableShape {
   setVisible(false)
 }
 

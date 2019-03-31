@@ -10,20 +10,20 @@ class NameSection(name: String) extends StackPane {
   getStyleClass.add("title-area")
   setPadding(new Insets(Padding))
 
-  val nameTextField = new TextField()
-  nameTextField.setAlignment(Pos.CENTER)
-  nameTextField.setText(name)
+  val nameLabel = new TextField()
+  nameLabel.setAlignment(Pos.CENTER)
+  nameLabel.setText(name)
 
-  nameTextField.prefWidthProperty.bind(widthProperty)
-  nameTextField.prefHeightProperty.bind(heightProperty)
+  nameLabel.prefWidthProperty.bind(widthProperty)
+  nameLabel.prefHeightProperty.bind(heightProperty)
 
-  getChildren.add(nameTextField)
+  getChildren.add(nameLabel)
 
   def getName: String = {
-    nameTextField.getText
+    nameLabel.getText
   }
 
   def setName(name: String): Unit = {
-    nameTextField.setText(name)
+    nameLabel.setText(name)
   }
 }

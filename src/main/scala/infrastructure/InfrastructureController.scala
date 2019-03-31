@@ -4,15 +4,13 @@ import java.awt.MenuBar
 
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.drawingpane.shape._
-import infrastructure.drawingpane.shape.state.StateShape
 import infrastructure.drawingpane.usecase.connectablenode._
 import infrastructure.drawingpane.usecase.transition._
 import infrastructure.elements.action.EntryAction
-import infrastructure.elements.state.State
-import infrastructure.menu.contextmenu.state.StateContextMenu
+import infrastructure.elements.node.{ConnectableElement, End, GhostElement, Start, State}
+import infrastructure.elements.transition.Transition
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.propertybox.PropertiesBox
-import infrastructure.propertybox.state.StatePropertiesBox
 import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
@@ -24,6 +22,7 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   private var mouseY: Double = 0.0
 
   private var temporalTransition: Option[Transition] = None
+  private var ghostElement: Option[GhostElement] = None
 
   private var actualMenuBar: Option[MenuBar] = None
 
@@ -31,6 +30,7 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   private val dragConnectableNodeUseCase = new DragConnectableNodeUseCase(drawingPane)
   private val eraseConnectableNodeUseCase = new EraseConnectableNodeUseCase(drawingPane)
   private val drawTransitionUseCase = new DrawTransitionUseCase(drawingPane)
+  private val dragTransitionUseCase = new DragTransitionUseCase(drawingPane)
   private val eraseTransitionUseCase = new EraseTransitionUseCase(drawingPane)
 
   val state1 = new State(entryActions = List(new EntryAction("Action 1"), new EntryAction("Action 2")))
@@ -90,63 +90,57 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
   }
 
   private def addStart(start: Start, x: Double, y: Double): Unit = {
-
-    drawConnectableNodeUseCase.draw(start, x, y)
+    setStartListeners(start)
+    drawConnectableNodeUseCase.draw(start.shape, x, y)
   }
 
   private def addEnd(end: End, x: Double, y: Double): Unit = {
-
-    drawConnectableNodeUseCase.draw(end, x, y)
+    setEndListeners(end)
+    drawConnectableNodeUseCase.draw(end.shape, x, y)
   }
 
   private def addTransition(transition: Transition): Unit = {
-    drawTransitionUseCase.draw(transition)
+    drawTransitionUseCase.draw(transition.shape, transition.getSourceShape, transition.getDestinationShape)
   }
 
-  private def addTemporalTransition(srcConnectableNode: ConnectableNode, x: Double, y: Double): Unit = {
-    val ghostNode = new GhostNode()
+  private def addTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
+    ghostElement = Some(new GhostElement())
 
-    drawConnectableNodeUseCase.draw(ghostNode, x, y)
+    drawConnectableNodeUseCase.draw(ghostElement.get.shape, x, y)
 
-    val transition = new Transition(srcConnectableNode, ghostNode)
+    val transition = new Transition(source, ghostElement.get)
 
-    ghostNode.addTransition(transition)
+    ghostElement.get.addInTransition(transition)
 
-    addTransition(transition)
+    drawTransitionUseCase.draw(transition.shape, transition.getSourceShape, transition.getDestinationShape)
 
     temporalTransition = Some(transition)
   }
 
-  private def establishTemporalTransition(dstConnectableNode: ConnectableNode): Unit = {
-    val transition = temporalTransition.get
-    val srcConnectableNode = transition.node1
+  private def establishTemporalTransition(destination: ConnectableElement): Unit = {
+    val source = temporalTransition.get.source
 
-    transition.node2 = dstConnectableNode
+    val newTransition = new Transition(source, destination)
+    source.addOutTransition(newTransition)
+    destination.addInTransition(newTransition)
 
-    srcConnectableNode.addTransition(transition)
-    dstConnectableNode.addTransition(transition)
-
-    eraseTransitionUseCase.erase(transition)
-    drawTransitionUseCase.draw(transition)
+    eraseTransitionUseCase.erase(temporalTransition.get.shape)
+    addTransition(newTransition)
 
     temporalTransition = None
   }
 
   private def dragTemporalTransition(deltaX: Double, deltaY: Double): Unit = {
-    val transition = temporalTransition.get
-    val ghostNode = transition.node2
-
-    dragConnectableNodeUseCase.drag(ghostNode, deltaX, deltaY)
+    dragConnectableNodeUseCase.drag(ghostElement.get.shape, deltaX, deltaY)
+    dragTransitionUseCase.drag(temporalTransition.get.shape, temporalTransition.get.getSourceShape, temporalTransition.get.getDestinationShape)
   }
 
   private def cancelTransitionCreation(): Unit = {
-    val transition = temporalTransition.get
-    val ghostNode = transition.node2
-
-    eraseTransitionUseCase.erase(transition)
-    eraseConnectableNodeUseCase.erase(ghostNode)
+    eraseTransitionUseCase.erase(temporalTransition.get.shape)
+    eraseConnectableNodeUseCase.erase(ghostElement.get.shape)
 
     temporalTransition = None
+    ghostElement = None
   }
 
   private def updateMousePosition(event: MouseEvent): Unit = {
@@ -164,6 +158,8 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
     val stateContextMenu = state.contextMenu
 
     stateShape.setOnMouseClicked(event => {
+      event.consume()
+
       event.getButton match {
         case MouseButton.PRIMARY =>
           toolBox.getSelectedTool match {
@@ -172,17 +168,21 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
 
             case _: TransitionItem =>
               if (temporalTransition.isDefined) {
-                establishTemporalTransition(stateShape)
+                establishTemporalTransition(state)
                 toolBox.setToolToDefault()
               } else {
                 val point = stateShape.getLocalToParentTransform.transform(event.getX, event.getY)
-                addTemporalTransition(stateShape, point.getX, point.getY)
+                addTemporalTransition(state, point.getX, point.getY)
               }
 
             case _: DeleteMouseSelector =>
-              eraseConnectableNodeUseCase.erase(stateShape)
+              removeConnectableElement(state, stateShape)
               toolBox.setToolToDefault()
+
+            case _ =>
+
           }
+        case _ =>
       }
     })
 
@@ -193,6 +193,9 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
         case _: NormalMouseSelector =>
           val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
           dragConnectableNodeUseCase.drag(stateShape, deltaX, deltaY)
+          state.getTransitions.foreach(transition => dragTransitionUseCase.drag(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+
+        case _ =>
       }
 
       updateMousePosition(event)
@@ -203,11 +206,14 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
     })
 
     stateContextMenu.getItems.forEach(action => action.setOnAction(event => {
+
       event.getSource match {
         case _: AddEntryActionMenuItem =>
+          state.addEntryAction()
         //TODO: call the model
 
         case _: AddExitActionMenuItem =>
+          state.addExitAction()
         //TODO: call the model
 
         case _ =>
@@ -216,28 +222,36 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
 
     statePropertiesBox.setOnNameEditedListener(event => {
       val newName = statePropertiesBox.getName
-      state.setName(newName)
+      state.shape.setName(newName)
     })
   }
 
-  private def setStartListeners(startShape: Start): Unit = {
+  private def setStartListeners(start: Start): Unit = {
+    val startShape = start.shape
+
     startShape.setOnMouseClicked(event => {
+      event.consume()
+
       event.getButton match {
         case MouseButton.PRIMARY =>
           toolBox.getSelectedTool match {
             case _: TransitionItem =>
               if (temporalTransition.isDefined) {
-                establishTemporalTransition(startShape)
+                establishTemporalTransition(start)
                 toolBox.setToolToDefault()
               } else {
                 val point = startShape.getLocalToParentTransform.transform(event.getX, event.getY)
-                addTemporalTransition(startShape, point.getX, point.getY)
+                addTemporalTransition(start, point.getX, point.getY)
               }
 
             case _: DeleteMouseSelector =>
-              eraseConnectableNodeUseCase.erase(startShape)
+              removeConnectableElement(start, startShape)
               toolBox.setToolToDefault()
+
+            case _ =>
           }
+
+        case _ =>
       }
     })
 
@@ -248,32 +262,43 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
         case _: NormalMouseSelector =>
           val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
           dragConnectableNodeUseCase.drag(startShape, deltaX, deltaY)
+          start.getTransitions.foreach(transition => dragTransitionUseCase.drag(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+
+        case _ =>
       }
 
       updateMousePosition(event)
     })
-
-
   }
 
-  private def setEndListeners(endShape: End): Unit = {
+  private def setEndListeners(end: End): Unit = {
+    val endShape = end.shape
+
     endShape.setOnMouseClicked(event => {
+      event.consume()
+
       event.getButton match {
         case MouseButton.PRIMARY =>
           toolBox.getSelectedTool match {
             case _: TransitionItem =>
               if (temporalTransition.isDefined) {
-                establishTemporalTransition(endShape)
+                establishTemporalTransition(end)
                 toolBox.setToolToDefault()
               } else {
                 val point = endShape.getLocalToParentTransform.transform(event.getX, event.getY)
-                addTemporalTransition(endShape, point.getX, point.getY)
+                addTemporalTransition(end, point.getX, point.getY)
               }
 
             case _: DeleteMouseSelector =>
-              eraseConnectableNodeUseCase.erase(endShape)
+              removeConnectableElement(end, endShape)
               toolBox.setToolToDefault()
+
+            case _ =>
+
           }
+
+        case _ =>
+
       }
     })
 
@@ -284,9 +309,25 @@ class InfrastructureController(drawingPane: DrawingPane, toolBox: ToolBox, prope
         case _: NormalMouseSelector =>
           val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
           dragConnectableNodeUseCase.drag(endShape, deltaX, deltaY)
+          end.getTransitions.foreach(transition => dragTransitionUseCase.drag(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+
+        case _ =>
+
       }
 
       updateMousePosition(event)
     })
+  }
+
+  private def removeConnectableElement(connectableElement: ConnectableElement, connectableShape: ConnectableShape): Unit = {
+    connectableElement.getTransitions.foreach(transition => removeTransition(transition))
+    eraseConnectableNodeUseCase.erase(connectableShape)
+  }
+
+  private def removeTransition(transition: Transition): Unit = {
+    transition.source.outTransitions = transition.source.outTransitions.filterNot(t => t == transition)
+    transition.destination.inTransitions = transition.destination.inTransitions.filterNot(t => t == transition)
+
+    eraseTransitionUseCase.erase(transition.shape)
   }
 }

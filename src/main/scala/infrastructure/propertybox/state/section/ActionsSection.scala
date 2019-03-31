@@ -24,11 +24,13 @@ class ActionsSection(entryActions: List[EntryAction], exitActions: List[ExitActi
 
 
   def setEntryActions(entryActions: List[EntryAction]): Unit = {
+    entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
     entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.text, entryActionsSection))
   }
 
   def setExitActions(exitActions: List[ExitAction]): Unit = {
-    exitActions.foreach(exitAction => addActionToSection("entry/", exitAction.text, exitActionsSection))
+    exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
+    exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.text, exitActionsSection))
   }
 
   private def addActionToSection(actionType: String, actionText: String, section: Pane): Unit = {

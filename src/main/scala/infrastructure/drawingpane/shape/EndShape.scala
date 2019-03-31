@@ -4,7 +4,7 @@ import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Circle, Shape}
 
-class End(radius: Double = 20.0) extends ConnectableNode {
+class EndShape(radius: Double = 20.0) extends ConnectableShape {
   private val InnerRadiusProportion = 0.70
 
   private val innerCircle = new Circle(radius, radius, radius * InnerRadiusProportion)

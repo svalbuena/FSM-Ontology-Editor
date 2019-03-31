@@ -1,7 +1,7 @@
 package infrastructure.propertybox.state
 
 import infrastructure.elements.action.{EntryAction, ExitAction}
-import infrastructure.elements.state.State
+import infrastructure.elements.node.State
 import infrastructure.propertybox.state.section.{ActionsSection, NameSection}
 import javafx.event.EventHandler
 import javafx.scene.control.{Label, ScrollPane, TextField}

@@ -1,6 +1,7 @@
 package infrastructure.propertybox.state.section
 
 import javafx.event.EventHandler
+import javafx.scene.Cursor
 import javafx.scene.control.{Label, TextField}
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.HBox

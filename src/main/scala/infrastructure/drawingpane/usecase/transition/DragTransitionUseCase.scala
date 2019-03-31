@@ -2,11 +2,11 @@ package infrastructure.drawingpane.usecase.transition
 
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.drawingpane.shape.{Shape, TransitionShape}
+import javax.print.attribute.standard.Destination
 
-class DrawTransitionUseCase(drawingPane: DrawingPane) {
-  def draw(transition: TransitionShape, source: Shape, destination: Shape): Unit = {
+class DragTransitionUseCase(drawingPane: DrawingPane) {
+  def drag(transition: TransitionShape, source: Shape, destination: Shape): Unit = {
     transition.setCoordinates(source, destination)
-    drawingPane.getChildren.add(transition)
     transition.toBack()
   }
 }

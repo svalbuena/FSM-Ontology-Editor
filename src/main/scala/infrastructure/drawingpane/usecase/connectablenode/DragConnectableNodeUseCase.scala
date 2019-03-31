@@ -1,10 +1,10 @@
 package infrastructure.drawingpane.usecase.connectablenode
 
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.drawingpane.shape.ConnectableNode
+import infrastructure.drawingpane.shape.ConnectableShape
 
 class DragConnectableNodeUseCase(drawingPane: DrawingPane) {
-  def drag(connectableNode: ConnectableNode, deltaX: Double, deltaY: Double): Unit = {
+  def drag(connectableNode: ConnectableShape, deltaX: Double, deltaY: Double): Unit = {
     //TODO: maybe change they way null is checked
     Option(connectableNode.getBoundsInParent).foreach { shapeBounds =>
       val newX = connectableNode.getTranslateX + deltaX
@@ -14,11 +14,6 @@ class DragConnectableNodeUseCase(drawingPane: DrawingPane) {
       if (parentBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
         connectableNode.setTranslateX(newX)
         connectableNode.setTranslateY(newY)
-
-        connectableNode.transitions.foreach(transition => {
-          transition.computeCoordinates()
-          transition.toBack()
-        })
       }
     }
   }

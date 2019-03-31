@@ -2,6 +2,7 @@ package infrastructure.drawingpane.shape.state.section
 
 
 import infrastructure.elements.action.{EntryAction, ExitAction}
+import javafx.collections.ObservableList
 import javafx.geometry.Insets
 import javafx.scene.control.{Label, TextField}
 import javafx.scene.layout.{HBox, Pane, VBox}
@@ -18,24 +19,23 @@ class ActionsSection(val ActionHeight: Double) extends VBox {
   getChildren.addAll(entryActionsSection, exitActionsSection)
 
   def setEntryActions(entryActions: List[EntryAction]): Unit = {
+    entryActionsSection.getChildren.removeAll(entryActionsSection.getChildren)
     entryActions.foreach(entryAction => addActionToSection("entry/", entryAction.text, entryActionsSection))
   }
 
   def setExitActions(exitActions: List[ExitAction]): Unit = {
-    exitActions.foreach(exitAction => addActionToSection("entry/", exitAction.text, exitActionsSection))
+    exitActionsSection.getChildren.removeAll(exitActionsSection.getChildren)
+    exitActions.foreach(exitAction => addActionToSection("exit/", exitAction.text, exitActionsSection))
   }
 
   private def addActionToSection(actionType: String, actionText: String, section: Pane): Unit = {
     val actionPane = new HBox()
 
-    val actionTypeLabel = new Label()
-    actionTypeLabel.setText(actionType)
+    val actionLabel = new Label()
+    actionLabel.setText(actionType + actionText)
+    actionLabel.setPrefHeight(ActionHeight)
 
-    val actionTextField = new TextField()
-    actionTextField.setPrefHeight(ActionHeight)
-    actionTextField.setText(actionText)
-
-    actionPane.getChildren.addAll(actionTypeLabel, actionTextField)
+    actionPane.getChildren.add(actionLabel)
 
     section.getChildren.add(actionPane)
   }

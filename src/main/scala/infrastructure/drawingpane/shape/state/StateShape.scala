@@ -1,13 +1,13 @@
 package infrastructure.drawingpane.shape.state
 
-import infrastructure.drawingpane.shape.ConnectableNode
+import infrastructure.drawingpane.shape.ConnectableShape
 import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
 import infrastructure.elements.action.{EntryAction, ExitAction}
-import infrastructure.elements.state.State
+import infrastructure.elements.node.State
 import javafx.scene.layout.{Pane, StackPane, VBox}
 
 // TODO Move shape and text area
-class StateShape(val state: State) extends VBox with ConnectableNode {
+class StateShape(val state: State) extends ConnectableShape {
   private val ActionHeight = 25.0
   private val Width = 250.0
   private val Height = ActionHeight * 4
@@ -15,16 +15,20 @@ class StateShape(val state: State) extends VBox with ConnectableNode {
   private val TitleAreaHeightRatio = 0.20
   private val ActionsAreaHeightRatio = 1 - TitleAreaHeightRatio
 
-  setPrefSize(Width, Height)
-  getStyleClass.add("state")
+  private val pane = new VBox
+
+  pane.setPrefSize(Width, Height)
+  pane.getStyleClass.add("state")
 
   private val nameSection = new NameSection(state.name)
-  nameSection.prefHeightProperty.bind(heightProperty.multiply(TitleAreaHeightRatio))
+  nameSection.prefHeightProperty.bind(pane.heightProperty.multiply(TitleAreaHeightRatio))
 
   private val actionsSection = new ActionsSection(ActionHeight)
-  actionsSection.prefHeightProperty.bind(heightProperty.multiply(ActionsAreaHeightRatio))
+  actionsSection.prefHeightProperty.bind(pane.heightProperty.multiply(ActionsAreaHeightRatio))
 
-  getChildren.addAll(nameSection, actionsSection)
+  pane.getChildren.addAll(nameSection, actionsSection)
+
+  getChildren.add(pane)
 
   updateContent()
 
