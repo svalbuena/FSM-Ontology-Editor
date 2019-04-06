@@ -1,13 +1,14 @@
 package infrastructure.drawingpane.shape.state
 
 import infrastructure.drawingpane.shape.ConnectableShape
-import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
+import infrastructure.drawingpane.shape.state.action.{ActionPane, ActionsSection}
+import infrastructure.drawingpane.shape.state.name.NameSection
 import infrastructure.elements.action.Action
 import infrastructure.elements.node.State
 import javafx.scene.layout.{Pane, StackPane, VBox}
 
 // TODO Move shape and text area
-class StateShape(val state: State) extends ConnectableShape {
+class StateShape extends ConnectableShape {
   private val ActionHeight = 25.0
   private val Width = 250.0
   private val Height = ActionHeight * 4
@@ -20,25 +21,18 @@ class StateShape(val state: State) extends ConnectableShape {
   pane.setPrefSize(Width, Height)
   pane.getStyleClass.add("state")
 
-  private val nameSection = new NameSection(state.name)
+  private val nameSection = new NameSection()
   nameSection.prefHeightProperty.bind(pane.heightProperty.multiply(TitleAreaHeightRatio))
 
-  private val actionsSection = new ActionsSection(ActionHeight)
+  private val actionsSection = new ActionsSection()
   actionsSection.prefHeightProperty.bind(pane.heightProperty.multiply(ActionsAreaHeightRatio))
 
   pane.getChildren.addAll(nameSection, actionsSection)
 
   getChildren.add(pane)
 
-  updateContent()
-
-  def updateContent(): Unit = {
-    setName(state.name)
-    setEntryActions(state.entryActions)
-    setExitActions(state.exitActions)
-  }
 
   def setName(name: String): Unit = nameSection.setName(name)
-  def setEntryActions(entryActions: List[Action]): Unit = actionsSection.setEntryActions(entryActions)
-  def setExitActions(exitActions: List[Action]): Unit = actionsSection.setExitActions(exitActions)
+  def addEntryAction(actionPane: ActionPane): Unit = actionsSection.addEntryAction(actionPane: ActionPane)
+  def addExitAction(actionPane: ActionPane): Unit = actionsSection.addExitAction(actionPane: ActionPane)
 }

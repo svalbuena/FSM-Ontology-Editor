@@ -2,7 +2,7 @@ package infrastructure.drawingpane.shape
 
 import javafx.scene.shape.Line
 
-class TransitionShape() extends Shape {
+class TransitionShape extends Shape {
   private val line = new Line()
 
   getChildren.add(line)

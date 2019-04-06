@@ -1,5 +1,5 @@
-import infrastructure.InfrastructureController
-import infrastructure.drawingpane.DrawingPane
+import infrastructure.controller.InfrastructureController
+import infrastructure.drawingpane.{Canvas, DrawingPane}
 import javafx.application.Application
 import javafx.scene.{Group, Scene}
 import javafx.scene.layout.{BorderPane, Pane, Region}
@@ -15,8 +15,8 @@ class MainApplication extends Application {
   val SceneWidth = 800
   val SceneHeight = 600
 
-  val DrawingPaneWidth = 4000
-  val DrawingPaneHeight = 3000
+  val CanvasWidth = 4000
+  val CanvasHeight = 3000
 
   val (toolBarWidthProportion, toolBarHeightProportion) = (1.0, 0.08)
   val (viewBarWidthProportion, viewBarHeightProportion) = (1.0, 0.08)
@@ -24,7 +24,7 @@ class MainApplication extends Application {
   val (toolBoxWidthProportion, toolBoxHeightProportion) = (0.10, 0.8)
   val (propertiesBoxWidthProportion, propertiesBoxHeightProportion) = (0.15, 0.8)
 
-  val (drawingPaneContainerWidthProportion, drawingPaneContainerHeightProportion) = (1.0 - toolBoxWidthProportion - propertiesBoxWidthProportion, 1.0 - toolBarHeightProportion - viewBarHeightProportion)
+  val (drawingPaneWidthProportion, drawingPaneHeightProportion) = (1.0 - toolBoxWidthProportion - propertiesBoxWidthProportion, 1.0 - toolBarHeightProportion - viewBarHeightProportion)
 
 
   override def start(stage: Stage): Unit = {
@@ -60,20 +60,12 @@ class MainApplication extends Application {
     propertiesBox.prefHeightProperty().bind(scene.heightProperty().multiply(propertiesBoxHeightProportion))
     borderPane.setRight(propertiesBox)
 
-    //Adding the DrawingPaneContainer
-    val drawingPane = new DrawingPane()
-    drawingPane.setPrefSize(DrawingPaneWidth, DrawingPaneHeight)
-    drawingPane.setMinSize(DrawingPaneWidth, DrawingPaneHeight)
-    drawingPane.setMaxSize(DrawingPaneWidth, DrawingPaneHeight)
+    //Adding the DrawingPane
+    val drawingPane = new DrawingPane(CanvasWidth, CanvasHeight)
+    drawingPane.prefWidthProperty().bind(scene.widthProperty().multiply(drawingPaneWidthProportion))
+    drawingPane.prefHeightProperty().bind(scene.heightProperty().multiply(drawingPaneHeightProportion))
 
-
-
-    val drawingPaneContainer = new ScrollPane()
-    drawingPaneContainer.setContent(drawingPane)
-    drawingPaneContainer.prefWidthProperty().bind(scene.widthProperty().multiply(drawingPaneContainerWidthProportion))
-    drawingPaneContainer.prefHeightProperty().bind(scene.heightProperty().multiply(drawingPaneContainerHeightProportion))
-
-    borderPane.setCenter(drawingPaneContainer)
+    borderPane.setCenter(drawingPane)
 
     //Create the DrawingPaneController
     val infrastrucutreController = new InfrastructureController(drawingPane, toolBox, propertiesBox)
