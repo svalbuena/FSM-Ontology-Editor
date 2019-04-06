@@ -29,4 +29,5 @@ class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prot
   def setOnActionNameChanged(actionNameChangedHandler: String => Unit): Unit = nameTypeSection.setOnActionNameChanged(actionNameChangedHandler)
   def setOnUriTypeChanged(uriTypeChangedHandler: UriType => Unit): Unit = uriSection.setOnUriTypeChanged(uriTypeChangedHandler)
   def setOnAbsoluteUriChanged(absoluteUriChangedHandler: String => Unit): Unit = uriSection.setOnAbsoluteUriChanged(absoluteUriChangedHandler)
+  def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = nameTypeSection.setOnRemoveActionButtonClicked(callback)
 }

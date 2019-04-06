@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.shape.state.name
 
 import javafx.geometry.{Insets, Pos}
-import javafx.scene.control.TextField
+import javafx.scene.control.{Label, TextField}
 import javafx.scene.layout.StackPane
 
 class NameSection extends StackPane {
@@ -10,7 +10,7 @@ class NameSection extends StackPane {
   getStyleClass.add("title-area")
   setPadding(new Insets(Padding))
 
-  val nameLabel = new TextField()
+  val nameLabel = new Label()
   nameLabel.setAlignment(Pos.CENTER)
 
   nameLabel.prefWidthProperty.bind(widthProperty)

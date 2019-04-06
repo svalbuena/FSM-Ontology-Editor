@@ -5,4 +5,8 @@ import infrastructure.propertybox.action.uri.prototype.PrototypeUriPropertiesBox
 
 class PrototypeUri(var structure: String, var prototypeParameters: List[PrototypeParameter]) {
   val propertiesBox = new PrototypeUriPropertiesBox()
+
+  for (prototypeParameter <- prototypeParameters) {
+    prototypeParameter.setParent(this)
+  }
 }

@@ -17,8 +17,26 @@ class ActionsSection extends VBox {
 
   getChildren.addAll(entryActionsSection, exitActionsSection)
 
-  def addEntryAction(actionPane: ActionPane): Unit = addActionToSection(actionPane, entryActionsSection)
-  def addExitAction(actionPane: ActionPane): Unit = addActionToSection(actionPane, exitActionsSection)
+  def addAction(actionPane: ActionPane, actionType: ActionType): Unit = {
+    val section = getPaneForActionType(actionType)
+
+    addActionToSection(actionPane, section)
+  }
+
+  def removeAction(actionPane: ActionPane, actionType: ActionType): Unit = {
+    val section = getPaneForActionType(actionType)
+
+    removeActionFromSection(actionPane, section)
+  }
+
+  private def getPaneForActionType(actionType: ActionType): Pane = {
+    actionType match {
+      case infrastructure.elements.action.ActionType.ENTRY => entryActionsSection
+      case infrastructure.elements.action.ActionType.EXIT => exitActionsSection
+    }
+  }
 
   private def addActionToSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.add(actionPane)
+  private def removeActionFromSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.remove(actionPane)
+
 }

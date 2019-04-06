@@ -2,6 +2,7 @@ package infrastructure.controller.node
 
 import infrastructure.controller.InfrastructureController
 import infrastructure.drawingpane.DrawingPane
+import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.action.{Action, ActionType}
 import infrastructure.elements.node.State
 import infrastructure.id.IdGenerator
@@ -64,30 +65,48 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
   })
 
   stateShape.setOnContextMenuRequested(event => {
+    event.consume()
+
     stateContextMenu.show(stateShape, event.getScreenX, event.getScreenY)
   })
 
-  stateContextMenu.getItems.forEach(action => action.setOnAction(event => {
-    event.getSource match {
-      case _: AddEntryActionMenuItem =>
+  stateContextMenu.getItems.forEach {
+    case menuItem: AddEntryActionMenuItem =>
+      menuItem.setOnAction(event => {
         //TODO: notify the model
-        val entryAction = new Action(idGenerator.getId, ActionType.ENTRY, "Action")
-        state.entryActions = entryAction :: state.entryActions
+        addAction(ActionType.ENTRY)
+      })
 
-        infrastructureController.addActionState(entryAction, state)
-
-      case _: AddExitActionMenuItem =>
+    case menuItem: AddExitActionMenuItem =>
+      menuItem.setOnAction(event => {
         //TODO: notify the model
-        val exitAction = new Action(idGenerator.getId, ActionType.EXIT, "Action")
-        state.exitActions = exitAction :: state.exitActions
-
-        infrastructureController.addActionState(exitAction, state)
-
-      case _ =>
-    }
-  }))
+        addAction(ActionType.EXIT)
+      })
+  }
 
   statePropertiesBox.setOnStateNameChanged(name => {
     state.shape.setName(name)
   })
+
+  statePropertiesBox.setOnAddEntryActionButtonClicked(() => {
+    addAction(ActionType.ENTRY)
+  })
+
+  statePropertiesBox.setOnAddExitActionButtonClicked(() => {
+    addAction(ActionType.EXIT)
+  })
+
+  private def addAction(actionType: ActionType): Unit = {
+    var actionList = actionType match {
+      case infrastructure.elements.action.ActionType.ENTRY => state.entryActions
+      case infrastructure.elements.action.ActionType.EXIT => state.exitActions
+    }
+
+    val id = idGenerator.getId
+    val action = new Action(id, actionType, "Action" + id)
+
+    actionList = action :: actionList
+
+    infrastructureController.addActionToState(action, state)
+  }
 }

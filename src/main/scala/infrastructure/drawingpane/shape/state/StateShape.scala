@@ -4,6 +4,7 @@ import infrastructure.drawingpane.shape.ConnectableShape
 import infrastructure.drawingpane.shape.state.action.{ActionPane, ActionsSection}
 import infrastructure.drawingpane.shape.state.name.NameSection
 import infrastructure.elements.action.Action
+import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.node.State
 import javafx.scene.layout.{Pane, StackPane, VBox}
 
@@ -33,6 +34,6 @@ class StateShape extends ConnectableShape {
 
 
   def setName(name: String): Unit = nameSection.setName(name)
-  def addEntryAction(actionPane: ActionPane): Unit = actionsSection.addEntryAction(actionPane: ActionPane)
-  def addExitAction(actionPane: ActionPane): Unit = actionsSection.addExitAction(actionPane: ActionPane)
+  def addAction(actionPane: ActionPane, actionType: ActionType): Unit = actionsSection.addAction(actionPane, actionType)
+  def removeAction(actionPane: ActionPane, actionType: ActionType): Unit = actionsSection.removeAction(actionPane, actionType)
 }

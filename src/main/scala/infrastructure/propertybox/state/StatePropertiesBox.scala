@@ -1,6 +1,8 @@
 package infrastructure.propertybox.state
 
+import infrastructure.drawingpane.shape.state.action.ActionPane
 import infrastructure.elements.action.Action
+import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.node.State
 import infrastructure.propertybox.action.ActionPropertiesBox
 import infrastructure.propertybox.state.section.{ActionsSection, NameSection}
@@ -18,6 +20,8 @@ class StatePropertiesBox extends VBox {
   }
 
   def setName(name: String): Unit = nameSection.setName(name)
-  def addEntryAction(actionPropertiesBox: ActionPropertiesBox): Unit = actionsSection.addEntryAction(actionPropertiesBox)
-  def addExitAction(actionPropertiesBox: ActionPropertiesBox): Unit = actionsSection.addExitAction(actionPropertiesBox)
+  def addAction(actionPropertiesBox: ActionPropertiesBox, actionType: ActionType): Unit = actionsSection.addAction(actionPropertiesBox, actionType)
+  def removeAction(actionPropertiesBox: ActionPropertiesBox, actionType: ActionType): Unit = actionsSection.removeAction(actionPropertiesBox, actionType)
+  def setOnAddEntryActionButtonClicked(callback: () => Unit): Unit = actionsSection.setOnAddEntryActionButtonClicked(callback)
+  def setOnAddExitActionButtonClicked(callback: () => Unit): Unit = actionsSection.setOnAddExitActionButtonClicked(callback)
 }

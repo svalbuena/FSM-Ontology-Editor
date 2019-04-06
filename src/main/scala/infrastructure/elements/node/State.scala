@@ -8,7 +8,7 @@ import infrastructure.propertybox.state.StatePropertiesBox
 class State(id: String, var name: String = "State", var entryActions: List[Action] = List(), var exitActions: List[Action] = List()) extends ConnectableElement(id) {
   val shape = new StateShape()
   val propertiesBox = new StatePropertiesBox()
-  val contextMenu = new StateContextMenu
+  val contextMenu = new StateContextMenu()
 
   def setName(name: String): Unit = {
     this.name = name

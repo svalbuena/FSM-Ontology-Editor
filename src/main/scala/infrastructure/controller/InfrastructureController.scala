@@ -29,7 +29,9 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
 
   private val idGenerator = new IdGenerator
 
+  val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
   val state1 = new State(id = idGenerator.getId, entryActions = List(new Action(idGenerator.getId, ActionType.ENTRY,"Action 1"), new Action(idGenerator.getId, ActionType.ENTRY, "Action 2")))
+  state1.entryActions.head.prototypeUri.prototypeParameters = prototypeParameter :: state1.entryActions.head.prototypeUri.prototypeParameters
   val state2 = new State(idGenerator.getId)
 
   addState(state1, 0, 0)
@@ -85,7 +87,7 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
     canvas.drawConnectableNode(state.shape, x, y)
 
     for (action <- state.entryActions ::: state.exitActions) {
-      addActionState(action, state)
+      addActionToState(action, state)
     }
   }
 
@@ -103,18 +105,19 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
     canvas.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
   }
 
-  def addActionState(action: Action, state: State): Unit = {
+  def addActionToState(action: Action, state: State): Unit = {
+    addAction(action)
+
+    action.setParent(state)
+
+    state.propertiesBox.addAction(action.propertiesBox, action.actionType)
+    state.shape.addAction(action.stateActionPane, action.actionType)
+  }
+
+  def addAction(action: Action): Unit = {
     new ActionListener(action, this, drawingPane, idGenerator)
 
-    action.actionType match {
-      case infrastructure.elements.action.ActionType.ENTRY =>
-        state.propertiesBox.addEntryAction(action.propertiesBox)
-        state.shape.addEntryAction(action.stateActionPane)
-
-      case infrastructure.elements.action.ActionType.EXIT =>
-        state.propertiesBox.addExitAction(action.propertiesBox)
-        state.shape.addExitAction(action.stateActionPane)
-    }
+    action.propertiesBox.setTiltedPaneName(action.name)
     action.propertiesBox.setActionType(action.actionType)
     action.propertiesBox.setActionName(action.name)
     action.propertiesBox.setUriType(action.uriType)
@@ -135,17 +138,24 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
   }
 
   def addPrototypeUri(prototypeUri: PrototypeUri): Unit = {
-    new PrototypeUriListener(prototypeUri)
+    new PrototypeUriListener(prototypeUri, this)
 
     for (prototypeParameter <- prototypeUri.prototypeParameters) {
-      prototypeUri.propertiesBox.addParameter(prototypeParameter)
-      addPrototypeParameter(prototypeParameter)
+      addPrototypeUriParameterToPrototypeUri(prototypeParameter, prototypeUri)
     }
     prototypeUri.propertiesBox.setStructure(prototypeUri.structure)
   }
 
-  def addPrototypeParameter(prototypeParameter: PrototypeParameter): Unit = {
-    new PrototypeParameterListener(prototypeParameter)
+  def addPrototypeUriParameterToPrototypeUri(prototypeUriParameter: PrototypeParameter, prototypeUri: PrototypeUri): Unit = {
+    addPrototypeUriParameter(prototypeUriParameter)
+
+    prototypeUriParameter.setParent(prototypeUri)
+
+    prototypeUri.propertiesBox.addParameter(prototypeUriParameter.propertiesBox)
+  }
+
+  def addPrototypeUriParameter(prototypeParameter: PrototypeParameter): Unit = {
+    new PrototypeParameterListener(prototypeParameter, this)
 
     prototypeParameter.propertiesBox.setQuery(prototypeParameter.query)
     prototypeParameter.propertiesBox.setPlaceholder(prototypeParameter.placeholder)
@@ -201,6 +211,15 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
     transition.destination.inTransitions = transition.destination.inTransitions.filterNot(t => t == transition)
 
     canvas.eraseTransition(transition.shape)
+  }
+
+  def removeActionFromState(action: Action, state: State): Unit = {
+    state.propertiesBox.removeAction(action.propertiesBox, action.actionType)
+    state.shape.removeAction(action.stateActionPane, action.actionType)
+  }
+
+  def removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter: PrototypeParameter, prototypeUri: PrototypeUri): Unit = {
+    prototypeUri.propertiesBox.removePrototypeUriParameter(prototypeUriParameter.propertiesBox)
   }
 
   def updateMousePosition(event: MouseEvent): Unit = {
