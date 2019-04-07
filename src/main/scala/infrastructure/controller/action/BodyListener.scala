@@ -8,10 +8,14 @@ class BodyListener(body: Body) {
   propertiesBox.setOnBodyTypeChanged(bodyType => {
     //TODO: notify the model
     body.bodyType = bodyType
+
+    println("Body type changed to -> " + bodyType)
   })
 
   propertiesBox.setOnBodyContentChanged(content => {
     //TODO: notify the model
     body.content = content
+
+    println("Body content changed to -> " + content)
   })
 }

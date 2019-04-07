@@ -14,5 +14,6 @@ class ConditionsSection extends VBox {
 
 
   def addCondition(conditionPropertiesBox: ConditionPropertiesBox): Unit = conditionsPane.getChildren.add(conditionPropertiesBox)
+
   def removeCondition(conditionPropertiesBox: ConditionPropertiesBox): Unit = conditionsPane.getChildren.remove(conditionPropertiesBox)
 }

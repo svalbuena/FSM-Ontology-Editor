@@ -19,10 +19,14 @@ class Action(id: String, var actionType: ActionType, var name: String, var uriTy
 
 
   def this(id: String, actionType: ActionType, name: String, absoluteUri: String, body: Body) = this(id, actionType, name, UriType.ABSOLUTE, absoluteUri, new PrototypeUri("", List()), body)
+
   def this(id: String, actionType: ActionType, name: String, prototypeUri: PrototypeUri, body: Body) = this(id, actionType, name, UriType.PROTOTYPE, "", prototypeUri, body)
+
   def this(id: String, actionType: ActionType, name: String) = this(id, actionType, name, UriType.ABSOLUTE, "", new PrototypeUri("", List()), new Body(BodyType.RDF, ""))
 
   def hasParent: Boolean = parent.isDefined
+
   def setParent(element: Element): Unit = parent = Some(element)
+
   def getParent: Element = parent.get
 }

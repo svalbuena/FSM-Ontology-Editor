@@ -1,15 +1,14 @@
 package infrastructure.controller.transition
 
-import infrastructure.controller.InfrastructureController
-import infrastructure.elements.condition.Condition
+import infrastructure.controller.DrawingPaneController
 import infrastructure.elements.guard.Guard
 import infrastructure.elements.transition.Transition
 import infrastructure.id.IdGenerator
 import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
 import javafx.scene.input.MouseButton
 
-class TransitionListener(transition: Transition, infrastructureController: InfrastructureController, idGenerator: IdGenerator) {
-  private val toolBox = infrastructureController.toolBox
+class TransitionListener(transition: Transition, drawingPaneController: DrawingPaneController, idGenerator: IdGenerator) {
+  private val toolBox = drawingPaneController.toolBox
 
   private val propertiesBox = transition.propertiesBox
   private val shape = transition.shape
@@ -21,7 +20,7 @@ class TransitionListener(transition: Transition, infrastructureController: Infra
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            infrastructureController.propertiesBox.setContent(propertiesBox)
+            drawingPaneController.propertiesBox.setContent(propertiesBox)
           case _ =>
 
         }
@@ -32,10 +31,13 @@ class TransitionListener(transition: Transition, infrastructureController: Infra
 
   propertiesBox.setOnTransitionNameChanged(transitionName => {
     //TODO: notify the model
+    println("Transition name changed to -> " + transitionName)
     transition.name = transitionName
   })
 
   propertiesBox.setOnAddTransitionGuardButtonClicked(() => {
+    //TODO: notify the model
+    println("Adding a guard")
     addGuard()
   })
 
@@ -45,6 +47,6 @@ class TransitionListener(transition: Transition, infrastructureController: Infra
 
     transition.guards = guard :: transition.guards
 
-    infrastructureController.addGuardToTransition(guard, transition)
+    drawingPaneController.addGuardToTransition(guard, transition)
   }
 }

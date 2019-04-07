@@ -1,6 +1,8 @@
 package infrastructure.drawingpane.shape
 
-class GhostShape extends ConnectableShape {
+import javafx.scene.layout.Pane
+
+class GhostShape extends Pane {
   setVisible(false)
 }
 

@@ -17,8 +17,12 @@ class GuardPane extends VBox {
 
 
   def setGuardName(guardName: String): Unit = guardNameLabel.setText(guardName)
+
   def addCondition(conditionPane: ConditionPane): Unit = conditionsPane.getChildren.add(conditionPane)
+
   def removeCondition(conditionPane: ConditionPane): Unit = conditionsPane.getChildren.remove(conditionPane)
-  def addAction(actionPane: ActionPane): Unit = conditionsPane.getChildren.add(actionPane)
-  def removeAction(actionPane: ActionPane): Unit = conditionsPane.getChildren.remove(actionPane)
+
+  def addAction(actionPane: ActionPane): Unit = actionsPane.getChildren.add(actionPane)
+
+  def removeAction(actionPane: ActionPane): Unit = actionsPane.getChildren.remove(actionPane)
 }

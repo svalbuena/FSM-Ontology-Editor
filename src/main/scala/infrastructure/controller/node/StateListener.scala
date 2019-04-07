@@ -1,6 +1,6 @@
 package infrastructure.controller.node
 
-import infrastructure.controller.InfrastructureController
+import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.action.{Action, ActionType}
@@ -11,8 +11,8 @@ import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class StateListener(state: State, infrastructureController: InfrastructureController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
-  private val toolBox = infrastructureController.toolBox
+class StateListener(state: State, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+  private val toolBox = drawingPaneController.toolBox
   private val canvas = drawingPane.canvas
 
   private val shape = state.shape
@@ -26,20 +26,22 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            infrastructureController.propertiesBox.setContent(propertiesBox)
+            drawingPaneController.propertiesBox.setContent(propertiesBox)
 
           case _: TransitionItem =>
-            if (infrastructureController.isTemporalTransitionDefined) {
-              infrastructureController.establishTemporalTransition(state)
+            if (drawingPaneController.isTemporalTransitionDefined) {
+              drawingPaneController.establishTemporalTransition(state)
               toolBox.setToolToDefault()
             } else {
               val point = shape.getLocalToParentTransform.transform(event.getX, event.getY)
-              infrastructureController.addTemporalTransition(state, point.getX, point.getY)
+              drawingPaneController.addTemporalTransition(state, point.getX, point.getY)
             }
 
           case _: DeleteMouseSelector =>
-            infrastructureController.removeConnectableElement(state, shape)
-            infrastructureController.propertiesBox.removeContent()
+            //TODO: notify the model
+            println("Removing a state")
+            drawingPaneController.removeConnectableElement(state, shape)
+            drawingPaneController.propertiesBox.removeContent()
             toolBox.setToolToDefault()
 
           case _ =>
@@ -54,14 +56,14 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
 
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
-        val (deltaX, deltaY) = infrastructureController.calculateDeltaFromMouseEvent(event)
+        val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
         canvas.dragConnectableNode(shape, deltaX, deltaY)
         state.getTransitions.foreach(transition => canvas.dragTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
     }
 
-    infrastructureController.updateMousePosition(event)
+    drawingPaneController.updateMousePosition(event)
   })
 
   shape.setOnContextMenuRequested(event => {
@@ -85,15 +87,24 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
   }
 
   propertiesBox.setOnStateNameChanged(name => {
+    //TODO: notify the model
     state.shape.setName(name)
+
+    println("State name changed to -> " + name)
   })
 
   propertiesBox.setOnAddEntryActionButtonClicked(() => {
+    //TODO: notify the model
     addAction(ActionType.ENTRY)
+
+    println("Adding entry action to a state")
   })
 
   propertiesBox.setOnAddExitActionButtonClicked(() => {
+    //TODO: notify the model
     addAction(ActionType.EXIT)
+
+    println("Adding exit action to a state")
   })
 
   private def addAction(actionType: ActionType): Unit = {
@@ -107,6 +118,6 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
 
     actionList = action :: actionList
 
-    infrastructureController.addActionToState(action, state)
+    drawingPaneController.addActionToState(action, state)
   }
 }

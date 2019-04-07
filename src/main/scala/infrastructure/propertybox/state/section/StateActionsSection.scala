@@ -1,11 +1,8 @@
 package infrastructure.propertybox.state.section
 
-import infrastructure.drawingpane.shape.action.ActionPane
-import infrastructure.elements.action.Action
 import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.propertybox.action.ActionPropertiesBox
-import javafx.scene.control.ScrollPane.ScrollBarPolicy
-import javafx.scene.control.{Button, Label, ScrollPane, TextField}
+import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{HBox, Pane, VBox}
 
 class StateActionsSection extends VBox {
@@ -63,6 +60,7 @@ class StateActionsSection extends VBox {
   }
 
   private def addActionToSection(actionPropertiesBox: ActionPropertiesBox, section: Pane): Unit = section.getChildren.add(actionPropertiesBox)
+
   private def removeActionFromSection(actionPropertiesBox: ActionPropertiesBox, section: Pane): Unit = section.getChildren.remove(actionPropertiesBox)
 
 }

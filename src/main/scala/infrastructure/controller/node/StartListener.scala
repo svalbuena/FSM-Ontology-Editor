@@ -1,6 +1,6 @@
 package infrastructure.controller.node
 
-import infrastructure.controller.InfrastructureController
+import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.node.Start
 import infrastructure.id.IdGenerator
@@ -8,7 +8,7 @@ import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class StartListener(start: Start, infrastructureController: InfrastructureController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+class StartListener(start: Start, infrastructureController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
   private val toolBox = infrastructureController.toolBox
   private val propertiesBox = infrastructureController.propertiesBox
   private val canvas = drawingPane.canvas

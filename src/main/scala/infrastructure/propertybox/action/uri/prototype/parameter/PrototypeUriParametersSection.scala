@@ -1,6 +1,5 @@
 package infrastructure.propertybox.action.uri.prototype.parameter
 
-import infrastructure.propertybox.action.uri.prototype.PrototypeUriPropertiesBox
 import javafx.scene.control.{Button, Label, ScrollPane}
 import javafx.scene.layout.{HBox, VBox}
 

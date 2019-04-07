@@ -13,6 +13,7 @@ class ConditionQuerySection extends VBox {
 
 
   def setConditionQuery(query: String): Unit = conditionQueryTextField.setText(query)
+
   def setOnConditionQueryChanged(conditionQueryChangedHandler: String => Unit): Unit = {
     conditionQueryTextField.setOnKeyTyped(event => {
       conditionQueryChangedHandler(conditionQueryTextField.getText)

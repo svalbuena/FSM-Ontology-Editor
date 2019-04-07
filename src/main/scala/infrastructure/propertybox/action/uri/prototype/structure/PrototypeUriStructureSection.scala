@@ -12,6 +12,7 @@ class PrototypeUriStructureSection extends HBox {
   getChildren.addAll(structureLabel, structureTextField)
 
   def setStructure(structure: String): Unit = structureTextField.setText(structure)
+
   def setOnStructureChanged(structureChangedHandler: String => Unit): Unit = {
     structureTextField.setOnKeyTyped(event => {
       structureChangedHandler(structureTextField.getText)

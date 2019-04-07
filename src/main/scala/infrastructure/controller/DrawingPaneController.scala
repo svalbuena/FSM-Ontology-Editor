@@ -6,7 +6,6 @@ import infrastructure.controller.guard.GuardListener
 import infrastructure.controller.node.{EndListener, StartListener, StateListener}
 import infrastructure.controller.transition.TransitionListener
 import infrastructure.drawingpane.{DrawingPane, MousePosition}
-import infrastructure.drawingpane.shape._
 import infrastructure.elements.action.body.Body
 import infrastructure.elements.action.uri.prototype.PrototypeUri
 import infrastructure.elements.action.uri.prototype.parameter.PrototypeParameter
@@ -16,15 +15,14 @@ import infrastructure.elements.guard.Guard
 import infrastructure.elements.node._
 import infrastructure.elements.transition.Transition
 import infrastructure.id.IdGenerator
-import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
-import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.event.EventHandler
 import javafx.scene.input.{MouseButton, MouseEvent}
+import javafx.scene.layout.Pane
 
-class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox) {
+class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox) {
   private val mousePosition = new MousePosition()
 
   private var temporalTransition: Option[Transition] = None
@@ -35,12 +33,17 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
   private val idGenerator = new IdGenerator
 
   val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
-  val state1 = new State(id = idGenerator.getId, entryActions = List(new Action(idGenerator.getId, ActionType.ENTRY,"Action 1"), new Action(idGenerator.getId, ActionType.ENTRY, "Action 2")))
+  val state1 = new State(id = idGenerator.getId, entryActions = List(new Action(idGenerator.getId, ActionType.ENTRY, "Action 1"), new Action(idGenerator.getId, ActionType.ENTRY, "Action 2")))
   state1.entryActions.head.prototypeUri.prototypeParameters = prototypeParameter :: state1.entryActions.head.prototypeUri.prototypeParameters
   val state2 = new State(idGenerator.getId)
 
+  val transition = new Transition(idGenerator.getId, "TransitionTest", state1, state2)
+
   addState(state1, 0, 0)
   addState(state2, 300, 0)
+  state1.addOutTransition(transition)
+  state2.addInTransition(transition)
+  addTransition(transition)
 
   drawingPane.setOnMouseClicked(drawingPaneMouseClickedListener)
   drawingPane.setOnMouseMoved(drawingPaneMouseMovedListener)
@@ -57,12 +60,18 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
             toolBox.setToolToDefault()
           }
         case _: StateItem =>
+          //TODO: notify the model
+          println("Adding a state")
           addState(new State(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _: StartItem =>
+          //TODO: notify the model
+          println("Adding a start")
           addStart(new Start(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _: EndItem =>
+          //TODO: notify the model
+          println("Adding a end")
           addEnd(new End(idGenerator.getId), event.getX, event.getY)
           toolBox.setToolToDefault()
         case _ =>
@@ -97,18 +106,23 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
   }
 
   def addStart(start: Start, x: Double, y: Double): Unit = {
-    new StartListener(start, this, drawingPane, idGenerator)
     canvas.drawConnectableNode(start.shape, x, y)
+
+    new StartListener(start, this, drawingPane, idGenerator)
   }
 
   def addEnd(end: End, x: Double, y: Double): Unit = {
-    new EndListener(end, this, drawingPane)
     canvas.drawConnectableNode(end.shape, x, y)
+
+    new EndListener(end, this, drawingPane)
   }
 
   def addTransition(transition: Transition): Unit = {
-    new TransitionListener(transition, this, idGenerator)
     canvas.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
+
+    transition.propertiesBox.setTransitionName(transition.name
+    )
+    new TransitionListener(transition, this, idGenerator)
   }
 
   def addActionToState(action: Action, state: State): Unit = {
@@ -127,11 +141,13 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
 
     guard.propertiesBox.addAction(action.propertiesBox)
     guard.shape.addAction(action.shape)
+
+    if (guard.hasParent) {
+      canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
+    }
   }
 
   def addAction(action: Action): Unit = {
-    new ActionListener(action, this, drawingPane, idGenerator)
-
     action.propertiesBox.setTiltedPaneName(action.name)
     action.propertiesBox.setActionType(action.actionType)
     action.propertiesBox.setActionName(action.name)
@@ -143,6 +159,8 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
 
     addBody(action.body)
     addPrototypeUri(action.prototypeUri)
+
+    new ActionListener(action, this, drawingPane, idGenerator)
   }
 
   def addGuardToTransition(guard: Guard, transition: Transition): Unit = {
@@ -152,11 +170,11 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
 
     transition.propertiesBox.addTransitionGuard(guard.propertiesBox)
     transition.shape.addTransitionGuard(guard.shape)
+
+    canvas.updateTransitionGuardGroupPosition(transition.shape)
   }
 
   def addGuard(guard: Guard): Unit = {
-    new GuardListener(guard, this, idGenerator)
-
     guard.propertiesBox.setGuardTitledPaneName(guard.name)
     guard.propertiesBox.setGuardName(guard.name)
 
@@ -169,6 +187,8 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
     for (condition <- guard.conditions) {
       addConditionToGuard(condition, guard)
     }
+
+    new GuardListener(guard, this, idGenerator)
   }
 
   def addConditionToGuard(condition: Condition, guard: Guard): Unit = {
@@ -178,31 +198,35 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
 
     guard.propertiesBox.addCondition(condition.propertiesBox)
     guard.shape.addCondition(condition.shape)
+
+    if (guard.hasParent) {
+      canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
+    }
   }
 
   def addCondition(condition: Condition): Unit = {
-    new ConditionListener(condition, this)
-
     condition.propertiesBox.setConditionName(condition.name)
     condition.propertiesBox.setConditionQuery(condition.query)
 
     condition.shape.setConditionName(condition.name)
+
+    new ConditionListener(condition, this)
   }
 
   def addBody(body: Body): Unit = {
-    new BodyListener(body)
-
     body.propertiesBox.setBodyType(body.bodyType)
     body.propertiesBox.setBodyContent(body.content)
+
+    new BodyListener(body)
   }
 
   def addPrototypeUri(prototypeUri: PrototypeUri): Unit = {
-    new PrototypeUriListener(prototypeUri, this)
-
     for (prototypeParameter <- prototypeUri.prototypeParameters) {
       addPrototypeUriParameterToPrototypeUri(prototypeParameter, prototypeUri)
     }
     prototypeUri.propertiesBox.setStructure(prototypeUri.structure)
+
+    new PrototypeUriListener(prototypeUri, this)
   }
 
   def addPrototypeUriParameterToPrototypeUri(prototypeUriParameter: PrototypeParameter, prototypeUri: PrototypeUri): Unit = {
@@ -214,10 +238,10 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
   }
 
   def addPrototypeUriParameter(prototypeParameter: PrototypeParameter): Unit = {
-    new PrototypeParameterListener(prototypeParameter, this)
-
     prototypeParameter.propertiesBox.setQuery(prototypeParameter.query)
     prototypeParameter.propertiesBox.setPlaceholder(prototypeParameter.placeholder)
+
+    new PrototypeParameterListener(prototypeParameter, this)
   }
 
   def addTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
@@ -262,7 +286,7 @@ class InfrastructureController(drawingPane: DrawingPane, val toolBox: ToolBox, v
     ghostElement = None
   }
 
-  def removeConnectableElement(connectableElement: ConnectableElement, connectableShape: ConnectableShape): Unit = {
+  def removeConnectableElement(connectableElement: ConnectableElement, connectableShape: Pane): Unit = {
     connectableElement.getTransitions.foreach(transition => removeTransition(transition))
     canvas.eraseConnectableNode(connectableShape)
   }

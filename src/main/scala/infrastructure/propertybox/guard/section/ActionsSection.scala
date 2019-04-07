@@ -1,8 +1,8 @@
 package infrastructure.propertybox.guard.section
 
 import infrastructure.propertybox.action.ActionPropertiesBox
-import javafx.scene.control.{Button, Label}
-import javafx.scene.layout.{HBox, VBox}
+import javafx.scene.control.Label
+import javafx.scene.layout.VBox
 
 class ActionsSection extends VBox {
   private val titleLabel = new Label()
@@ -14,5 +14,6 @@ class ActionsSection extends VBox {
 
 
   def addAction(actionPropertiesBox: ActionPropertiesBox): Unit = actionsPane.getChildren.add(actionPropertiesBox)
+
   def removeAction(actionPropertiesBox: ActionPropertiesBox): Unit = actionsPane.getChildren.remove(actionPropertiesBox)
 }

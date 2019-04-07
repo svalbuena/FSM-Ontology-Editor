@@ -12,6 +12,8 @@ class Condition(id: String, var name: String, var query: String) extends Element
   var parent: Option[Guard] = None
 
   def hasParent: Boolean = parent.isDefined
+
   def setParent(guard: Guard): Unit = parent = Some(guard)
+
   def getParent: Guard = parent.get
 }

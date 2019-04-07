@@ -1,7 +1,7 @@
 package infrastructure.menu.contextmenu.state
 
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
-import javafx.scene.control.{ContextMenu, MenuItem}
+import javafx.scene.control.ContextMenu
 
 class StateContextMenu extends ContextMenu {
   val addEntryActionMenuItem = new AddEntryActionMenuItem

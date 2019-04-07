@@ -1,4 +1,4 @@
-import infrastructure.controller.InfrastructureController
+import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.{Canvas, DrawingPane}
 import javafx.application.Application
 import javafx.scene.{Group, Scene}
@@ -68,7 +68,7 @@ class MainApplication extends Application {
     borderPane.setCenter(drawingPane)
 
     //Create the DrawingPaneController
-    val infrastrucutreController = new InfrastructureController(drawingPane, toolBox, propertiesBox)
+    val infrastrucutreController = new DrawingPaneController(drawingPane, toolBox, propertiesBox)
 
     stage.setScene(scene)
     stage.show()

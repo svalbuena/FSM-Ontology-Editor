@@ -16,6 +16,8 @@ class Guard(id: String, var name: String, var actions: List[Action], var conditi
   def this(id: String, name: String) = this(id, name, List(), List())
 
   def hasParent: Boolean = parent.isDefined
+
   def setParent(transition: Transition): Unit = parent = Some(transition)
+
   def getParent: Transition = parent.get
 }

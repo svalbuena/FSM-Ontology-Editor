@@ -13,6 +13,7 @@ class TransitionNameSection extends HBox {
 
 
   def setTransitionName(name: String): Unit = transitionNameLabel.setText(name)
+
   def setOnTransitionNameChanged(transitionNameChangedHandler: String => Unit): Unit = {
     transitionNameTextField.setOnKeyTyped(event => {
       transitionNameChangedHandler(transitionNameTextField.getText)

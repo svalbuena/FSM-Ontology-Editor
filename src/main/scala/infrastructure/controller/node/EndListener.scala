@@ -1,13 +1,13 @@
 package infrastructure.controller.node
 
-import infrastructure.controller.InfrastructureController
+import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.node.End
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class EndListener(end: End, infrastructureController: InfrastructureController, drawingPane: DrawingPane) {
+class EndListener(end: End, infrastructureController: DrawingPaneController, drawingPane: DrawingPane) {
   private val toolBox = infrastructureController.toolBox
   private val propertiesBox = infrastructureController.propertiesBox
   private val canvas = drawingPane.canvas

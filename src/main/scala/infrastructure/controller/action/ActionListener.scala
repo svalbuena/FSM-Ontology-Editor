@@ -1,6 +1,6 @@
 package infrastructure.controller.action
 
-import infrastructure.controller.InfrastructureController
+import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.action.Action
 import infrastructure.elements.guard.Guard
@@ -8,7 +8,7 @@ import infrastructure.elements.node.State
 import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
-class ActionListener(action: Action, infrastructureController: InfrastructureController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+class ActionListener(action: Action, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
   private val propertiesBox = action.propertiesBox
   private val contextMenu = action.contextMenu
 
@@ -20,11 +20,15 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
 
     propertiesBox.setTiltedPaneName(name)
     shape.setActionName(name)
+
+    println("Action name changed to -> " + name)
   })
 
   propertiesBox.setOnAbsoluteUriChanged(absoluteUri => {
     //TODO: notify the model
     action.absoluteUri = absoluteUri
+
+    println("Absolute uri changed to -> " + absoluteUri)
   })
 
   propertiesBox.setOnUriTypeChanged(uriType => {
@@ -32,10 +36,15 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
     action.uriType = uriType
 
     propertiesBox.setUriType(uriType)
+
+    println("Uri type changed to -> " + uriType)
   })
 
   propertiesBox.setOnRemoveActionButtonClicked(() => {
+    //TODO: notify the model
     removeAction()
+
+    println("Removing an action")
   })
 
   shape.setOnContextMenuRequested(event => {
@@ -47,6 +56,8 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
   contextMenu.getItems.forEach {
     case menuItem: DeleteActionMenuItem =>
       menuItem.setOnAction(event => {
+        //TODO: notify the model
+        println("Removing an action")
         removeAction()
       })
     case _ =>
@@ -63,12 +74,12 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
 
           actionList = actionList.filterNot(a => a == action)
 
-          infrastructureController.removeActionFromState(action, state)
+          drawingPaneController.removeActionFromState(action, state)
 
         case guard: Guard =>
           guard.actions = guard.actions.filterNot(a => a == action)
 
-          infrastructureController.removeActionFromGuard(action, guard)
+          drawingPaneController.removeActionFromGuard(action, guard)
 
         case _ =>
       }

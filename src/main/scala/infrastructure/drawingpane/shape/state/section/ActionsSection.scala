@@ -36,6 +36,7 @@ class ActionsSection extends VBox {
   }
 
   private def addActionToSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.add(actionPane)
+
   private def removeActionFromSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.remove(actionPane)
 
 }

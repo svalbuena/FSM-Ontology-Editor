@@ -1,8 +1,8 @@
 package infrastructure.toolbox.section.selector
 
-import javafx.scene.control.{Label, ToggleButton, ToggleGroup}
-import javafx.scene.layout.{FlowPane, VBox}
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
+import javafx.scene.control.{Label, ToggleGroup}
+import javafx.scene.layout.{FlowPane, VBox}
 
 class SelectorsSection(toggleGroup: ToggleGroup) extends VBox {
   val sectionTitle = new Label

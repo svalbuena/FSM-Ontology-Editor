@@ -1,14 +1,9 @@
 package infrastructure.drawingpane.shape.guard
 
-import infrastructure.drawingpane.shape.Shape
 import javafx.scene.layout.VBox
 
-class GuardGroupShape extends Shape {
-  private val guardsPane = new VBox()
+class GuardGroupShape extends VBox {
+  def addGuard(guardPane: GuardPane): Unit = getChildren.add(guardPane)
 
-  getChildren.add(guardsPane)
-
-
-  def addGuard(guardPane: GuardPane): Unit = guardsPane.getChildren.add(guardPane)
-  def removeGuard(guardPane: GuardPane): Unit = guardsPane.getChildren.remove(guardPane)
+  def removeGuard(guardPane: GuardPane): Unit = getChildren.remove(guardPane)
 }

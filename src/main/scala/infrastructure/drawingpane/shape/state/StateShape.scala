@@ -1,15 +1,12 @@
 package infrastructure.drawingpane.shape.state
 
-import infrastructure.drawingpane.shape.ConnectableShape
 import infrastructure.drawingpane.shape.action.ActionPane
 import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
-import infrastructure.elements.action.Action
 import infrastructure.elements.action.ActionType.ActionType
-import infrastructure.elements.node.State
-import javafx.scene.layout.{Pane, StackPane, VBox}
+import javafx.scene.layout.{Pane, VBox}
 
 // TODO Move shape and text area
-class StateShape extends ConnectableShape {
+class StateShape extends Pane {
   private val ActionHeight = 25.0
   private val Width = 250.0
   private val Height = ActionHeight * 4
@@ -34,6 +31,8 @@ class StateShape extends ConnectableShape {
 
 
   def setName(name: String): Unit = nameSection.setName(name)
+
   def addAction(actionPane: ActionPane, actionType: ActionType): Unit = actionsSection.addAction(actionPane, actionType)
+
   def removeAction(actionPane: ActionPane, actionType: ActionType): Unit = actionsSection.removeAction(actionPane, actionType)
 }

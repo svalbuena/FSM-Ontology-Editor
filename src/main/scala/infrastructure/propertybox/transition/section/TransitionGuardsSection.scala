@@ -19,7 +19,9 @@ class TransitionGuardsSection extends VBox {
   getChildren.addAll(titleAndButtonPane, transitionGuardsPane)
 
   def addTransitionGuard(guardPropertiesBox: GuardPropertiesBox): Unit = transitionGuardsPane.getChildren.add(guardPropertiesBox)
+
   def removeTransitionGuard(guardPropertiesBox: GuardPropertiesBox): Unit = transitionGuardsPane.getChildren.remove(guardPropertiesBox)
+
   def setOnAddTransitionGuardButtonClicked(callback: () => Unit): Unit = {
     addTransitionGuardButton.setOnMouseClicked(event => {
       callback()

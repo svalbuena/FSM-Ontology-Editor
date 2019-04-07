@@ -1,9 +1,9 @@
 package infrastructure.toolbox
 
-import javafx.scene.control.{Label, Toggle, ToggleButton, ToggleGroup}
-import javafx.scene.layout.VBox
 import infrastructure.toolbox.section.item.ItemsSection
 import infrastructure.toolbox.section.selector.SelectorsSection
+import javafx.scene.control.{Label, Toggle, ToggleGroup}
+import javafx.scene.layout.VBox
 
 class ToolBox extends VBox {
   setStyle("-fx-background-color: #b3c6b3")
