@@ -13,33 +13,33 @@ import javafx.scene.input.MouseButton
 
 class StateListener(state: State, infrastructureController: InfrastructureController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
   private val toolBox = infrastructureController.toolBox
-  private val propertiesBox = infrastructureController.propertiesBox
   private val canvas = drawingPane.canvas
 
-  private val stateShape = state.shape
-  private val statePropertiesBox = state.propertiesBox
-  private val stateContextMenu = state.contextMenu
+  private val shape = state.shape
+  private val propertiesBox = state.propertiesBox
+  private val contextMenu = state.contextMenu
 
-  stateShape.setOnMouseClicked(event => {
+  shape.setOnMouseClicked(event => {
     event.consume()
 
     event.getButton match {
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            propertiesBox.setContent(statePropertiesBox)
+            infrastructureController.propertiesBox.setContent(propertiesBox)
 
           case _: TransitionItem =>
             if (infrastructureController.isTemporalTransitionDefined) {
               infrastructureController.establishTemporalTransition(state)
               toolBox.setToolToDefault()
             } else {
-              val point = stateShape.getLocalToParentTransform.transform(event.getX, event.getY)
+              val point = shape.getLocalToParentTransform.transform(event.getX, event.getY)
               infrastructureController.addTemporalTransition(state, point.getX, point.getY)
             }
 
           case _: DeleteMouseSelector =>
-            infrastructureController.removeConnectableElement(state, stateShape)
+            infrastructureController.removeConnectableElement(state, shape)
+            infrastructureController.propertiesBox.removeContent()
             toolBox.setToolToDefault()
 
           case _ =>
@@ -49,13 +49,13 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
     }
   })
 
-  stateShape.setOnMouseDragged(event => {
+  shape.setOnMouseDragged(event => {
     event.consume()
 
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = infrastructureController.calculateDeltaFromMouseEvent(event)
-        canvas.dragConnectableNode(stateShape, deltaX, deltaY)
+        canvas.dragConnectableNode(shape, deltaX, deltaY)
         state.getTransitions.foreach(transition => canvas.dragTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
@@ -64,13 +64,13 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
     infrastructureController.updateMousePosition(event)
   })
 
-  stateShape.setOnContextMenuRequested(event => {
+  shape.setOnContextMenuRequested(event => {
     event.consume()
 
-    stateContextMenu.show(stateShape, event.getScreenX, event.getScreenY)
+    contextMenu.show(shape, event.getScreenX, event.getScreenY)
   })
 
-  stateContextMenu.getItems.forEach {
+  contextMenu.getItems.forEach {
     case menuItem: AddEntryActionMenuItem =>
       menuItem.setOnAction(event => {
         //TODO: notify the model
@@ -84,15 +84,15 @@ class StateListener(state: State, infrastructureController: InfrastructureContro
       })
   }
 
-  statePropertiesBox.setOnStateNameChanged(name => {
+  propertiesBox.setOnStateNameChanged(name => {
     state.shape.setName(name)
   })
 
-  statePropertiesBox.setOnAddEntryActionButtonClicked(() => {
+  propertiesBox.setOnAddEntryActionButtonClicked(() => {
     addAction(ActionType.ENTRY)
   })
 
-  statePropertiesBox.setOnAddExitActionButtonClicked(() => {
+  propertiesBox.setOnAddExitActionButtonClicked(() => {
     addAction(ActionType.EXIT)
   })
 

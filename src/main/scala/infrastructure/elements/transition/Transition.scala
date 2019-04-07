@@ -1,10 +1,14 @@
 package infrastructure.elements.transition
 
-import infrastructure.drawingpane.shape.{ConnectableShape, Shape, TransitionShape}
+import infrastructure.drawingpane.shape.transition.TransitionShape
+import infrastructure.drawingpane.shape.{ConnectableShape, Shape}
 import infrastructure.elements.Element
+import infrastructure.elements.guard.Guard
 import infrastructure.elements.node.{ConnectableElement, End, GhostElement, Start, State}
+import infrastructure.propertybox.transition.TransitionPropertiesBox
 
-class Transition(id: String, val source: ConnectableElement, val destination: ConnectableElement) extends Element(id) {
+class Transition(id: String, var name: String, val source: ConnectableElement, val destination: ConnectableElement, var guards: List[Guard]) extends Element(id) {
+  val propertiesBox = new TransitionPropertiesBox()
   val shape = new TransitionShape()
 
   def getSourceShape: ConnectableShape = getShape(source)
@@ -18,4 +22,6 @@ class Transition(id: String, val source: ConnectableElement, val destination: Co
       case ghostElement: GhostElement => ghostElement.shape
     }
   }
+
+  def this(id: String, name: String, source: ConnectableElement, destination: ConnectableElement) = this(id, name, source, destination, List())
 }

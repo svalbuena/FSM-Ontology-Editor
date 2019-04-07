@@ -6,7 +6,7 @@ import javafx.scene.control.{Label, TextField}
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.HBox
 
-class NameSection extends HBox {
+class StateNameSection extends HBox {
   val nameLabel = new Label
   nameLabel.setText("Name:")
 

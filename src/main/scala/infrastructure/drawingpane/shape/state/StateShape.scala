@@ -1,8 +1,8 @@
 package infrastructure.drawingpane.shape.state
 
 import infrastructure.drawingpane.shape.ConnectableShape
-import infrastructure.drawingpane.shape.state.action.{ActionPane, ActionsSection}
-import infrastructure.drawingpane.shape.state.name.NameSection
+import infrastructure.drawingpane.shape.action.ActionPane
+import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
 import infrastructure.elements.action.Action
 import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.node.State

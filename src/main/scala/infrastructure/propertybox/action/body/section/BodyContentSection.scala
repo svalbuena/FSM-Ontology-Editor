@@ -1,4 +1,4 @@
-package infrastructure.propertybox.action.body.content
+package infrastructure.propertybox.action.body.section
 
 import javafx.scene.control.{Label, TextField}
 import javafx.scene.layout.VBox

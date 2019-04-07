@@ -1,7 +1,7 @@
-package infrastructure.drawingpane.shape.state.name
+package infrastructure.drawingpane.shape.state.section
 
 import javafx.geometry.{Insets, Pos}
-import javafx.scene.control.{Label, TextField}
+import javafx.scene.control.Label
 import javafx.scene.layout.StackPane
 
 class NameSection extends StackPane {

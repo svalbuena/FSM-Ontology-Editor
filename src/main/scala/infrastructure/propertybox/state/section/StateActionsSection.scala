@@ -1,6 +1,6 @@
 package infrastructure.propertybox.state.section
 
-import infrastructure.drawingpane.shape.state.action.ActionPane
+import infrastructure.drawingpane.shape.action.ActionPane
 import infrastructure.elements.action.Action
 import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.propertybox.action.ActionPropertiesBox
@@ -8,9 +8,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy
 import javafx.scene.control.{Button, Label, ScrollPane, TextField}
 import javafx.scene.layout.{HBox, Pane, VBox}
 
-class ActionsSection extends VBox {
-  private val titleAndButtonsPane = new HBox()
-
+class StateActionsSection extends VBox {
   private val titleLabel = new Label()
   titleLabel.setText("Actions")
 
@@ -20,6 +18,7 @@ class ActionsSection extends VBox {
   private val addExitActionButton = new Button()
   addExitActionButton.setText("Add exit action")
 
+  private val titleAndButtonsPane = new HBox()
   titleAndButtonsPane.getChildren.addAll(titleLabel, addEntryActionButton, addExitActionButton)
 
   private val entryActionsSection = new VBox()

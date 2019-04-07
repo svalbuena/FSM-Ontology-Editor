@@ -1,6 +1,6 @@
 package infrastructure.propertybox.action.nametype
 
-import infrastructure.elements.action.ActionType.{ActionType, ENTRY, EXIT}
+import infrastructure.elements.action.ActionType.{ActionType, ENTRY, EXIT, GUARD}
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.HBox
 
@@ -17,6 +17,7 @@ class NameTypeSection() extends HBox {
     val typeText = actionType match {
       case ENTRY => "/entry"
       case EXIT => "/exit"
+      case GUARD => "/"
     }
     actionTypeLabel.setText(typeText)
   }

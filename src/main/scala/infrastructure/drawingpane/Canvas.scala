@@ -1,6 +1,7 @@
 package infrastructure.drawingpane
 
-import infrastructure.drawingpane.shape.{ConnectableShape, Shape, TransitionShape}
+import infrastructure.drawingpane.shape.transition.TransitionShape
+import infrastructure.drawingpane.shape.{ConnectableShape, Shape}
 import javafx.scene.layout.Pane
 
 class Canvas extends Pane {

@@ -1,10 +1,9 @@
-package infrastructure.drawingpane.shape.state.action
+package infrastructure.drawingpane.shape.state.section
 
-import infrastructure.elements.action.Action
+import infrastructure.drawingpane.shape.action.ActionPane
 import infrastructure.elements.action.ActionType.ActionType
 import javafx.geometry.Insets
-import javafx.scene.control.Label
-import javafx.scene.layout.{HBox, Pane, VBox}
+import javafx.scene.layout.{Pane, VBox}
 
 class ActionsSection extends VBox {
   private val Padding = 10.0

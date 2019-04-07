@@ -1,4 +1,4 @@
-package infrastructure.propertybox.action.body.`type`
+package infrastructure.propertybox.action.body.section
 
 import infrastructure.elements.action.body.BodyType
 import infrastructure.elements.action.body.BodyType.BodyType
@@ -19,9 +19,7 @@ class BodyTypeSection() extends HBox {
   getChildren.addAll(bodyTypeLabel, bodyTypeComboBox)
 
 
-  def setBodyType(bodyType: BodyType): Unit = {
-    bodyTypeComboBox.getSelectionModel.select(bodyType)
-  }
+  def setBodyType(bodyType: BodyType): Unit = bodyTypeComboBox.getSelectionModel.select(bodyType)
 
   def setOnBodyTypeChanged(bodyTypeChangedHandler: BodyType => Unit): Unit = {
     bodyTypeComboBox.valueProperty().addListener(observable => {

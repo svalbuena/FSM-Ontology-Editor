@@ -3,6 +3,7 @@ package infrastructure.controller.action
 import infrastructure.controller.InfrastructureController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.action.Action
+import infrastructure.elements.guard.Guard
 import infrastructure.elements.node.State
 import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
@@ -11,7 +12,7 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
   private val propertiesBox = action.propertiesBox
   private val contextMenu = action.contextMenu
 
-  private val shape = action.stateActionPane
+  private val shape = action.shape
 
   propertiesBox.setOnActionNameChanged(name => {
     //TODO: notify the model
@@ -63,6 +64,11 @@ class ActionListener(action: Action, infrastructureController: InfrastructureCon
           actionList = actionList.filterNot(a => a == action)
 
           infrastructureController.removeActionFromState(action, state)
+
+        case guard: Guard =>
+          guard.actions = guard.actions.filterNot(a => a == action)
+
+          infrastructureController.removeActionFromGuard(action, guard)
 
         case _ =>
       }
