@@ -14,11 +14,9 @@ class PrototypeUriParametersSection extends VBox {
 
   titleAndButtonPane.getChildren.addAll(titleLabel, addParameterButton)
 
-  private val parametersScrollPane = new ScrollPane()
   private val parametersPane = new VBox()
-  parametersScrollPane.setContent(parametersPane)
 
-  getChildren.addAll(titleAndButtonPane, parametersScrollPane)
+  getChildren.addAll(titleAndButtonPane, parametersPane)
 
   def addPrototypeUriParameter(prototypeUriParameterPropertiesBox: PrototypeUriParameterPropertiesBox): Unit = parametersPane.getChildren.add(prototypeUriParameterPropertiesBox)
 

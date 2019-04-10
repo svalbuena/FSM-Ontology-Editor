@@ -2,6 +2,7 @@ package infrastructure.drawingpane
 
 import infrastructure.drawingpane.shape.transition.TransitionShape
 import javafx.scene.layout.Pane
+import javafx.scene.shape.{LineTo, MoveTo}
 
 class Canvas extends Pane {
   /* Connectable Node */
@@ -33,7 +34,7 @@ class Canvas extends Pane {
   /* Transtion */
   def dragTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
     updateTransitionPosition(transition, source, destination)
-    transition.toBack()
+    transition.toFront()
   }
 
   def drawTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
@@ -46,6 +47,7 @@ class Canvas extends Pane {
     getChildren.remove(transition)
   }
 
+
   def updateTransitionPosition(transitionShape: TransitionShape, source: Pane, destination: Pane): Unit = {
     val line = transitionShape.line
 
@@ -54,16 +56,14 @@ class Canvas extends Pane {
     val (startX, startY) = (sourceBounds.getCenterX, sourceBounds.getCenterY)
     val (endX, endY) = (destinationBounds.getCenterX, destinationBounds.getCenterY)
 
-    line.setStartX(startX)
-    line.setStartY(startY)
-    line.setEndX(endX)
-    line.setEndY(endY)
+    line.setStart(startX, startY)
+    line.setEnd(endX, endY)
 
     updateTransitionGuardGroupPosition(transitionShape)
   }
 
   def updateTransitionGuardGroupPosition(transitionShape: TransitionShape): Unit = {
-    val line = transitionShape.line
+    /*val line = transitionShape.line
     val guardGroup = transitionShape.guardGroup
 
     val (startX, startY) = (line.getStartX, line.getStartY)
@@ -73,6 +73,6 @@ class Canvas extends Pane {
     val midY = startY + ((endY - startY) / 2) - guardGroup.getHeight
 
     guardGroup.setTranslateX(midX)
-    guardGroup.setTranslateY(midY)
+    guardGroup.setTranslateY(midY)*/
   }
 }
