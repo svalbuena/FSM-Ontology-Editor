@@ -39,6 +39,9 @@ class Arrow extends Pane {
       case (0.0, _) => (endX - offset, endY - opening, endX - offset, endY + opening)
       case _ =>
         val m =  vectorY / vectorX
+        println(s"Start -> x: ${startX} ${startY}")
+        println(s"End -> x: ${endX} ${endY}")
+
         println(s"vX ${vectorX} ${vectorY}")
         val n = - m * endX + endY
         def lineY: Double => Double = lineEquation(m, n)
@@ -47,8 +50,10 @@ class Arrow extends Pane {
         val (pivotX, _) = lineAndCircleIntersection(m, n, endX, endY, offset)
         val pivotY = m * pivotX + n
 
+        println(s"Pivot: ${pivotX} ${pivotY}")
+
         val pM = - 1 / m
-        val pN = - pivotX / m + pivotY
+        val pN = pivotX / m + pivotY
         def pLineY: Double => Double = lineEquation(pM, pN)
         println(s"PLine -> y = ${pM}x + ${pN}")
 
