@@ -5,17 +5,15 @@ import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Line, Polygon}
 
-import scala.math.pow
+import scala.math.{pow, sqrt}
 
 class Arrow extends Pane {
   private val line = new Line()
   private val leftEnd = new Line()
   private val rightEnd = new Line()
   private val end = new Polygon()
-  end.setTranslateX(300)
-  end.setTranslateY(300)
 
-  getChildren.addAll(line, leftEnd, rightEnd)
+  getChildren.addAll(line, end)
 
   def setStart(x: Double, y: Double): Unit = {
     line.setStartX(x)
@@ -34,9 +32,18 @@ class Arrow extends Pane {
     val offset = 40.0
     val opening = 15.0
 
-    val (leftVertexX, leftVertexY, rightVertexX, rightVertexY) = (vectorX, vectorY) match {
-      case (_, 0.0) => (endX - opening, endY - offset, endX + opening, endY - offset)
-      case (0.0, _) => (endX - offset, endY - opening, endX - offset, endY + opening)
+    val (leftVertexX, leftVertexY, rightVertexX, rightVertexY) = (vectorY, vectorY) match {
+      case (_, 0.0) =>
+        if (endY - startY <= 0) (endX + opening, endY + offset, endX - opening, endY + offset)
+        //^
+        else (endX - opening, endY - offset, endX + opening, endY - offset)
+
+      case (0.0, _) =>
+        // <-
+        if (endX - startX <= 0) (endX + offset, endY - opening, endX + offset, endY + opening)
+        // ->
+        else (endX - offset, endY + opening, endX - offset, endY - opening)
+
       case _ =>
         val m =  vectorY / vectorX
         println(s"Start -> x: ${startX} ${startY}")
@@ -47,8 +54,13 @@ class Arrow extends Pane {
         def lineY: Double => Double = lineEquation(m, n)
         println(s"Line -> y = ${m}x + ${n}")
 
-        val (pivotX, _) = lineAndCircleIntersection(m, n, endX, endY, offset)
-        val pivotY = m * pivotX + n
+        val pivotX = {
+          val result = lineAndCircleIntersection(m, n, endX, endY, offset)
+          if (endX - startX <= 0) result._1
+          else result._2
+        }
+
+        val pivotY = lineY(pivotX)
 
         println(s"Pivot: ${pivotX} ${pivotY}")
 
@@ -68,11 +80,10 @@ class Arrow extends Pane {
     println(s"Rgt -> x: $rightVertexX y: $rightVertexY")
 
     end.getPoints.clear()
-    //end.getPoints.addAll(endX, endY, leftVertexX, leftVertexY, rightVertexX, rightVertexY)
-    end.getPoints.addAll(0.0, 0.0, 40.0, 40.0, 80.0, 80.0)
+    end.getPoints.addAll(endX, endY, leftVertexX, leftVertexY, rightVertexX, rightVertexY)
     end.setFill(Color.BLACK )
 
-    leftEnd.setStartX(leftVertexX)
+    /*leftEnd.setStartX(leftVertexX)
     leftEnd.setStartY(leftVertexY)
     leftEnd.setEndX(endX)
     leftEnd.setEndY(endY)
@@ -80,18 +91,18 @@ class Arrow extends Pane {
     rightEnd.setStartX(rightVertexX)
     rightEnd.setStartY(rightVertexY)
     rightEnd.setEndX(endX)
-    rightEnd.setEndY(endY)
+    rightEnd.setEndY(endY)*/
   }
 
-  def lineAndCircleIntersection(m: Double, n: Double, a: Double, b: Double, squaredR: Double): (Double, Double) = {
+  def lineAndCircleIntersection(m: Double, n: Double, a: Double, b: Double, r: Double): (Double, Double) = {
     val a1 = pow(m, 2) + 1
-    val b2 = 2 * m * n - 2 * a - 2 * b * n
-    val c = pow(n, 2) + pow(a, 2) + pow(b, 2) - 2 * b * n - squaredR
+    val b2 = 2 * m * n - 2 * a - 2 * b * m
+    val c = pow(n, 2) + pow(a, 2) + pow(b, 2) - 2 * b * n - pow(r, 2)
     solveQuadraticEquation(a1, b2, c)
   }
 
   def solveQuadraticEquation(a: Double, b: Double, c: Double): (Double, Double) = {
-    val squaredDiscriminant = pow(b * b - 4 * a * c, 2)
+    val squaredDiscriminant = sqrt(pow(b, 2) - 4 * a * c)
 
     val numerator1 = - b + squaredDiscriminant
     val numerator2 = - b - squaredDiscriminant
