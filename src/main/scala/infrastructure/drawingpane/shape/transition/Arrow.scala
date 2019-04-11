@@ -32,17 +32,18 @@ class Arrow extends Pane {
     val offset = 40.0
     val opening = 15.0
 
-    val (leftVertexX, leftVertexY, rightVertexX, rightVertexY) = (vectorY, vectorY) match {
-      case (_, 0.0) =>
-        if (endY - startY <= 0) (endX + opening, endY + offset, endX - opening, endY + offset)
-        //^
-        else (endX - opening, endY - offset, endX + opening, endY - offset)
-
+    val (leftVertexX, leftVertexY, rightVertexX, rightVertexY) = (vectorY, vectorX) match {
       case (0.0, _) =>
         // <-
-        if (endX - startX <= 0) (endX + offset, endY - opening, endX + offset, endY + opening)
+        if (endX - startX <= 0) (endX + offset, endY + opening, endX + offset, endY - opening)
         // ->
-        else (endX - offset, endY + opening, endX - offset, endY - opening)
+        else (endX - offset, endY - opening, endX - offset, endY + opening)
+
+      case (_, 0.0) =>
+        //^
+        if (endY - startY <= 0) (endX - opening, endY + offset, endX + opening, endY + offset)
+        //v
+        else (endX + opening, endY - offset, endX - opening, endY - offset)
 
       case _ =>
         val m =  vectorY / vectorX
