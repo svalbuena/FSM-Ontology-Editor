@@ -34,7 +34,7 @@ class Canvas extends Pane {
   /* Transtion */
   def dragTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
     updateTransitionPosition(transition, source, destination)
-    transition.toFront()
+    transition.toBack()
   }
 
   def drawTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
@@ -56,6 +56,11 @@ class Canvas extends Pane {
     val (startX, startY) = (sourceBounds.getCenterX, sourceBounds.getCenterY)
     val (endX, endY) = (destinationBounds.getCenterX, destinationBounds.getCenterY)
 
+    val (aX, aY) = (endX - startX, endY - startY)
+
+    val degrees = scala.math.toDegrees(scala.math.atan(aY / aX))
+    println(s"Degrees = $degrees")
+
     line.setStart(startX, startY)
     line.setEnd(endX, endY)
 
@@ -63,16 +68,16 @@ class Canvas extends Pane {
   }
 
   def updateTransitionGuardGroupPosition(transitionShape: TransitionShape): Unit = {
-    /*val line = transitionShape.line
+    val line = transitionShape.line
     val guardGroup = transitionShape.guardGroup
 
-    val (startX, startY) = (line.getStartX, line.getStartY)
-    val (endX, endY) = (line.getEndX, line.getEndY)
+    val (startX, startY) = line.getStart
+    val (endX, endY) = line.getEnd
 
     val midX = startX + ((endX - startX) / 2) - guardGroup.getWidth / 2
     val midY = startY + ((endY - startY) / 2) - guardGroup.getHeight
 
     guardGroup.setTranslateX(midX)
-    guardGroup.setTranslateY(midY)*/
+    guardGroup.setTranslateY(midY)
   }
 }

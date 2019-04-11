@@ -9,11 +9,12 @@ import scala.math.{pow, sqrt}
 
 class Arrow extends Pane {
   private val line = new Line()
-  private val leftEnd = new Line()
-  private val rightEnd = new Line()
   private val end = new Polygon()
 
   getChildren.addAll(line, end)
+
+  def getStart: (Double, Double) = (line.getStartX, line.getStartY)
+  def getEnd: (Double, Double) = (line.getEndX, line.getEndY)
 
   def setStart(x: Double, y: Double): Unit = {
     line.setStartX(x)
@@ -47,13 +48,8 @@ class Arrow extends Pane {
 
       case _ =>
         val m =  vectorY / vectorX
-        println(s"Start -> x: ${startX} ${startY}")
-        println(s"End -> x: ${endX} ${endY}")
-
-        println(s"vX ${vectorX} ${vectorY}")
         val n = - m * endX + endY
         def lineY: Double => Double = lineEquation(m, n)
-        println(s"Line -> y = ${m}x + ${n}")
 
         val pivotX = {
           val result = lineAndCircleIntersection(m, n, endX, endY, offset)
@@ -63,12 +59,9 @@ class Arrow extends Pane {
 
         val pivotY = lineY(pivotX)
 
-        println(s"Pivot: ${pivotX} ${pivotY}")
-
         val pM = - 1 / m
         val pN = pivotX / m + pivotY
         def pLineY: Double => Double = lineEquation(pM, pN)
-        println(s"PLine -> y = ${pM}x + ${pN}")
 
         val (v1X, v2X) = lineAndCircleIntersection(pM, pN, pivotX, pivotY, opening)
         val (v1Y, v2Y) = (pLineY(v1X), pLineY(v2X))
@@ -76,23 +69,9 @@ class Arrow extends Pane {
         (v1X, v1Y, v2X, v2Y)
     }
 
-    println(s"End -> x: $endX y: $endY")
-    println(s"Lft -> x: $leftVertexX y: $leftVertexY")
-    println(s"Rgt -> x: $rightVertexX y: $rightVertexY")
-
     end.getPoints.clear()
     end.getPoints.addAll(endX, endY, leftVertexX, leftVertexY, rightVertexX, rightVertexY)
     end.setFill(Color.BLACK )
-
-    /*leftEnd.setStartX(leftVertexX)
-    leftEnd.setStartY(leftVertexY)
-    leftEnd.setEndX(endX)
-    leftEnd.setEndY(endY)
-
-    rightEnd.setStartX(rightVertexX)
-    rightEnd.setStartY(rightVertexY)
-    rightEnd.setEndX(endX)
-    rightEnd.setEndY(endY)*/
   }
 
   def lineAndCircleIntersection(m: Double, n: Double, a: Double, b: Double, r: Double): (Double, Double) = {
