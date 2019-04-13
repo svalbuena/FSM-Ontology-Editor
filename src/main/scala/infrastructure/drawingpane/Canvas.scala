@@ -1,22 +1,21 @@
 package infrastructure.drawingpane
 
 import infrastructure.drawingpane.shape.transition.TransitionShape
+import javafx.geometry.Point2D
 import javafx.scene.layout.Pane
-import javafx.scene.shape.{LineTo, MoveTo}
+import math.Equation
+
+import scala.math
 
 class Canvas extends Pane {
   /* Connectable Node */
   def dragConnectableNode(connectableNode: Pane, deltaX: Double, deltaY: Double): Unit = {
-    //TODO: maybe change they way null is checked
-    Option(connectableNode.getBoundsInParent).foreach { shapeBounds =>
-      val newX = connectableNode.getTranslateX + deltaX
-      val newY = connectableNode.getTranslateY + deltaY
-      val drawingPaneBounds = getLayoutBounds
+    val newX = connectableNode.getTranslateX + deltaX
+    val newY = connectableNode.getTranslateY + deltaY
 
-      if (drawingPaneBounds.contains(newX, newY, shapeBounds.getWidth, shapeBounds.getHeight)) {
-        connectableNode.setTranslateX(newX)
-        connectableNode.setTranslateY(newY)
-      }
+    if (getLayoutBounds.contains(newX, newY, connectableNode.getWidth, connectableNode.getHeight)) {
+      connectableNode.setTranslateX(newX)
+      connectableNode.setTranslateY(newY)
     }
   }
 
@@ -47,22 +46,36 @@ class Canvas extends Pane {
     getChildren.remove(transition)
   }
 
-
   def updateTransitionPosition(transitionShape: TransitionShape, source: Pane, destination: Pane): Unit = {
     val line = transitionShape.line
 
     val (sourceBounds, destinationBounds) = (source.getBoundsInParent, destination.getBoundsInParent)
+    val (width, height) = (destinationBounds.getWidth, destinationBounds.getHeight)
 
-    val (startX, startY) = (sourceBounds.getCenterX, sourceBounds.getCenterY)
-    val (endX, endY) = (destinationBounds.getCenterX, destinationBounds.getCenterY)
+    val startCenter = new Point2D(sourceBounds.getCenterX, sourceBounds.getCenterY)
+    val endCenter = new Point2D(destinationBounds.getCenterX, destinationBounds.getCenterY)
 
-    val (aX, aY) = (endX - startX, endY - startY)
+    val degrees = getHumanDegrees(endCenter, startCenter)
 
-    val degrees = scala.math.toDegrees(scala.math.atan(aY / aX))
-    println(s"Degrees = $degrees")
+    val upperLeftCorner = new Point2D(endCenter.getX - width / 2, endCenter.getY - height / 2)
+    val upperRightCorner = new Point2D(endCenter.getX + width / 2, endCenter.getY - height / 2)
+    val lowerLeftCorner = new Point2D(endCenter.getX - width / 2, endCenter.getY + height / 2)
+    val lowerRightCorner = new Point2D(endCenter.getX + width / 2, endCenter.getY + height / 2)
 
-    line.setStart(startX, startY)
-    line.setEnd(endX, endY)
+    val upperLeftCornerDegree = getHumanDegrees(endCenter, upperLeftCorner)
+    val upperRightCornerDegree = getHumanDegrees(endCenter, upperRightCorner)
+    val lowerLeftCornerDegree = getHumanDegrees(endCenter, lowerLeftCorner)
+    val lowerRightCornerDegree = getHumanDegrees(endCenter, lowerRightCorner)
+
+    val end = {
+      if (degrees >= upperRightCornerDegree && degrees < upperLeftCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, upperRightCorner, upperLeftCorner)
+      else if (degrees >= upperLeftCornerDegree && degrees < lowerLeftCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, upperLeftCorner, lowerLeftCorner)
+      else if (degrees >= lowerLeftCornerDegree && degrees < lowerRightCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, lowerLeftCorner, lowerRightCorner)
+      else Equation.lineAndLineIntersection(startCenter, endCenter, lowerRightCorner, upperRightCorner)
+    }
+
+    line.setStart(startCenter)
+    line.setEnd(end)
 
     updateTransitionGuardGroupPosition(transitionShape)
   }
@@ -79,5 +92,13 @@ class Canvas extends Pane {
 
     guardGroup.setTranslateX(midX)
     guardGroup.setTranslateY(midY)
+  }
+
+  private def getHumanDegrees(start: Point2D, end: Point2D): Double = {
+    val (aX, aY) = (start.getX - end.getX, start.getY - end.getY)
+
+    val radians = math.atan2(-aY, aX)
+
+    math.toDegrees(radians) + 180
   }
 }
