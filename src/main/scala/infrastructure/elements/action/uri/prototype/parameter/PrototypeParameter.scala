@@ -1,9 +1,11 @@
 package infrastructure.elements.action.uri.prototype.parameter
 
 import infrastructure.elements.action.uri.prototype.PrototypeUri
-import infrastructure.propertybox.action.uri.prototype.parameter.PrototypeUriParameterPropertiesBox
+import infrastructure.propertybox.action.section.uri.prototype.parameter.PrototypeUriParameterPropertiesBox
 
-class PrototypeParameter(var query: String, var placeholder: String) {
+class PrototypeParameter(var query: String = "",
+                         var placeholder: String = ""
+                        ) {
   val propertiesBox = new PrototypeUriParameterPropertiesBox()
   var parent: Option[PrototypeUri] = None
 

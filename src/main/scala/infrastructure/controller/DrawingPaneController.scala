@@ -2,8 +2,10 @@ package infrastructure.controller
 
 import infrastructure.controller.action.{ActionListener, BodyListener, PrototypeParameterListener, PrototypeUriListener}
 import infrastructure.controller.condition.ConditionListener
+import infrastructure.controller.end.EndListener
 import infrastructure.controller.guard.GuardListener
-import infrastructure.controller.node.{EndListener, StartListener, StateListener}
+import infrastructure.controller.start.StartListener
+import infrastructure.controller.state.StateListener
 import infrastructure.controller.transition.TransitionListener
 import infrastructure.drawingpane.{DrawingPane, MousePosition}
 import infrastructure.elements.action.body.Body
@@ -33,8 +35,13 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   private val idGenerator = new IdGenerator
 
   val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
-  val state1 = new State(id = idGenerator.getId, entryActions = List(new Action(idGenerator.getId, ActionType.ENTRY, "Action 1"), new Action(idGenerator.getId, ActionType.ENTRY, "Action 2")))
-  state1.entryActions.head.prototypeUri.prototypeParameters = prototypeParameter :: state1.entryActions.head.prototypeUri.prototypeParameters
+
+  val action1 = new Action(id = idGenerator.getId, actionType = ActionType.ENTRY, name = "Action 1")
+  val action2 = new Action(id = idGenerator.getId, actionType = ActionType.ENTRY, name = "Action 2")
+
+
+  val state1 = new State(id = idGenerator.getId, actions = List(action1, action2))
+  state1.actions.head.prototypeUri.prototypeParameters = prototypeParameter :: state1.actions.head.prototypeUri.prototypeParameters
   val state2 = new State(idGenerator.getId)
 
   val transition = new Transition(idGenerator.getId, "TransitionTest", state1, state2)
@@ -100,7 +107,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     state.shape.setName(state.name)
     canvas.drawConnectableNode(state.shape, x, y)
 
-    for (action <- state.entryActions ::: state.exitActions) {
+    for (action <- state.actions) {
       addActionToState(action, state)
     }
   }
@@ -151,7 +158,9 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     action.propertiesBox.setTiltedPaneName(action.name)
     action.propertiesBox.setActionType(action.actionType)
     action.propertiesBox.setActionName(action.name)
+    action.propertiesBox.setMethodType(action.method)
     action.propertiesBox.setUriType(action.uriType)
+    action.propertiesBox.setTimeout(action.timeout)
     action.propertiesBox.setAbsoluteUri(action.absoluteUri)
 
     action.shape.setActionType(action.actionType)

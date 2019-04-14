@@ -1,11 +1,12 @@
 package infrastructure.propertybox.action
 
 import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.elements.action.MethodType.MethodType
 import infrastructure.elements.action.uri.UriType.UriType
-import infrastructure.propertybox.action.body.BodyPropertiesBox
-import infrastructure.propertybox.action.nametype.NameTypeSection
-import infrastructure.propertybox.action.uri.UriSection
-import infrastructure.propertybox.action.uri.prototype.PrototypeUriPropertiesBox
+import infrastructure.propertybox.action.section.{ActionTimeoutSection, MethodSection, NameTypeSection}
+import infrastructure.propertybox.action.section.body.BodyPropertiesBox
+import infrastructure.propertybox.action.section.uri.UriSection
+import infrastructure.propertybox.action.section.uri.prototype.PrototypeUriPropertiesBox
 import javafx.scene.control.TitledPane
 import javafx.scene.layout.VBox
 
@@ -13,9 +14,11 @@ class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prot
   private val actionPropertiesBoxPane = new VBox()
 
   private val nameTypeSection = new NameTypeSection()
+  private val methodTypeSection = new MethodSection()
   private val uriSection = new UriSection(prototypeUriPropertiesBox)
+  private val timeoutSection = new ActionTimeoutSection()
 
-  actionPropertiesBoxPane.getChildren.addAll(nameTypeSection, uriSection, bodyPropertiesBox)
+  actionPropertiesBoxPane.getChildren.addAll(nameTypeSection, methodTypeSection, uriSection, timeoutSection, bodyPropertiesBox)
 
   setContent(actionPropertiesBoxPane)
 
@@ -26,6 +29,8 @@ class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prot
 
   def setActionName(actionName: String): Unit = nameTypeSection.setActionName(actionName)
 
+  def setMethodType(methodType: MethodType): Unit = methodTypeSection.setMethodType(methodType)
+
   def setUriType(uriType: UriType): Unit = uriSection.setUriType(uriType)
 
   def setAbsoluteUri(absoluteUri: String): Unit = uriSection.setAbsoluteUri(absoluteUri)
@@ -34,7 +39,13 @@ class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prot
 
   def setOnUriTypeChanged(uriTypeChangedHandler: UriType => Unit): Unit = uriSection.setOnUriTypeChanged(uriTypeChangedHandler)
 
+  def setOnMethodTypeChanged(methodTypeChangedHandler: MethodType => Unit): Unit = methodTypeSection.setOnMethodTypeChanged(methodTypeChangedHandler)
+
   def setOnAbsoluteUriChanged(absoluteUriChangedHandler: String => Unit): Unit = uriSection.setOnAbsoluteUriChanged(absoluteUriChangedHandler)
 
   def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = nameTypeSection.setOnRemoveActionButtonClicked(callback)
+
+  def setTimeout(timeout: Int): Unit = timeoutSection.setTimeout(timeout)
+
+  def setOnTimeoutChanged(timeoutChangedHandler: Int => Unit): Unit = timeoutSection.setOnTimeoutChanged(timeoutChangedHandler)
 }

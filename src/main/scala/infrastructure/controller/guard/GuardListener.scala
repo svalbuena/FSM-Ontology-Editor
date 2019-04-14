@@ -38,7 +38,7 @@ class GuardListener(guard: Guard, drawingPaneController: DrawingPaneController, 
 
   private def addAction(): Unit = {
     val id = idGenerator.getId
-    val action = new Action(id, ActionType.GUARD, "Action" + id)
+    val action = new Action(id, actionType = ActionType.GUARD, "Action" + id)
 
     guard.actions = action :: guard.actions
 

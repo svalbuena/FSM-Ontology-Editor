@@ -7,13 +7,16 @@ import infrastructure.elements.condition.Condition
 import infrastructure.elements.transition.Transition
 import infrastructure.propertybox.guard.GuardPropertiesBox
 
-class Guard(id: String, var name: String, var actions: List[Action], var conditions: List[Condition]) extends Element(id) {
+class Guard(id: String,
+            var name: String = "Guard",
+            var actions: List[Action] = List(),
+            var conditions: List[Condition] = List()
+           ) extends Element(id) {
   val propertiesBox = new GuardPropertiesBox()
   val shape = new GuardPane()
 
   var parent: Option[Transition] = None
 
-  def this(id: String, name: String) = this(id, name, List(), List())
 
   def hasParent: Boolean = parent.isDefined
 

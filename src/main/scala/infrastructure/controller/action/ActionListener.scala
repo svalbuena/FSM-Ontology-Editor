@@ -24,6 +24,20 @@ class ActionListener(action: Action, drawingPaneController: DrawingPaneControlle
     println("Action name changed to -> " + name)
   })
 
+  propertiesBox.setOnTimeoutChanged(timeout => {
+    //TODO: notify hte model
+    action.timeout = timeout
+
+    println("Timeout changed to -> " + timeout)
+  })
+
+  propertiesBox.setOnMethodTypeChanged(methodType => {
+    //TODO: notify the model
+    action.method = methodType
+
+    println("Method type changed to -> " + methodType)
+  })
+
   propertiesBox.setOnAbsoluteUriChanged(absoluteUri => {
     //TODO: notify the model
     action.absoluteUri = absoluteUri
@@ -67,12 +81,7 @@ class ActionListener(action: Action, drawingPaneController: DrawingPaneControlle
     if (action.hasParent) {
       action.getParent match {
         case state: State =>
-          var actionList = action.actionType match {
-            case infrastructure.elements.action.ActionType.ENTRY => state.entryActions
-            case infrastructure.elements.action.ActionType.EXIT => state.exitActions
-          }
-
-          actionList = actionList.filterNot(a => a == action)
+          state.actions = state.actions.filterNot(a => a == action)
 
           drawingPaneController.removeActionFromState(action, state)
 
