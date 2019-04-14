@@ -20,10 +20,10 @@ class Canvas extends Pane {
   }
 
   def drawConnectableNode(connectableNode: Pane, x: Double, y: Double): Unit = {
+    getChildren.add(connectableNode)
+
     connectableNode.setTranslateX(x)
     connectableNode.setTranslateY(y)
-
-    getChildren.add(connectableNode)
   }
 
   def eraseConnectableNode(connectableNode: Pane): Unit = {
@@ -37,8 +37,8 @@ class Canvas extends Pane {
   }
 
   def drawTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
-    updateTransitionPosition(transition, source, destination)
     getChildren.add(transition)
+    updateTransitionPosition(transition, source, destination)
     transition.toBack()
   }
 
@@ -46,35 +46,44 @@ class Canvas extends Pane {
     getChildren.remove(transition)
   }
 
-  def updateTransitionPosition(transitionShape: TransitionShape, source: Pane, destination: Pane): Unit = {
+  def updateTransitionPosition(transitionShape: TransitionShape, src: Pane, dst: Pane): Unit = {
+    layout()
+
     val line = transitionShape.line
 
-    val (sourceBounds, destinationBounds) = (source.getBoundsInParent, destination.getBoundsInParent)
-    val (width, height) = (destinationBounds.getWidth, destinationBounds.getHeight)
+    val (srcWidth, srcHeight) = (src.getWidth, src.getHeight)
+    val (dstWidth, dstHeight) = (dst.getWidth, dst.getHeight)
 
-    val startCenter = new Point2D(sourceBounds.getCenterX, sourceBounds.getCenterY)
-    val endCenter = new Point2D(destinationBounds.getCenterX, destinationBounds.getCenterY)
+    println(s"Src dimensions = $srcWidth, $srcHeight")
+    println(s"Src translate = ${src.getTranslateX}, ${src.getTranslateY}")
 
-    val degrees = getHumanDegrees(endCenter, startCenter)
+    println(s"Dst dimensions = $dstWidth, $dstHeight")
 
-    val upperLeftCorner = new Point2D(endCenter.getX - width / 2, endCenter.getY - height / 2)
-    val upperRightCorner = new Point2D(endCenter.getX + width / 2, endCenter.getY - height / 2)
-    val lowerLeftCorner = new Point2D(endCenter.getX - width / 2, endCenter.getY + height / 2)
-    val lowerRightCorner = new Point2D(endCenter.getX + width / 2, endCenter.getY + height / 2)
 
-    val upperLeftCornerDegree = getHumanDegrees(endCenter, upperLeftCorner)
-    val upperRightCornerDegree = getHumanDegrees(endCenter, upperRightCorner)
-    val lowerLeftCornerDegree = getHumanDegrees(endCenter, lowerLeftCorner)
-    val lowerRightCornerDegree = getHumanDegrees(endCenter, lowerRightCorner)
+
+    val srcCenter = new Point2D(src.getTranslateX + srcWidth / 2, src.getTranslateY + srcHeight / 2)
+    val dstCenter = new Point2D(dst.getTranslateX + dstWidth / 2, dst.getTranslateY + dstHeight / 2)
+
+    val degrees = getHumanDegrees(dstCenter, srcCenter)
+
+    val upperLeftCorner = new Point2D(dstCenter.getX - dstWidth / 2, dstCenter.getY - dstHeight / 2)
+    val upperRightCorner = new Point2D(dstCenter.getX + dstWidth / 2, dstCenter.getY - dstHeight / 2)
+    val lowerLeftCorner = new Point2D(dstCenter.getX - dstWidth / 2, dstCenter.getY + dstHeight / 2)
+    val lowerRightCorner = new Point2D(dstCenter.getX + dstWidth / 2, dstCenter.getY + dstHeight / 2)
+
+    val upperLeftCornerDegree = getHumanDegrees(dstCenter, upperLeftCorner)
+    val upperRightCornerDegree = getHumanDegrees(dstCenter, upperRightCorner)
+    val lowerLeftCornerDegree = getHumanDegrees(dstCenter, lowerLeftCorner)
+    val lowerRightCornerDegree = getHumanDegrees(dstCenter, lowerRightCorner)
 
     val end = {
-      if (degrees >= upperRightCornerDegree && degrees < upperLeftCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, upperRightCorner, upperLeftCorner)
-      else if (degrees >= upperLeftCornerDegree && degrees < lowerLeftCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, upperLeftCorner, lowerLeftCorner)
-      else if (degrees >= lowerLeftCornerDegree && degrees < lowerRightCornerDegree) Equation.lineAndLineIntersection(startCenter, endCenter, lowerLeftCorner, lowerRightCorner)
-      else Equation.lineAndLineIntersection(startCenter, endCenter, lowerRightCorner, upperRightCorner)
+      if (degrees >= upperRightCornerDegree && degrees < upperLeftCornerDegree) Equation.lineAndLineIntersection(srcCenter, dstCenter, upperRightCorner, upperLeftCorner)
+      else if (degrees >= upperLeftCornerDegree && degrees < lowerLeftCornerDegree) Equation.lineAndLineIntersection(srcCenter, dstCenter, upperLeftCorner, lowerLeftCorner)
+      else if (degrees >= lowerLeftCornerDegree && degrees < lowerRightCornerDegree) Equation.lineAndLineIntersection(srcCenter, dstCenter, lowerLeftCorner, lowerRightCorner)
+      else Equation.lineAndLineIntersection(srcCenter, dstCenter, lowerRightCorner, upperRightCorner)
     }
 
-    line.setStart(startCenter)
+    line.setStart(srcCenter)
     line.setEnd(end)
 
     updateTransitionGuardGroupPosition(transitionShape)
@@ -83,6 +92,9 @@ class Canvas extends Pane {
   def updateTransitionGuardGroupPosition(transitionShape: TransitionShape): Unit = {
     val line = transitionShape.line
     val guardGroup = transitionShape.guardGroup
+
+    guardGroup.layout()
+    layout()
 
     val (startX, startY) = line.getStart
     val (endX, endY) = line.getEnd

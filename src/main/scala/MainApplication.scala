@@ -72,12 +72,5 @@ class MainApplication extends Application {
 
     stage.setScene(scene)
     stage.show()
-
-    println("--- Drawing Pane ---")
-    println("Width = " + drawingPane.getWidth)
-    println("Height = " + drawingPane.getHeight)
-    println("BoundsWidth = " + drawingPane.getLayoutBounds.getWidth)
-    println("BoundsHeight = " + drawingPane.getLayoutBounds.getHeight)
-
   }
 }
