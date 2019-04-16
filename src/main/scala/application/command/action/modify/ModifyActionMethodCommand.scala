@@ -1,5 +1,8 @@
 package application.command.action.modify
 
-class ModifyActionMethodCommand {
+import application.command.action.modify.MethodType.MethodType
+
+
+class ModifyActionMethodCommand(val actionName: String, val method: MethodType) {
 
 }

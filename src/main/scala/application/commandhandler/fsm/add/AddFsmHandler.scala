@@ -2,11 +2,15 @@ package application.commandhandler.fsm.add
 
 import application.command.fsm.add.AddFsmCommand
 import domain.Environment
+import domain.fsm.FiniteStateMachine
 
 class AddFsmHandler {
-  def handle(addFsmCommand: AddFsmCommand): String = {
-    val fsm = Environment.addFsm()
+  def execute(addFsmCommand: AddFsmCommand): Either[Exception, String] = {
+    val fsm = new FiniteStateMachine
 
-    fsm.name
+    Environment.addFsm(fsm) match {
+      case Left(error) => Left(error)
+      case Right(_) => Right(fsm.name)
+    }
   }
 }

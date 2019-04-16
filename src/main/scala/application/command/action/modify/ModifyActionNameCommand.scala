@@ -1,5 +1,5 @@
 package application.command.action.modify
 
-class ModifyActionNameCommand {
+class ModifyActionNameCommand(val actionName: String, val newActionName: String) {
 
 }

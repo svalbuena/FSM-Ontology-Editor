@@ -1,11 +1,17 @@
 package domain.condition
 
-import domain.Element
+import domain.exception.DomainError
+import domain.{Element, Environment}
 
 class Condition(name: String,
-                x: Double,
-                y: Double,
-                var query: String = ""
-               ) extends Element(name, x, y) {
+                private var _query: String = ""
+               ) extends Element(name) {
 
+  def this() = this(Environment.generateUniqueName("condition"))
+
+  def query: String = _query
+  def query_= (newQuery: String): Either[DomainError, String] = {
+    query = newQuery
+    Right(query)
+  }
 }

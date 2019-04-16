@@ -1,5 +1,5 @@
 package application.command.condition.modify
 
-class ModifyConditionQueryCommand {
+class ModifyConditionQueryCommand(val conditionName: String, val query: String) {
 
 }

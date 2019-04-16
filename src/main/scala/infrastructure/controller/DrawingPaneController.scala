@@ -1,7 +1,9 @@
 package infrastructure.controller
 
 import application.command.fsm.add.AddFsmCommand
+import application.command.fsm.modify.SelectFsmCommand
 import application.commandhandler.fsm.add.AddFsmHandler
+import application.commandhandler.fsm.modify.SelectFsmHandler
 import infrastructure.controller.action.{ActionListener, BodyListener, PrototypeParameterListener, PrototypeUriListener}
 import infrastructure.controller.condition.ConditionListener
 import infrastructure.controller.end.EndListener
@@ -36,8 +38,15 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
   private val idGenerator = new IdGenerator
   private val addFsmHandler = new AddFsmHandler
+  private val selectFsmHandler = new SelectFsmHandler
 
-  private var fsmName = addFsmHandler.handle(new AddFsmCommand)
+  addFsmHandler.execute(new AddFsmCommand) match {
+    case Left(error) => println(error.getMessage)
+    case Right(fsmName) => selectFsmHandler.execute(new SelectFsmCommand(fsmName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+    }
+  }
 
   val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
 

@@ -1,5 +1,5 @@
 package application.command.fsm.remove
 
-class RemoveFsmCommand {
+class RemoveFsmCommand(val fsmName: String) {
 
 }

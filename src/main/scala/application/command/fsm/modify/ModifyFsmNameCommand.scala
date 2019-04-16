@@ -1,5 +1,5 @@
 package application.command.fsm.modify
 
-class ModifyFsmNameCommand {
+class ModifyFsmNameCommand(val newFsmName: String) {
 
 }

@@ -1,5 +1,5 @@
 package application.command.condition.modify
 
-class ModifyConditionNameCommand {
+class ModifyConditionNameCommand(val conditionName: String, val newConditionName: String) {
 
 }

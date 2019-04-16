@@ -1,5 +1,8 @@
 package application.command.action.modify
 
-class ModifyActionUriTypeCommand {
+import application.command.action.modify.UriType.UriType
+
+
+class ModifyActionUriTypeCommand(val actionName: String, val uriType: UriType) {
 
 }
