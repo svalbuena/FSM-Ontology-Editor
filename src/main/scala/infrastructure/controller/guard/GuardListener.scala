@@ -1,6 +1,8 @@
 package infrastructure.controller.guard
 
 import infrastructure.controller.DrawingPaneController
+import infrastructure.elements.action.body.Body
+import infrastructure.elements.action.uri.prototype.PrototypeUri
 import infrastructure.elements.action.{Action, ActionType}
 import infrastructure.elements.condition.Condition
 import infrastructure.elements.guard.Guard
@@ -37,8 +39,8 @@ class GuardListener(guard: Guard, drawingPaneController: DrawingPaneController, 
   })
 
   private def addAction(): Unit = {
-    val id = idGenerator.getId
-    val action = new Action(id, actionType = ActionType.GUARD, "Action" + id)
+    val id = "Action" + idGenerator.getId
+    val action = new Action(id, actionType = ActionType.GUARD, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
 
     guard.actions = action :: guard.actions
 
@@ -46,8 +48,8 @@ class GuardListener(guard: Guard, drawingPaneController: DrawingPaneController, 
   }
 
   private def addCondition(): Unit = {
-    val id = idGenerator.getId
-    val condition = new Condition(id, "Condition" + id, "")
+    val id = "Condition" + idGenerator.getId
+    val condition = new Condition(id, "")
 
     guard.conditions = condition :: guard.conditions
 

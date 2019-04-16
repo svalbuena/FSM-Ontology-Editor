@@ -1,6 +1,6 @@
 package domain
 
-class IdGenerator {
+object IdGenerator {
   var nextId = 0
 
   def getId: String = {

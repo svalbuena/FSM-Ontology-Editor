@@ -5,10 +5,9 @@ import infrastructure.elements.Element
 import infrastructure.elements.guard.Guard
 import infrastructure.propertybox.condition.ConditionPropertiesBox
 
-class Condition(id: String,
-                var name: String = "Condition",
+class Condition(name: String,
                 var query: String = ""
-               ) extends Element(id) {
+               ) extends Element(name) {
   val propertiesBox = new ConditionPropertiesBox()
   val shape = new ConditionPane()
 

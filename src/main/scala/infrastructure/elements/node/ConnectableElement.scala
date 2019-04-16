@@ -3,7 +3,7 @@ package infrastructure.elements.node
 import infrastructure.elements.Element
 import infrastructure.elements.transition.Transition
 
-abstract class ConnectableElement(id: String) extends Element(id) {
+abstract class ConnectableElement(name: String) extends Element(name) {
   var inTransitions: List[Transition] = List[Transition]()
   var outTransitions: List[Transition] = List[Transition]()
 

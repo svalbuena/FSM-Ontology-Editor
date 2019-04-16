@@ -7,11 +7,10 @@ import infrastructure.elements.condition.Condition
 import infrastructure.elements.transition.Transition
 import infrastructure.propertybox.guard.GuardPropertiesBox
 
-class Guard(id: String,
-            var name: String = "Guard",
+class Guard(name: String,
             var actions: List[Action] = List(),
             var conditions: List[Condition] = List()
-           ) extends Element(id) {
+           ) extends Element(name) {
   val propertiesBox = new GuardPropertiesBox()
   val shape = new GuardPane()
 

@@ -42,8 +42,8 @@ class TransitionListener(transition: Transition, drawingPaneController: DrawingP
   })
 
   def addGuard(): Unit = {
-    val id = idGenerator.getId
-    val guard = new Guard(id, "Guard" + id)
+    val id = "Guard" + idGenerator.getId
+    val guard = new Guard(id)
 
     transition.guards = guard :: transition.guards
 

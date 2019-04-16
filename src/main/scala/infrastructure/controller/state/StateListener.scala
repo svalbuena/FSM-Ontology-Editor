@@ -3,6 +3,8 @@ package infrastructure.controller.state
 import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.elements.action.body.Body
+import infrastructure.elements.action.uri.prototype.PrototypeUri
 import infrastructure.elements.action.{Action, ActionType}
 import infrastructure.elements.node.State
 import infrastructure.id.IdGenerator
@@ -108,8 +110,8 @@ class StateListener(state: State, drawingPaneController: DrawingPaneController, 
   })
 
   private def addAction(actionType: ActionType): Unit = {
-    val id = idGenerator.getId
-    val action = new Action(id, actionType, "Action" + id)
+    val id = "Action" + idGenerator.getId
+    val action = new Action(id, actionType, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
 
     state.actions = action :: state.actions
 

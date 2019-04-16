@@ -7,12 +7,11 @@ import infrastructure.elements.node._
 import infrastructure.propertybox.transition.TransitionPropertiesBox
 import javafx.scene.layout.Pane
 
-class Transition(id: String,
-                 var name: String = "Transition",
+class Transition(name: String,
                  val source: ConnectableElement,
                  val destination: ConnectableElement,
                  var guards: List[Guard] = List()
-                ) extends Element(id) {
+                ) extends Element(name) {
   val propertiesBox = new TransitionPropertiesBox()
   val shape = new TransitionShape()
 

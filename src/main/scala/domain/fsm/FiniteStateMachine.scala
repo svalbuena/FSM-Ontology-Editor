@@ -2,5 +2,9 @@ package domain.fsm
 
 import domain.state.State
 
-class FiniteStateMachine(id: String, var isStartDefined: Boolean, var states: List[State]) {
+class FiniteStateMachine(var name: String,
+                         var isStartDefined: Boolean = false,
+                         var isEndDefined: Boolean = false,
+                         var states: List[State] = List()
+                        ) {
 }

@@ -1,5 +1,7 @@
 package infrastructure.controller
 
+import application.command.fsm.add.AddFsmCommand
+import application.commandhandler.fsm.add.AddFsmHandler
 import infrastructure.controller.action.{ActionListener, BodyListener, PrototypeParameterListener, PrototypeUriListener}
 import infrastructure.controller.condition.ConditionListener
 import infrastructure.controller.end.EndListener
@@ -33,18 +35,21 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   private val canvas = drawingPane.canvas
 
   private val idGenerator = new IdGenerator
+  private val addFsmHandler = new AddFsmHandler
+
+  private var fsmName = addFsmHandler.handle(new AddFsmCommand)
 
   val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
 
-  val action1 = new Action(id = idGenerator.getId, actionType = ActionType.ENTRY, name = "Action 1")
-  val action2 = new Action(id = idGenerator.getId, actionType = ActionType.ENTRY, name = "Action 2")
+  val action1 = new Action(name = "Action" + idGenerator.getId, actionType = ActionType.ENTRY, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
+  val action2 = new Action(name = "Action" + idGenerator.getId, actionType = ActionType.ENTRY, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
 
 
-  val state1 = new State(id = idGenerator.getId, actions = List(action1, action2))
+  val state1 = new State(name = idGenerator.getId, actions = List(action1, action2))
   state1.actions.head.prototypeUri.prototypeParameters = prototypeParameter :: state1.actions.head.prototypeUri.prototypeParameters
   val state2 = new State(idGenerator.getId)
 
-  val transition = new Transition(idGenerator.getId, "TransitionTest", state1, state2)
+  val transition = new Transition("TransitionTest", state1, state2)
 
   addState(state1, 0, 0)
   addState(state2, 300, 0)
@@ -258,7 +263,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
     canvas.drawConnectableNode(ghostElement.get.shape, x, y)
 
-    val transition = new Transition("Temp Transition ID", "Temp Transition", source, ghostElement.get)
+    val transition = new Transition("Temp Transition", source, ghostElement.get)
 
     ghostElement.get.addInTransition(transition)
 
@@ -270,9 +275,9 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   def establishTemporalTransition(destination: ConnectableElement): Unit = {
     val source = temporalTransition.get.source
 
-    val id = idGenerator.getId
+    val id = "Transition" + idGenerator.getId
 
-    val newTransition = new Transition(id, "Transition" + id, source, destination)
+    val newTransition = new Transition(id, source, destination)
     source.addOutTransition(newTransition)
     destination.addInTransition(newTransition)
 

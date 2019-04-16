@@ -11,16 +11,15 @@ import infrastructure.elements.action.uri.prototype.PrototypeUri
 import infrastructure.menu.contextmenu.action.ActionContextMenu
 import infrastructure.propertybox.action.ActionPropertiesBox
 
-class Action(id: String,
+class Action(name: String,
              var actionType: ActionType = ActionType.ENTRY,
-             var name: String = "State",
              var method: MethodType = MethodType.GET,
              var uriType: UriType = UriType.ABSOLUTE,
              var absoluteUri: String = "",
-             var prototypeUri: PrototypeUri = new PrototypeUri(),
+             var prototypeUri: PrototypeUri,
              var timeout: Int = 0,
-             var body: Body = new Body()
-            ) extends Element(id) {
+             var body: Body
+            ) extends Element(name) {
 
   val shape = new ActionPane()
   val propertiesBox = new ActionPropertiesBox(body.propertiesBox, prototypeUri.propertiesBox)

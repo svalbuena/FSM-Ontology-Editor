@@ -2,6 +2,6 @@ package infrastructure.elements.node
 
 import infrastructure.drawingpane.shape.StartShape
 
-class Start(id: String) extends ConnectableElement(id) {
+class Start(name: String) extends ConnectableElement(name) {
   val shape = new StartShape()
 }
