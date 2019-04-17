@@ -2,7 +2,7 @@ package infrastructure.drawingpane.shape.state
 
 import infrastructure.drawingpane.shape.action.ActionPane
 import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSection}
-import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.layout.{Pane, VBox}
 
 // TODO Move shape and text area

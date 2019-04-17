@@ -1,10 +1,21 @@
 package infrastructure.controller.action
 
+import application.command.action.add.{AddActionToGuardCommand, AddActionToStateCommand}
+import application.command.action.modify._
+import application.command.action.remove.{RemoveActionFromGuardCommand, RemoveActionFromStateCommand}
+import application.commandhandler.action.add.{AddActionToGuardHandler, AddActionToStateHandler}
+import application.commandhandler.action.modify._
+import application.commandhandler.action.remove.{RemoveActionFromGuardHandler, RemoveActionFromStateHandler}
 import infrastructure.controller.DrawingPaneController
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.elements.action.Action
-import infrastructure.elements.guard.Guard
-import infrastructure.elements.state.State
+import infrastructure.element.action.ActionType.ActionType
+import infrastructure.element.action.MethodType.MethodType
+import infrastructure.element.action.UriType.UriType
+import infrastructure.element.action.{Action, ActionType}
+import infrastructure.element.body.Body
+import infrastructure.element.guard.Guard
+import infrastructure.element.prototypeuri.PrototypeUri
+import infrastructure.element.state.State
 import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
@@ -14,49 +25,14 @@ class ActionController(action: Action, drawingPaneController: DrawingPaneControl
 
   private val shape = action.shape
 
-  propertiesBox.setOnActionNameChanged(name => {
-    //TODO: notify the model, ModifyActionName
-    action.name = name
+  propertiesBox.setOnAbsoluteUriChanged(newAbsoluteUri => ActionController.modifyActionAbsoluteUri(action, newAbsoluteUri))
+  propertiesBox.setOnMethodTypeChanged(newMethodType => ActionController.modifyActionMethodType(action, newMethodType))
+  propertiesBox.setOnActionNameChanged(newName => ActionController.modifyActionName(action, newName))
+  propertiesBox.setOnTimeoutChanged(newTimeout => ActionController.modifyActionTimeout(action, newTimeout))
+  //propertiesBox.setOnActionTypeChanged(newActionType => ActionController.modifyActionType(action, newActionType))
+  propertiesBox.setOnUriTypeChanged(newUriType => ActionController.modifyActionUriType(action, newUriType))
 
-    propertiesBox.setTiltedPaneName(name)
-    shape.setActionName(name)
-
-    println("Action name changed to -> " + name)
-  })
-
-  propertiesBox.setOnTimeoutChanged(timeout => {
-    //TODO: notify hte model, ModifyActionTimeout
-    action.timeout = timeout
-
-    println("Timeout changed to -> " + timeout)
-  })
-
-  propertiesBox.setOnMethodTypeChanged(methodType => {
-    //TODO: notify the model, ModifyActionMethodType
-    action.method = methodType
-
-    println("Method type changed to -> " + methodType)
-  })
-
-  propertiesBox.setOnAbsoluteUriChanged(absoluteUri => {
-    //TODO: notify the model, ModifyActionAbsoluteUri
-    action.absoluteUri = absoluteUri
-
-    println("Absolute uri changed to -> " + absoluteUri)
-  })
-
-  propertiesBox.setOnUriTypeChanged(uriType => {
-    //TODO: notify the model, ModifyActionUriType
-    action.uriType = uriType
-
-    propertiesBox.setUriType(uriType)
-
-    println("Uri type changed to -> " + uriType)
-  })
-
-  propertiesBox.setOnRemoveActionButtonClicked(() => {
-    removeAction()
-  })
+  propertiesBox.setOnRemoveActionButtonClicked(() => removeAction())
 
   shape.setOnContextMenuRequested(event => {
     event.consume()
@@ -73,21 +49,10 @@ class ActionController(action: Action, drawingPaneController: DrawingPaneControl
   }
 
   private def removeAction(): Unit = {
-    println("Removing an action")
     if (action.hasParent) {
       action.getParent match {
-        case state: State =>
-          //TODO: notify the model, RemoveActionFromState
-          state.actions = state.actions.filterNot(a => a == action)
-
-          drawingPaneController.removeActionFromState(action, state)
-
-        case guard: Guard =>
-          //TODO: notify the model, RemoveActionFromGuard
-          guard.actions = guard.actions.filterNot(a => a == action)
-
-          drawingPaneController.removeActionFromGuard(action, guard)
-
+        case guard: Guard => ActionController.removeActionFromGuard(action, guard, drawingPaneController)
+        case state: State => ActionController.removeActionFromState(action, state, drawingPaneController)
         case _ =>
       }
     }
@@ -95,42 +60,128 @@ class ActionController(action: Action, drawingPaneController: DrawingPaneControl
 }
 
 object ActionController {
-  def addActionToGuard(): Unit = {
+  def addActionToGuard(guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+    new AddActionToGuardHandler().execute(new AddActionToGuardCommand(guard.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(names) =>
+        val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
+        val action = new Action(actionName, ActionType.GUARD, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
+
+        guard.actions = action :: guard.actions
+
+        drawingPaneController.addActionToGuard(action, guard)
+
+        println("Adding guard action to a guard")
+    }
   }
 
-  def addActionToState(): Unit = {
+  def addActionToState(actionType: ActionType, state: State, drawingPaneController: DrawingPaneController): Unit = {
+    new AddActionToStateHandler().execute(new AddActionToStateCommand(actionType, state.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(names) =>
+        val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
+        val action = new Action(actionName, actionType, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
 
+        state.actions = action :: state.actions
+
+        drawingPaneController.addActionToState(action, state)
+
+        println(s"Adding $actionType action to a state")
+    }
   }
 
-  def modifyActionAbsoluteUri(): Unit = {
+  def modifyActionAbsoluteUri(action: Action, newAbsoluteUri: String): Unit = {
+    new ModifyActionAbsoluteUriHandler().execute(new ModifyActionAbsoluteUriCommand(action.name, newAbsoluteUri)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.absoluteUri = newAbsoluteUri
 
+        println("Absolute uri changed to -> " + newAbsoluteUri)
+    }
   }
 
-  def modifyActionMethod(): Unit = {
+  def modifyActionMethodType(action: Action, newMethodType: MethodType): Unit = {
+    new ModifyActionMethodTypeHandler().execute(new ModifyActionMethodTypeCommand(action.name, newMethodType match {
+      case infrastructure.element.action.MethodType.GET => application.command.action.modify.MethodType.GET
+      case infrastructure.element.action.MethodType.POST => application.command.action.modify.MethodType.POST
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.method = newMethodType
 
+        println("Method type changed to -> " + newMethodType)
+    }
   }
 
-  def modifyActionName(): Unit = {
+  def modifyActionName(action: Action, newName: String): Unit = {
+    new ModifyActionNameHandler().execute(new ModifyActionNameCommand(action.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.name = newName
 
+        action.propertiesBox.setTiltedPaneName(newName)
+        action.shape.setActionName(newName)
+
+        println("Action name changed to -> " + newName)
+    }
   }
 
-  def modifyActionTimeout(): Unit = {
+  def modifyActionTimeout(action: Action, newTimeout: Int): Unit = {
+    new ModifyActionTimeoutHandler().execute(new ModifyActionTimeoutCommand(action.name, newTimeout)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.timeout = newTimeout
 
+        println("Timeout changed to -> " + newTimeout)
+    }
   }
 
-  def modifyActionType(): Unit = {
+  def modifyActionType(action: Action, newActionType: ActionType): Unit = {
+    new ModifyActionTypeHandler().execute(new ModifyActionTypeCommand(action.name, newActionType match {
+      case infrastructure.element.action.ActionType.ENTRY => application.command.action.modify.ActionType.ENTRY
+      case infrastructure.element.action.ActionType.EXIT => application.command.action.modify.ActionType.EXIT
+      case infrastructure.element.action.ActionType.GUARD => application.command.action.modify.ActionType.GUARD
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.actionType = newActionType
 
+        println("Timeout changed to -> " + newActionType)
+    }
   }
 
-  def modifyActionUriType(): Unit = {
+  def modifyActionUriType(action: Action, newUriType: UriType): Unit = {
+    new ModifyActionUriTypeHandler().execute(new ModifyActionUriTypeCommand(action.name, newUriType match {
+      case infrastructure.element.action.UriType.ABSOLUTE => application.command.action.modify.UriType.ABSOLUTE
+      case infrastructure.element.action.UriType.PROTOTYPE => application.command.action.modify.UriType.PROTOTYPE
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        action.uriType = newUriType
 
+        action.propertiesBox.setUriType(newUriType)
+
+        println("Uri type changed to -> " + newUriType)
+    }
   }
 
-  def removeActionFromGuard(): Unit = {
+  def removeActionFromGuard(action: Action, guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveActionFromGuardHandler().execute(new RemoveActionFromGuardCommand(action.name, guard.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        guard.actions = guard.actions.filterNot(a => a == action)
 
+        drawingPaneController.removeActionFromGuard(action, guard)
+    }
   }
 
-  def removeActionFromState(): Unit = {
+  def removeActionFromState(action: Action, state: State, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveActionFromStateHandler().execute(new RemoveActionFromStateCommand(action.name, state.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.actions = state.actions.filterNot(a => a == action)
 
+        drawingPaneController.removeActionFromState(action, state)
+    }
   }
 }

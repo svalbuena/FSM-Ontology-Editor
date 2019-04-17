@@ -15,18 +15,18 @@ import infrastructure.controller.start.StartController
 import infrastructure.controller.state.StateController
 import infrastructure.controller.transition.TransitionController
 import infrastructure.drawingpane.{DrawingPane, MousePosition}
-import infrastructure.elements.ConnectableElement
-import infrastructure.elements.action.{Action, ActionType}
-import infrastructure.elements.body.Body
-import infrastructure.elements.condition.Condition
-import infrastructure.elements.end.End
-import infrastructure.elements.ghostnode.GhostElement
-import infrastructure.elements.guard.Guard
-import infrastructure.elements.prototypeuri.PrototypeUri
-import infrastructure.elements.prototypeuriparameter.PrototypeUriParameter
-import infrastructure.elements.start.Start
-import infrastructure.elements.state.State
-import infrastructure.elements.transition.Transition
+import infrastructure.element.ConnectableElement
+import infrastructure.element.action.{Action, ActionType}
+import infrastructure.element.body.Body
+import infrastructure.element.condition.Condition
+import infrastructure.element.end.End
+import infrastructure.element.ghostnode.GhostElement
+import infrastructure.element.guard.Guard
+import infrastructure.element.prototypeuri.PrototypeUri
+import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
+import infrastructure.element.start.Start
+import infrastructure.element.state.State
+import infrastructure.element.transition.Transition
 import infrastructure.id.IdGenerator
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbox.ToolBox
@@ -88,19 +88,13 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
             toolBox.setToolToDefault()
           }
         case _: StateItem =>
-          //TODO: notify the model
-          println("Adding a state")
-          addState(new State(idGenerator.getId), event.getX, event.getY)
+          StateController.addStateToFsm(event.getX, event.getY, this)
           toolBox.setToolToDefault()
         case _: StartItem =>
-          //TODO: notify the model
-          println("Adding a start")
-          addStart(new Start(idGenerator.getId), event.getX, event.getY)
+          StartController.addStartToFsm(event.getX, event.getY, this)
           toolBox.setToolToDefault()
         case _: EndItem =>
-          //TODO: notify the model
-          println("Adding a end")
-          addEnd(new End(idGenerator.getId), event.getX, event.getY)
+          EndController.addEndToFsm(event.getX, event.getY, this)
           toolBox.setToolToDefault()
         case _ =>
       }

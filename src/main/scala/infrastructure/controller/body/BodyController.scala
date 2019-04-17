@@ -1,35 +1,50 @@
 package infrastructure.controller.body
 
-import infrastructure.elements.body.Body
+import application.command.body.modify.{ModifyBodyContentCommand, ModifyBodyNameCommand, ModifyBodyTypeCommand}
+import application.commandhandler.body.modify.{ModifyBodyContentHandler, ModifyBodyNameHandler, ModifyBodyTypeHandler}
+import infrastructure.element.body.Body
+import infrastructure.element.body.BodyType.BodyType
 
 class BodyController(body: Body) {
   private val propertiesBox = body.propertiesBox
 
-  propertiesBox.setOnBodyTypeChanged(bodyType => {
-    //TODO: notify the model, ModifyBodyType
-    body.bodyType = bodyType
-
-    println("Body type changed to -> " + bodyType)
-  })
-
-  propertiesBox.setOnBodyContentChanged(content => {
-    //TODO: notify the model, ModifyBodyContent
-    body.content = content
-
-    println("Body content changed to -> " + content)
-  })
+  propertiesBox.setOnBodyContentChanged(newContent => BodyController.modifyBodyContent(body, newContent))
+  //propertiesBox.setOnBodyNameChanged(newName => BodyController.modifyBodyName(body, newName))
+  propertiesBox.setOnBodyTypeChanged(newBodyType => BodyController.modifyBodyType(body, newBodyType))
 }
 
 object BodyController {
-  def modifyBodyContent(): Unit = {
+  def modifyBodyContent(body: Body, newContent: String): Unit = {
+    new ModifyBodyContentHandler().execute(new ModifyBodyContentCommand(body.name, newContent)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        body.content = newContent
 
+        println("Body content changed to -> " + newContent)
+    }
   }
 
-  def modifyBodyName(): Unit = {
+  def modifyBodyName(body: Body, newName: String): Unit = {
+    new ModifyBodyNameHandler().execute(new ModifyBodyNameCommand(body.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        body.name = newName
 
+        println("Body content changed to -> " + newName)
+    }
   }
 
-  def modifyBodyType(): Unit = {
+  def modifyBodyType(body: Body, newBodyType: BodyType): Unit = {
+    new ModifyBodyTypeHandler().execute(new ModifyBodyTypeCommand(body.name, newBodyType match {
+      case infrastructure.element.body.BodyType.RDF => application.command.body.modify.BodyType.RDF
+      case infrastructure.element.body.BodyType.JSON => application.command.body.modify.BodyType.JSON
+      case infrastructure.element.body.BodyType.SPARQL => application.command.body.modify.BodyType.SPARQL
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        body.bodyType = newBodyType
 
+        println("Body type changed to -> " + newBodyType)
+    }
   }
 }

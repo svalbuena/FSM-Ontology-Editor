@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.shape.state.section
 
 import infrastructure.drawingpane.shape.action.ActionPane
-import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.element.action.ActionType.ActionType
 import javafx.geometry.Insets
 import javafx.scene.layout.{Pane, VBox}
 
@@ -30,8 +30,8 @@ class ActionsSection extends VBox {
 
   private def getPaneForActionType(actionType: ActionType): Pane = {
     actionType match {
-      case infrastructure.elements.action.ActionType.ENTRY => entryActionsSection
-      case infrastructure.elements.action.ActionType.EXIT => exitActionsSection
+      case infrastructure.element.action.ActionType.ENTRY => entryActionsSection
+      case infrastructure.element.action.ActionType.EXIT => exitActionsSection
     }
   }
 

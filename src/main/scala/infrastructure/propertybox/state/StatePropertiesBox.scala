@@ -1,6 +1,6 @@
 package infrastructure.propertybox.state
 
-import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.element.action.ActionType.ActionType
 import infrastructure.propertybox.action.ActionPropertiesBox
 import infrastructure.propertybox.state.section.{StateActionsSection, StateNameSection}
 import javafx.scene.control.Label

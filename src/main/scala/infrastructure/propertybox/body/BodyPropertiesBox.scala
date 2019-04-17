@@ -1,6 +1,6 @@
 package infrastructure.propertybox.body
 
-import infrastructure.elements.body.BodyType.BodyType
+import infrastructure.element.body.BodyType.BodyType
 import infrastructure.propertybox.body.section.{BodyContentSection, BodyTypeSection}
 import javafx.scene.layout.VBox
 

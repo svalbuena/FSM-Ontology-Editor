@@ -1,7 +1,7 @@
 package infrastructure.propertybox.action.section
 
-import infrastructure.elements.action.UriType
-import infrastructure.elements.action.UriType.UriType
+import infrastructure.element.action.UriType
+import infrastructure.element.action.UriType.UriType
 import javafx.scene.control.{ComboBox, Label}
 import javafx.scene.layout.HBox
 

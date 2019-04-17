@@ -1,12 +1,17 @@
 package infrastructure.controller.state
 
+import application.command.state.add.AddStateToFsmCommand
+import application.command.state.modify.{ModifyStateNameCommand, ModifyStateTypeCommand}
+import application.command.state.remove.RemoveStateFromFsmCommand
+import application.commandhandler.state.add.AddStateToFsmHandler
+import application.commandhandler.state.modify.{ModifyStateNameHandler, ModifyStateTypeHandler}
+import application.commandhandler.state.remove.RemoveStateFromFsmHandler
 import infrastructure.controller.DrawingPaneController
+import infrastructure.controller.action.ActionController
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.elements.action.ActionType.ActionType
-import infrastructure.elements.action.{Action, ActionType}
-import infrastructure.elements.body.Body
-import infrastructure.elements.prototypeuri.PrototypeUri
-import infrastructure.elements.state.State
+import infrastructure.element.action.ActionType
+import infrastructure.element.state.StateType.StateType
+import infrastructure.element.state.{State, StateType}
 import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
@@ -40,9 +45,7 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
             }
 
           case _: DeleteMouseSelector =>
-            //TODO: notify the model, RemoveStateFromFsm
-            println("Removing a state")
-            drawingPaneController.removeConnectableElement(state, shape)
+            StateController.removeStateFromFsm(state, drawingPaneController)
             drawingPaneController.propertiesBox.removeContent()
             toolBox.setToolToDefault()
 
@@ -75,64 +78,63 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
   })
 
   contextMenu.getItems.forEach {
-    case menuItem: AddEntryActionMenuItem =>
-      menuItem.setOnAction(event => {
-        //TODO: notify the model
-        addAction(ActionType.ENTRY)
-      })
-
-    case menuItem: AddExitActionMenuItem =>
-      menuItem.setOnAction(event => {
-        //TODO: notify the model
-        addAction(ActionType.EXIT)
-      })
+    case menuItem: AddEntryActionMenuItem => menuItem.setOnAction(_ => addExitActionToState())
+    case menuItem: AddExitActionMenuItem => menuItem.setOnAction(_ => addExitActionToState())
   }
 
-  propertiesBox.setOnStateNameChanged(name => {
-    //TODO: notify the model, ModifyStateName
-    state.shape.setName(name)
+  propertiesBox.setOnStateNameChanged(newName => StateController.modifyStateName(state, newName))
+  propertiesBox.setOnAddEntryActionButtonClicked(() => addEntryActionToState())
+  propertiesBox.setOnAddExitActionButtonClicked(() => addExitActionToState())
 
-    println("State name changed to -> " + name)
-  })
+  private def addEntryActionToState(): Unit = ActionController.addActionToState(ActionType.ENTRY, state, drawingPaneController)
 
-  propertiesBox.setOnAddEntryActionButtonClicked(() => {
-    addAction(ActionType.ENTRY)
-
-    println("Adding entry action to a state")
-  })
-
-  propertiesBox.setOnAddExitActionButtonClicked(() => {
-    addAction(ActionType.EXIT)
-
-    println("Adding exit action to a state")
-  })
-
-  private def addAction(actionType: ActionType): Unit = {
-    //TODO: notify the model, AddActionToState
-
-    val id = "Action" + idGenerator.getId
-    val action = new Action(id, actionType, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
-
-    state.actions = action :: state.actions
-
-    drawingPaneController.addActionToState(action, state)
-  }
+  private def addExitActionToState(): Unit = ActionController.addActionToState(ActionType.EXIT, state, drawingPaneController)
 }
 
 object StateController {
-  def addStateToFsm(): Unit = {
+  def addStateToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+    new AddStateToFsmHandler().execute(new AddStateToFsmCommand(x, y)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(stateName) =>
+        val state = new State(stateName, StateType.SIMPLE)
 
+        drawingPaneController.addState(state, x, y)
+
+        println("Adding a state")
+    }
   }
 
-  def modifyStateName(): Unit = {
+  def modifyStateName(state: State, newName: String): Unit = {
+    new ModifyStateNameHandler().execute(new ModifyStateNameCommand(state.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.shape.setName(newName)
 
+        println("State name changed to -> " + newName)
+    }
   }
 
-  def modifyStateType(): Unit = {
+  def modifyStateType(state: State, newStateType: StateType): Unit = {
+    new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newStateType match {
+      case infrastructure.element.state.StateType.INITIAL => application.command.state.modify.StateType.INITIAL
+      case infrastructure.element.state.StateType.SIMPLE => application.command.state.modify.StateType.SIMPLE
+      case infrastructure.element.state.StateType.FINAL => application.command.state.modify.StateType.FINAL
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.stateType = newStateType
 
+        println("State type changed to -> " + newStateType)
+    }
   }
 
-  def removeStateFromFsm(): Unit = {
+  def removeStateFromFsm(state: State, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveStateFromFsmHandler().execute(new RemoveStateFromFsmCommand(state.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        drawingPaneController.removeConnectableElement(state, state.shape)
 
+        println("Removing a state")
+    }
   }
 }

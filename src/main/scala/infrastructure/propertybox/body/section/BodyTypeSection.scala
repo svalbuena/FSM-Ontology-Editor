@@ -1,7 +1,7 @@
 package infrastructure.propertybox.body.section
 
-import infrastructure.elements.body.BodyType
-import infrastructure.elements.body.BodyType.BodyType
+import infrastructure.element.body.BodyType
+import infrastructure.element.body.BodyType.BodyType
 import javafx.scene.control.{ComboBox, Label}
 import javafx.scene.layout.HBox
 

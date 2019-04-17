@@ -1,8 +1,15 @@
 package infrastructure.controller.transition
 
+import application.command.transition.add.AddTransitionToFsmCommand
+import application.command.transition.modify.ModifyTransitionNameCommand
+import application.command.transition.remove.RemoveTransitionFromFsmCommand
+import application.commandhandler.transition.add.AddTransitionToFsmHandler
+import application.commandhandler.transition.modify.ModifyTransitionNameHandler
+import application.commandhandler.transition.remove.RemoveTransitionFromFsmHandler
 import infrastructure.controller.DrawingPaneController
-import infrastructure.elements.guard.Guard
-import infrastructure.elements.transition.Transition
+import infrastructure.controller.guard.GuardController
+import infrastructure.element.state.State
+import infrastructure.element.transition.Transition
 import infrastructure.id.IdGenerator
 import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
 import javafx.scene.input.MouseButton
@@ -29,38 +36,38 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
     }
   })
 
-  propertiesBox.setOnTransitionNameChanged(transitionName => {
-    //TODO: notify the model
-    println("Transition name changed to -> " + transitionName)
-    transition.name = transitionName
-  })
+  propertiesBox.setOnTransitionNameChanged(newName => TransitionController.modifyTransitionName(transition, newName))
 
-  propertiesBox.setOnAddTransitionGuardButtonClicked(() => {
-    //TODO: notify the model
-    println("Adding a guard")
-    addGuard()
-  })
+  propertiesBox.setOnAddTransitionGuardButtonClicked(() => addGuardToTransition())
 
-  def addGuard(): Unit = {
-    val id = "Guard" + idGenerator.getId
-    val guard = new Guard(id)
-
-    transition.guards = guard :: transition.guards
-
-    drawingPaneController.addGuardToTransition(guard, transition)
-  }
+  private def addGuardToTransition(): Unit = GuardController.addGuardToTransition(transition, drawingPaneController)
 }
 
 object TransitionController {
-  def addTransitionToFsm(): Unit = {
+  def addTransitionToFsm(source: State, destination: State, drawingPaneController: DrawingPaneController): Unit = {
+    new AddTransitionToFsmHandler().execute(new AddTransitionToFsmCommand(source.name, destination.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(transitionName) =>
+        val transition = new Transition(transitionName, source, destination)
 
+        drawingPaneController.addTransition(transition)
+    }
   }
 
-  def modifyTransitionName(): Unit = {
-
+  def modifyTransitionName(transition: Transition, newName: String): Unit = {
+    new ModifyTransitionNameHandler().execute(new ModifyTransitionNameCommand(transition.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        transition.name = newName
+        println("Transition name changed to -> " + newName)
+    }
   }
 
-  def removeTransitionFromFsm(): Unit = {
-
+  def removeTransitionFromFsm(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveTransitionFromFsmHandler().execute(new RemoveTransitionFromFsmCommand(transition.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+      //TODO: implement RemoveTransitionFromFsm
+    }
   }
 }

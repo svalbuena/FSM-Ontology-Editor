@@ -1,84 +1,77 @@
 package infrastructure.controller.guard
 
+import application.command.guard.add.AddGuardToTransitionCommand
+import application.command.guard.modify.ModifyGuardNameCommand
+import application.command.guard.remove.RemoveGuardFromTransitionCommand
+import application.commandhandler.guard.add.AddGuardToTransitionHandler
+import application.commandhandler.guard.modify.ModifyGuardNameHandler
+import application.commandhandler.guard.remove.RemoveGuardFromTransitionHandler
 import infrastructure.controller.DrawingPaneController
-import infrastructure.elements.action.{Action, ActionType}
-import infrastructure.elements.body.Body
-import infrastructure.elements.condition.Condition
-import infrastructure.elements.guard.Guard
-import infrastructure.elements.prototypeuri.PrototypeUri
+import infrastructure.controller.action.ActionController
+import infrastructure.controller.condition.ConditionController
+import infrastructure.element.guard.Guard
+import infrastructure.element.transition.Transition
 import infrastructure.id.IdGenerator
 
 class GuardController(guard: Guard, drawingPaneController: DrawingPaneController, idGenerator: IdGenerator) {
   private val propertiesBox = guard.propertiesBox
   private val shape = guard.shape
 
-  propertiesBox.setOnGuardNameChanged(guardName => {
-    //TODO: notify the model, ModifyGuardName
-    guard.name = guardName
-    println("Guard name changed to -> " + guardName)
+  propertiesBox.setOnGuardNameChanged(newName => GuardController.modifyGuardName(guard, newName))
 
-    shape.setGuardName(guardName)
-  })
+  propertiesBox.setOnAddActionButtonClicked(() => addActionToGuard())
 
-  propertiesBox.setOnAddActionButtonClicked(() => {
-    //TODO: notify the model, AddActionToGuard
-    addAction()
-    println("Adding an action to a guard")
-  })
+  propertiesBox.setOnAddConditionButtonClicked(() => addConditionToGuard())
 
-  propertiesBox.setOnAddConditionButtonClicked(() => {
-    //TODO: notify the model, AddConditionToGuard
-    addCondition()
-    println("Adding a condition to a guard")
-  })
+  propertiesBox.setOnRemoveGuardButtonClicked(() => removeGuardFromTransition())
 
-  propertiesBox.setOnRemoveGuardButtonClicked(() => {
-    removeGuard()
-  })
+  private def addActionToGuard(): Unit = ActionController.addActionToGuard(guard, drawingPaneController)
 
-  private def addAction(): Unit = {
-    val id = "Action" + idGenerator.getId
-    val action = new Action(id, actionType = ActionType.GUARD, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
+  private def addConditionToGuard(): Unit = ConditionController.addConditionToGuard(guard, drawingPaneController)
 
-    guard.actions = action :: guard.actions
-
-    drawingPaneController.addActionToGuard(action, guard)
-  }
-
-  private def addCondition(): Unit = {
-    val id = "Condition" + idGenerator.getId
-    val condition = new Condition(id, "")
-
-    guard.conditions = condition :: guard.conditions
-
-    drawingPaneController.addConditionToGuard(condition, guard)
-  }
-
-  private def removeGuard(): Unit = {
-    println("Removing a guard")
-
+  private def removeGuardFromTransition(): Unit = {
     if (guard.hasParent) {
-      //TODO: notify the model, RemoveGuardFromTransition
-
       val transition = guard.getParent
-
-      transition.guards = transition.guards.filterNot(g => g == guard)
-
-      drawingPaneController.removeGuardFromTransition(guard, transition)
+      GuardController.removeGuardFromTransition(guard, transition, drawingPaneController)
     }
   }
 }
 
 object GuardController {
-  def addGuardToTransition(): Unit = {
+  def addGuardToTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+    new AddGuardToTransitionHandler().execute(new AddGuardToTransitionCommand(transition.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(guardName) =>
+        val guard = new Guard(guardName)
 
+        transition.guards = guard :: transition.guards
+
+        drawingPaneController.addGuardToTransition(guard, transition)
+
+        println("Adding a guard to a transition")
+    }
   }
 
-  def modifyGuardName(): Unit = {
+  def modifyGuardName(guard: Guard, newName: String): Unit = {
+    new ModifyGuardNameHandler().execute(new ModifyGuardNameCommand(guard.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        guard.name = newName
+        println("Guard name changed to -> " + newName)
 
+        guard.shape.setGuardName(newName)
+    }
   }
 
-  def removeGuardFromTransition(): Unit = {
+  def removeGuardFromTransition(guard: Guard, transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveGuardFromTransitionHandler().execute(new RemoveGuardFromTransitionCommand(guard.name, transition.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        transition.guards = transition.guards.filterNot(g => g == guard)
 
+        drawingPaneController.removeGuardFromTransition(guard, transition)
+
+        println("Removing a guard from a transition")
+    }
   }
 }

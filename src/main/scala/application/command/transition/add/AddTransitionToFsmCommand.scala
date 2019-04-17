@@ -1,5 +1,5 @@
 package application.command.transition.add
 
-class AddTransitionToFsmCommand(var sourceStateName: String, var destinationStateName: String) {
+class AddTransitionToFsmCommand(val sourceStateName: String, val destinationStateName: String) {
 
 }

@@ -1,7 +1,7 @@
 package infrastructure.drawingpane.shape.action
 
-import infrastructure.elements.action.ActionType
-import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.element.action.ActionType
+import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
 

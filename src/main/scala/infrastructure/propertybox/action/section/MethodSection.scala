@@ -1,7 +1,7 @@
 package infrastructure.propertybox.action.section
 
-import infrastructure.elements.action.MethodType
-import infrastructure.elements.action.MethodType.MethodType
+import infrastructure.element.action.MethodType
+import infrastructure.element.action.MethodType.MethodType
 import javafx.scene.control.{ComboBox, Label}
 import javafx.scene.layout.HBox
 

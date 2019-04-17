@@ -1,6 +1,6 @@
 package infrastructure.propertybox.action.section
 
-import infrastructure.elements.action.ActionType.{ActionType, ENTRY, EXIT, GUARD}
+import infrastructure.element.action.ActionType.{ActionType, ENTRY, EXIT, GUARD}
 import javafx.scene.control.{Button, Label, TextField}
 import javafx.scene.layout.HBox
 

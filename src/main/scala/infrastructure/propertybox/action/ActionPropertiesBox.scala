@@ -1,8 +1,8 @@
 package infrastructure.propertybox.action
 
-import infrastructure.elements.action.ActionType.ActionType
-import infrastructure.elements.action.MethodType.MethodType
-import infrastructure.elements.action.UriType.UriType
+import infrastructure.element.action.ActionType.ActionType
+import infrastructure.element.action.MethodType.MethodType
+import infrastructure.element.action.UriType.UriType
 import infrastructure.propertybox.action.section.{ActionTimeoutSection, MethodSection, NameTypeSection, UriSection}
 import infrastructure.propertybox.body.BodyPropertiesBox
 import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox

@@ -1,6 +1,6 @@
 package infrastructure.propertybox.state.section
 
-import infrastructure.elements.action.ActionType.ActionType
+import infrastructure.element.action.ActionType.ActionType
 import infrastructure.propertybox.action.ActionPropertiesBox
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{HBox, Pane, VBox}
@@ -54,8 +54,8 @@ class StateActionsSection extends VBox {
 
   private def getPaneForActionType(actionType: ActionType): Pane = {
     actionType match {
-      case infrastructure.elements.action.ActionType.ENTRY => entryActionsSection
-      case infrastructure.elements.action.ActionType.EXIT => exitActionsSection
+      case infrastructure.element.action.ActionType.ENTRY => entryActionsSection
+      case infrastructure.element.action.ActionType.EXIT => exitActionsSection
     }
   }
 

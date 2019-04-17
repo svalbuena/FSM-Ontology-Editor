@@ -1,6 +1,7 @@
 package application.commandhandler.state.modify
 
-import application.command.start.modify.ModifyStateTypeCommand
+import application.command.state.modify
+import application.command.state.modify.ModifyStateTypeCommand
 import domain.Environment
 import domain.state.StateType
 
@@ -9,9 +10,9 @@ class ModifyStateTypeHandler {
     Environment.getState(modifyStateTypeCommand.stateName) match {
       case Left(error) => Left(error)
       case Right(state) => state.stateType = modifyStateTypeCommand.stateType match {
-        case application.command.start.modify.StateType.INITIAL => StateType.INITIAL
-        case application.command.start.modify.StateType.SIMPLE => StateType.SIMPLE
-        case application.command.start.modify.StateType.FINAL => StateType.FINAL
+        case modify.StateType.INITIAL => StateType.INITIAL
+        case modify.StateType.SIMPLE => StateType.SIMPLE
+        case modify.StateType.FINAL => StateType.FINAL
       }
     }
   }
