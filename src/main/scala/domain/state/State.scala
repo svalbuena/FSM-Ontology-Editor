@@ -1,9 +1,9 @@
 package domain.state
 
-import domain.{Element, Environment, PositionableElement}
 import domain.action.Action
 import domain.exception.DomainError
 import domain.state.StateType.StateType
+import domain.{Element, Environment, PositionableElement}
 
 class State(name: String,
             x: Double,
@@ -12,10 +12,11 @@ class State(name: String,
             var actions: List[Action] = List()
            ) extends PositionableElement(name, x, y) {
 
-  def this(x: Double, y: Double) = this(Environment.generateUniqueName("prototypeUriParameter"), x , y)
+  def this(x: Double, y: Double) = this(Environment.generateUniqueName("prototypeUriParameter"), x, y)
 
   def stateType: StateType = _stateType
-  def stateType_= (newStateType: StateType): Either[DomainError, StateType] = {
+
+  def stateType_=(newStateType: StateType): Either[DomainError, StateType] = {
     stateType = newStateType
     Right(stateType)
   }
@@ -27,7 +28,7 @@ class State(name: String,
       case Right(modifiedActionList) =>
         actions = modifiedActionList
         (action.name :: action.getChildrenNames).foreach(Environment.addName)
-        Right()
+        Right(())
     }
   }
 
@@ -37,7 +38,7 @@ class State(name: String,
       case Right(modifiedActionList) =>
         actions = modifiedActionList
         (action.name :: action.getChildrenNames).foreach(Environment.removeName)
-        Right()
+        Right(())
     }
   }
 

@@ -1,9 +1,9 @@
 package domain.fsm
 
-import domain.{Element, Environment}
 import domain.exception.{DomainError, EndError, StartError}
 import domain.state.State
 import domain.transition.Transition
+import domain.{Element, Environment}
 
 class FiniteStateMachine(name: String,
                          private var _isStartDefined: Boolean = false,
@@ -15,7 +15,8 @@ class FiniteStateMachine(name: String,
   def this() = this(Environment.generateUniqueName("fsm"))
 
   def isStartDefined: Boolean = _isStartDefined
-  def isStartDefined_= (newIsStartDefined: Boolean): Either[DomainError, Boolean] = {
+
+  def isStartDefined_=(newIsStartDefined: Boolean): Either[DomainError, Boolean] = {
     if (isStartDefined == newIsStartDefined) {
       if (isStartDefined) Left(new StartError("Start is already defined, only one instance allowed"))
       else Left(new StartError("There isn't any Start to remove"))
@@ -25,7 +26,8 @@ class FiniteStateMachine(name: String,
   }
 
   def isEndDefined: Boolean = _isStartDefined
-  def isEndDefined_= (newIsEndDefined: Boolean): Either[DomainError, Boolean] = {
+
+  def isEndDefined_=(newIsEndDefined: Boolean): Either[DomainError, Boolean] = {
     if (isEndDefined == newIsEndDefined) {
       if (isEndDefined) Left(new EndError("End is already defined, only one instance allowed"))
       else Left(new EndError("There isn't any End to remove"))
@@ -41,7 +43,7 @@ class FiniteStateMachine(name: String,
       case Right(modifiedStateList) =>
         states = modifiedStateList
         (state.name :: state.getChildrenNames).foreach(Environment.addName)
-        Right()
+        Right(())
     }
   }
 
@@ -51,7 +53,7 @@ class FiniteStateMachine(name: String,
       case Right(modifiedStateList) =>
         states = modifiedStateList
         (state.name :: state.getChildrenNames).foreach(Environment.removeName)
-        Right()
+        Right(())
     }
   }
 
@@ -61,7 +63,7 @@ class FiniteStateMachine(name: String,
       case Right(modifiedTransitionList) =>
         transitions = modifiedTransitionList
         (transition.name :: transition.getChildrenNames).foreach(Environment.addName)
-        Right()
+        Right(())
     }
   }
 
@@ -71,7 +73,7 @@ class FiniteStateMachine(name: String,
       case Right(modifiedTransitionList) =>
         transitions = modifiedTransitionList
         (transition.name :: transition.getChildrenNames).foreach(Environment.removeName)
-        Right()
+        Right(())
     }
   }
 

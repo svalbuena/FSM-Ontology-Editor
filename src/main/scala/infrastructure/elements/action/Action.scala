@@ -4,10 +4,9 @@ import infrastructure.drawingpane.shape.action.ActionPane
 import infrastructure.elements.Element
 import infrastructure.elements.action.ActionType.ActionType
 import infrastructure.elements.action.MethodType.MethodType
-import infrastructure.elements.action.body.{Body, BodyType}
-import infrastructure.elements.action.uri.UriType
-import infrastructure.elements.action.uri.UriType.UriType
-import infrastructure.elements.action.uri.prototype.PrototypeUri
+import infrastructure.elements.action.UriType.UriType
+import infrastructure.elements.body.Body
+import infrastructure.elements.prototypeuri.PrototypeUri
 import infrastructure.menu.contextmenu.action.ActionContextMenu
 import infrastructure.propertybox.action.ActionPropertiesBox
 

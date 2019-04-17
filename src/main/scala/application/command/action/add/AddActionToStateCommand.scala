@@ -1,5 +1,7 @@
 package application.command.action.add
 
-class AddActionToStateCommand(val stateName: String) {
+import infrastructure.elements.action.ActionType.ActionType
+
+class AddActionToStateCommand(val actionType: ActionType, val stateName: String) {
 
 }

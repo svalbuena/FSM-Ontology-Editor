@@ -5,7 +5,7 @@ import domain.exception.{ElementNotFoundError, NameNotUniqueError}
 abstract class Element(private var _name: String) {
   def name: String = _name
 
-  def name_= (newName: String): Either[NameNotUniqueError, String] = {
+  def name_=(newName: String): Either[NameNotUniqueError, String] = {
     if (Environment.isNameUnique(newName)) {
       name = newName
       Right(name)

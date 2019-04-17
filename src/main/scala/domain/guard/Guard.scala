@@ -1,14 +1,14 @@
 package domain.guard
 
-import domain.{Element, Environment}
-import domain.action.{Action, PrototypeUriParameter}
+import domain.action.Action
 import domain.condition.Condition
 import domain.exception.DomainError
+import domain.{Element, Environment}
 
 class Guard(name: String,
             var actions: List[Action] = List(),
             var conditions: List[Condition] = List()
-           ) extends Element(name)  {
+           ) extends Element(name) {
 
   def this() = this(Environment.generateUniqueName("guard"))
 
@@ -18,7 +18,7 @@ class Guard(name: String,
       case Right(modifiedActionList) =>
         actions = modifiedActionList
         (action.name :: action.getChildrenNames).foreach(Environment.addName)
-        Right()
+        Right(())
     }
   }
 
@@ -28,7 +28,7 @@ class Guard(name: String,
       case Right(modifiedActionList) =>
         actions = modifiedActionList
         (action.name :: action.getChildrenNames).foreach(Environment.removeName)
-        Right()
+        Right(())
     }
   }
 
@@ -38,7 +38,7 @@ class Guard(name: String,
       case Right(modifiedConditionList) =>
         conditions = modifiedConditionList
         Environment.addName(condition.name)
-        Right()
+        Right(())
     }
   }
 
@@ -48,7 +48,7 @@ class Guard(name: String,
       case Right(modifiedConditionList) =>
         conditions = modifiedConditionList
         Environment.removeName(condition.name)
-        Right()
+        Right(())
     }
   }
 

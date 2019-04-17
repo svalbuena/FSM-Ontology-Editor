@@ -1,7 +1,7 @@
 package domain.action
 
-import domain.{Element, Environment}
 import domain.exception.DomainError
+import domain.{Element, Environment}
 
 class PrototypeUri(name: String,
                    private var _structure: String = "",
@@ -12,7 +12,8 @@ class PrototypeUri(name: String,
   def this() = this(Environment.generateUniqueName("prototypeUri"))
 
   def structure: String = _structure
-  def structure_= (newStructure: String): Either[DomainError, String] = {
+
+  def structure_=(newStructure: String): Either[DomainError, String] = {
     structure = newStructure
     Right(structure)
   }
@@ -23,7 +24,7 @@ class PrototypeUri(name: String,
       case Right(modifiedParameterList) =>
         prototypeUriParameters = modifiedParameterList
         Environment.addName(parameter.name)
-        Right()
+        Right(())
     }
   }
 
@@ -33,7 +34,7 @@ class PrototypeUri(name: String,
       case Right(modifiedParameterList) =>
         prototypeUriParameters = modifiedParameterList
         Environment.addName(parameter.name)
-        Right()
+        Right(())
     }
   }
 

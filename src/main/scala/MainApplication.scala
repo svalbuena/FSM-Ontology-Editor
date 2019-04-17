@@ -1,15 +1,13 @@
 import infrastructure.controller.DrawingPaneController
-import infrastructure.drawingpane.{Canvas, DrawingPane}
-import javafx.application.Application
-import javafx.scene.{Group, Scene}
-import javafx.scene.layout.{BorderPane, Pane, Region}
-import javafx.stage.Stage
+import infrastructure.drawingpane.DrawingPane
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbar.MainToolBar
 import infrastructure.toolbox.ToolBox
 import infrastructure.viewbar.ViewBar
-import javafx.css.Size
-import javafx.scene.control.ScrollPane
+import javafx.application.Application
+import javafx.scene.Scene
+import javafx.scene.layout.BorderPane
+import javafx.stage.Stage
 
 class MainApplication extends Application {
   val SceneWidth = 800

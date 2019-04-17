@@ -1,9 +1,9 @@
 package domain.transition
 
-import domain.{Element, Environment}
 import domain.exception.DomainError
 import domain.guard.Guard
 import domain.state.State
+import domain.{Element, Environment}
 
 class Transition(name: String,
                  val source: State,
@@ -20,7 +20,7 @@ class Transition(name: String,
       case Right(modifiedGuardList) =>
         guards = modifiedGuardList
         (guard.name :: guard.getChildrenNames).foreach(Environment.addName)
-        Right()
+        Right(())
     }
   }
 
@@ -30,7 +30,7 @@ class Transition(name: String,
       case Right(modifiedGuardList) =>
         guards = modifiedGuardList
         (guard.name :: guard.getChildrenNames).foreach(Environment.removeName)
-        Right()
+        Right(())
     }
   }
 

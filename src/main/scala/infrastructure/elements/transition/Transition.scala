@@ -1,9 +1,12 @@
 package infrastructure.elements.transition
 
 import infrastructure.drawingpane.shape.transition.TransitionShape
-import infrastructure.elements.Element
+import infrastructure.elements.end.End
+import infrastructure.elements.ghostnode.GhostElement
 import infrastructure.elements.guard.Guard
-import infrastructure.elements.node._
+import infrastructure.elements.start.Start
+import infrastructure.elements.state.State
+import infrastructure.elements.{ConnectableElement, Element}
 import infrastructure.propertybox.transition.TransitionPropertiesBox
 import javafx.scene.layout.Pane
 
@@ -27,5 +30,4 @@ class Transition(name: String,
       case ghostElement: GhostElement => ghostElement.shape
     }
   }
-
 }

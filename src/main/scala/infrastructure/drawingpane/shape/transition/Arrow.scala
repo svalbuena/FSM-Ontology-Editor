@@ -1,10 +1,10 @@
 package infrastructure.drawingpane.shape.transition
 
+import infrastructure.math.Equation
 import javafx.geometry.Point2D
 import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Line, Polygon}
-import math.Equation
 
 class Arrow extends Pane {
   private val line = new Line()

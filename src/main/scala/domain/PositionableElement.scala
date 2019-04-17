@@ -1,7 +1,6 @@
 package domain
 
 import domain.exception.DomainError
-import domain.state.StateType.StateType
 
 abstract class PositionableElement(name: String,
                                    private var _x: Double,
@@ -9,13 +8,15 @@ abstract class PositionableElement(name: String,
                                   ) extends Element(name) {
 
   def x: Double = _x
-  def x_= (newX: Double): Either[DomainError, Double] = {
+
+  def x_=(newX: Double): Either[DomainError, Double] = {
     x = newX
     Right(x)
   }
 
   def y: Double = _y
-  def y_= (newY: Double): Either[DomainError, Double] = {
+
+  def y_=(newY: Double): Either[DomainError, Double] = {
     y = newY
     Right(y)
   }

@@ -19,3 +19,5 @@ libraryDependencies ++= Seq (
   "org.openjfx" % "javafx-graphics" % "12" classifier osName.value withSources() withJavadoc()
 )
 
+scalacOptions := Seq("-unchecked", "-deprecation")
+

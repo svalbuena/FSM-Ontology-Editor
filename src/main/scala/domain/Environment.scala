@@ -2,7 +2,7 @@ package domain
 
 import domain.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
 import domain.condition.Condition
-import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError, NameNotUniqueError}
+import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError}
 import domain.fsm.FiniteStateMachine
 import domain.guard.Guard
 import domain.state.State
@@ -19,7 +19,7 @@ object Environment {
       case Right(modifiedFsmList) =>
         fsmList = modifiedFsmList
         (fsm.name :: fsm.getChildrenNames).foreach(addName)
-        Right()
+        Right(())
     }
   }
 
@@ -40,7 +40,7 @@ object Environment {
       case Right(modifiedFsmList) =>
         fsmList = modifiedFsmList
         (fsm.name :: fsm.getChildrenNames).foreach(removeName)
-        Right()
+        Right(())
     }
   }
 
@@ -48,7 +48,7 @@ object Environment {
     var name = ""
 
     do {
-      name = prefix +IdGenerator.getId
+      name = prefix + IdGenerator.getId
     } while (nameList.contains(name))
 
     name
@@ -160,7 +160,7 @@ object Environment {
       val fsmIndex = selectedFsm.get
       val fsm = fsmList(fsmIndex)
 
-      for (parameter <- fsm.states.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters))::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)))) {
+      for (parameter <- fsm.states.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)))) {
         if (parameter.name == prototypeUriParameterName) Right(parameter)
       }
 
@@ -170,8 +170,10 @@ object Environment {
 
 
   def isNameRepeated(name: String): Boolean = nameList.contains(name)
+
   def isNameUnique(name: String): Boolean = !isNameRepeated(name)
 
   def addName(name: String): Unit = nameList = name :: nameList
+
   def removeName(name: String): Unit = nameList = nameList.filterNot(n => n == name)
 }

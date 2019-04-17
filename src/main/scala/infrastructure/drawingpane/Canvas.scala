@@ -1,11 +1,9 @@
 package infrastructure.drawingpane
 
 import infrastructure.drawingpane.shape.transition.TransitionShape
+import infrastructure.math.Equation
 import javafx.geometry.Point2D
 import javafx.scene.layout.Pane
-import math.Equation
-
-import scala.math
 
 class Canvas extends Pane {
   /* Connectable Node */
@@ -58,7 +56,6 @@ class Canvas extends Pane {
     println(s"Src translate = ${src.getTranslateX}, ${src.getTranslateY}")
 
     println(s"Dst dimensions = $dstWidth, $dstHeight")
-
 
 
     val srcCenter = new Point2D(src.getTranslateX + srcWidth / 2, src.getTranslateY + srcHeight / 2)

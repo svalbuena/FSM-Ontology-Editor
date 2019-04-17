@@ -4,21 +4,28 @@ import application.command.fsm.add.AddFsmCommand
 import application.command.fsm.modify.SelectFsmCommand
 import application.commandhandler.fsm.add.AddFsmHandler
 import application.commandhandler.fsm.modify.SelectFsmHandler
-import infrastructure.controller.action.{ActionListener, BodyListener, PrototypeParameterListener, PrototypeUriListener}
-import infrastructure.controller.condition.ConditionListener
-import infrastructure.controller.end.EndListener
-import infrastructure.controller.guard.GuardListener
-import infrastructure.controller.start.StartListener
-import infrastructure.controller.state.StateListener
-import infrastructure.controller.transition.TransitionListener
+import infrastructure.controller.action.ActionController
+import infrastructure.controller.body.BodyController
+import infrastructure.controller.condition.ConditionController
+import infrastructure.controller.end.EndController
+import infrastructure.controller.guard.GuardController
+import infrastructure.controller.prototypeuri.PrototypeUriController
+import infrastructure.controller.prototypeuriparameter.PrototypeUriParameterController
+import infrastructure.controller.start.StartController
+import infrastructure.controller.state.StateController
+import infrastructure.controller.transition.TransitionController
 import infrastructure.drawingpane.{DrawingPane, MousePosition}
-import infrastructure.elements.action.body.Body
-import infrastructure.elements.action.uri.prototype.PrototypeUri
-import infrastructure.elements.action.uri.prototype.parameter.PrototypeParameter
+import infrastructure.elements.ConnectableElement
 import infrastructure.elements.action.{Action, ActionType}
+import infrastructure.elements.body.Body
 import infrastructure.elements.condition.Condition
+import infrastructure.elements.end.End
+import infrastructure.elements.ghostnode.GhostElement
 import infrastructure.elements.guard.Guard
-import infrastructure.elements.node._
+import infrastructure.elements.prototypeuri.PrototypeUri
+import infrastructure.elements.prototypeuriparameter.PrototypeUriParameter
+import infrastructure.elements.start.Start
+import infrastructure.elements.state.State
 import infrastructure.elements.transition.Transition
 import infrastructure.id.IdGenerator
 import infrastructure.propertybox.PropertiesBox
@@ -48,7 +55,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     }
   }
 
-  val prototypeParameter = new PrototypeParameter("SELECT * FROM users", "[user_id]")
+  val prototypeParameter = new PrototypeUriParameter("SELECT * FROM users", "[user_id]")
 
   val action1 = new Action(name = "Action" + idGenerator.getId, actionType = ActionType.ENTRY, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
   val action2 = new Action(name = "Action" + idGenerator.getId, actionType = ActionType.ENTRY, prototypeUri = new PrototypeUri(name = idGenerator.getId), body = new Body(name = idGenerator.getId))
@@ -114,7 +121,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   }
 
   def addState(state: State, x: Double, y: Double): Unit = {
-    new StateListener(state, this, drawingPane, idGenerator)
+    new StateController(state, this, drawingPane, idGenerator)
 
     state.propertiesBox.setName(state.name)
 
@@ -129,13 +136,13 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   def addStart(start: Start, x: Double, y: Double): Unit = {
     canvas.drawConnectableNode(start.shape, x, y)
 
-    new StartListener(start, this, drawingPane, idGenerator)
+    new StartController(start, this, drawingPane, idGenerator)
   }
 
   def addEnd(end: End, x: Double, y: Double): Unit = {
     canvas.drawConnectableNode(end.shape, x, y)
 
-    new EndListener(end, this, drawingPane)
+    new EndController(end, this, drawingPane)
   }
 
   def addTransition(transition: Transition): Unit = {
@@ -143,7 +150,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
     transition.propertiesBox.setTransitionName(transition.name
     )
-    new TransitionListener(transition, this, idGenerator)
+    new TransitionController(transition, this, idGenerator)
   }
 
   def addActionToState(action: Action, state: State): Unit = {
@@ -183,7 +190,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     addBody(action.body)
     addPrototypeUri(action.prototypeUri)
 
-    new ActionListener(action, this, drawingPane, idGenerator)
+    new ActionController(action, this, drawingPane, idGenerator)
   }
 
   def addGuardToTransition(guard: Guard, transition: Transition): Unit = {
@@ -211,7 +218,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
       addConditionToGuard(condition, guard)
     }
 
-    new GuardListener(guard, this, idGenerator)
+    new GuardController(guard, this, idGenerator)
   }
 
   def addConditionToGuard(condition: Condition, guard: Guard): Unit = {
@@ -233,14 +240,14 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
     condition.shape.setConditionName(condition.name)
 
-    new ConditionListener(condition, this)
+    new ConditionController(condition, this)
   }
 
   def addBody(body: Body): Unit = {
     body.propertiesBox.setBodyType(body.bodyType)
     body.propertiesBox.setBodyContent(body.content)
 
-    new BodyListener(body)
+    new BodyController(body)
   }
 
   def addPrototypeUri(prototypeUri: PrototypeUri): Unit = {
@@ -249,10 +256,10 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     }
     prototypeUri.propertiesBox.setStructure(prototypeUri.structure)
 
-    new PrototypeUriListener(prototypeUri, this)
+    new PrototypeUriController(prototypeUri, this)
   }
 
-  def addPrototypeUriParameterToPrototypeUri(prototypeUriParameter: PrototypeParameter, prototypeUri: PrototypeUri): Unit = {
+  def addPrototypeUriParameterToPrototypeUri(prototypeUriParameter: PrototypeUriParameter, prototypeUri: PrototypeUri): Unit = {
     addPrototypeUriParameter(prototypeUriParameter)
 
     prototypeUriParameter.setParent(prototypeUri)
@@ -260,11 +267,11 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     prototypeUri.propertiesBox.addParameter(prototypeUriParameter.propertiesBox)
   }
 
-  def addPrototypeUriParameter(prototypeParameter: PrototypeParameter): Unit = {
+  def addPrototypeUriParameter(prototypeParameter: PrototypeUriParameter): Unit = {
     prototypeParameter.propertiesBox.setQuery(prototypeParameter.query)
     prototypeParameter.propertiesBox.setPlaceholder(prototypeParameter.placeholder)
 
-    new PrototypeParameterListener(prototypeParameter, this)
+    new PrototypeUriParameterController(prototypeParameter, this)
   }
 
   def addTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
@@ -341,7 +348,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     guard.shape.removeCondition(condition.shape)
   }
 
-  def removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter: PrototypeParameter, prototypeUri: PrototypeUri): Unit = {
+  def removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter: PrototypeUriParameter, prototypeUri: PrototypeUri): Unit = {
     prototypeUri.propertiesBox.removePrototypeUriParameter(prototypeUriParameter.propertiesBox)
   }
 

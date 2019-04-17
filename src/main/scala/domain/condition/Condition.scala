@@ -10,7 +10,8 @@ class Condition(name: String,
   def this() = this(Environment.generateUniqueName("condition"))
 
   def query: String = _query
-  def query_= (newQuery: String): Either[DomainError, String] = {
+
+  def query_=(newQuery: String): Either[DomainError, String] = {
     query = newQuery
     Right(query)
   }
