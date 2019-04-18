@@ -8,19 +8,18 @@ import application.commandhandler.state.modify.{ModifyStateNameHandler, ModifySt
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
 import infrastructure.controller.DrawingPaneController
 import infrastructure.controller.action.ActionController
-import infrastructure.drawingpane.DrawingPane
+import infrastructure.controller.transition.TransitionController
 import infrastructure.element.action.ActionType
 import infrastructure.element.state.StateType.StateType
 import infrastructure.element.state.{State, StateType}
-import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class StateController(state: State, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+class StateController(state: State, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
-  private val canvas = drawingPane.canvas
+  private val canvas = drawingPaneController.canvas
 
   private val shape = state.shape
   private val propertiesBox = state.propertiesBox
@@ -36,13 +35,8 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
             drawingPaneController.propertiesBox.setContent(propertiesBox)
 
           case _: TransitionItem =>
-            if (drawingPaneController.isTemporalTransitionDefined) {
-              drawingPaneController.establishTemporalTransition(state)
-              toolBox.setToolToDefault()
-            } else {
-              val point = shape.getLocalToParentTransform.transform(event.getX, event.getY)
-              drawingPaneController.addTemporalTransition(state, point.getX, point.getY)
-            }
+            val point = state.shape.getLocalToParentTransform.transform(event.getX, event.getY)
+            drawingPaneController.transitionToolUsed(state, point)
 
           case _: DeleteMouseSelector =>
             StateController.removeStateFromFsm(state, drawingPaneController)
@@ -62,8 +56,8 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        canvas.dragConnectableNode(shape, deltaX, deltaY)
-        state.getTransitions.foreach(transition => canvas.dragTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        canvas.moveConnectableNode(shape, deltaX, deltaY)
+        state.getTransitions.foreach(transition => canvas.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
     }
@@ -92,15 +86,18 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
 }
 
 object StateController {
-  def addStateToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+  def addStateToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Option[State] = {
     new AddStateToFsmHandler().execute(new AddStateToFsmCommand(x, y)) match {
-      case Left(error) => println(error.getMessage)
+      case Left(error) =>
+        println(error.getMessage)
+        None
       case Right(stateName) =>
         val state = new State(stateName, StateType.SIMPLE)
 
-        drawingPaneController.addState(state, x, y)
+        drawState(state, x, y, drawingPaneController)
 
         println("Adding a state")
+        Some(state)
     }
   }
 
@@ -132,9 +129,35 @@ object StateController {
     new RemoveStateFromFsmHandler().execute(new RemoveStateFromFsmCommand(state.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        drawingPaneController.removeConnectableElement(state, state.shape)
+        eraseState(state, drawingPaneController)
+
+        for (inTransition <- state.inTransitions) {
+          inTransition.source.outTransitions = inTransition.source.outTransitions.filterNot(t => t == inTransition)
+          TransitionController.eraseTransition(inTransition, drawingPaneController)
+        }
+
+        for (outTransition <- state.outTransitions) {
+          outTransition.source.inTransitions = outTransition.source.inTransitions.filterNot(t => t == outTransition)
+          TransitionController.eraseTransition(outTransition, drawingPaneController)
+        }
 
         println("Removing a state")
     }
+  }
+
+  def drawState(state: State, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+
+    state.propertiesBox.setName(state.name)
+
+    state.shape.setName(state.name)
+    drawingPaneController.canvas.drawConnectableNode(state.shape, x, y)
+
+    new StateController(state, drawingPaneController)
+  }
+
+  def eraseState(state: State, drawingPaneController: DrawingPaneController): Unit = {
+    val canvas = drawingPaneController.canvas
+
+    canvas.getChildren.remove(state.shape)
   }
 }

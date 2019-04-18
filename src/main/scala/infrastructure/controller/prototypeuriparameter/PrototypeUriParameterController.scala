@@ -6,11 +6,10 @@ import application.command.prototypeuriparameter.remove.RemovePrototypeUriParame
 import application.commandhandler.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriHandler
 import application.commandhandler.prototypeuriparameter.modify.{ModifyPrototypeUriParameterPlaceholderHandler, ModifyPrototypeUriParameterQueryHandler}
 import application.commandhandler.prototypeuriparameter.remove.RemovePrototypeUriParameterFromPrototypeUriHandler
-import infrastructure.controller.DrawingPaneController
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
 
-class PrototypeUriParameterController(prototypeUriParameter: PrototypeUriParameter, drawingPaneController: DrawingPaneController) {
+class PrototypeUriParameterController(prototypeUriParameter: PrototypeUriParameter) {
   private val propertiesBox = prototypeUriParameter.propertiesBox
 
   propertiesBox.setOnParameterPlaceholderChanged(newPlaceholder => PrototypeUriParameterController.modifyPrototypeUriParameterPlaceholder(prototypeUriParameter, newPlaceholder))
@@ -20,21 +19,22 @@ class PrototypeUriParameterController(prototypeUriParameter: PrototypeUriParamet
   private def removePrototypeUriParameter(): Unit = {
     if (prototypeUriParameter.hasParent) {
       val prototypeUri = prototypeUriParameter.getParent
-      PrototypeUriParameterController.removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter, prototypeUri, drawingPaneController)
+      PrototypeUriParameterController.removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter, prototypeUri)
     }
   }
 }
 
 object PrototypeUriParameterController {
-  def addPrototypeUriParameterToPrototypeUri(prototypeUri: PrototypeUri, drawingPaneController: DrawingPaneController): Unit = {
+  def addPrototypeUriParameterToPrototypeUri(prototypeUri: PrototypeUri): Unit = {
     new AddPrototypeUriParameterToPrototypeUriHandler().execute(new AddPrototypeUriParameterToPrototypeUriCommand(prototypeUri.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(parameterName) =>
         val prototypeUriParameter = new PrototypeUriParameter(parameterName)
+        prototypeUriParameter.setParent(prototypeUri)
 
-        prototypeUri.prototypeParameters = prototypeUriParameter :: prototypeUri.prototypeParameters
+        prototypeUri.addPrototypeUriParameter(prototypeUriParameter)
 
-        drawingPaneController.addPrototypeUriParameterToPrototypeUri(prototypeUriParameter, prototypeUri)
+        drawPrototypeUriParameter(prototypeUriParameter)
 
         println("Adding a parameter to a prototype uri")
     }
@@ -60,15 +60,20 @@ object PrototypeUriParameterController {
     }
   }
 
-  def removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter: PrototypeUriParameter, prototypeUri: PrototypeUri, drawingPaneController: DrawingPaneController): Unit = {
+  def removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter: PrototypeUriParameter, prototypeUri: PrototypeUri): Unit = {
     new RemovePrototypeUriParameterFromPrototypeUriHandler().execute(new RemovePrototypeUriParameterFromPrototypeUriCommand(prototypeUriParameter.name, prototypeUri.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        prototypeUri.prototypeParameters = prototypeUri.prototypeParameters.filterNot(p => p == prototypeUriParameter)
-
-        drawingPaneController.removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter, prototypeUri)
+        prototypeUri.removePrototypeUriParameter(prototypeUriParameter)
 
         println("Removing a parameter")
     }
+  }
+
+  def drawPrototypeUriParameter(prototypeUriParameter: PrototypeUriParameter): Unit = {
+    prototypeUriParameter.propertiesBox.setQuery(prototypeUriParameter.query)
+    prototypeUriParameter.propertiesBox.setPlaceholder(prototypeUriParameter.placeholder)
+
+    new PrototypeUriParameterController(prototypeUriParameter)
   }
 }

@@ -13,6 +13,7 @@ class ModifyStateTypeHandler {
         case modify.StateType.INITIAL => StateType.INITIAL
         case modify.StateType.SIMPLE => StateType.SIMPLE
         case modify.StateType.FINAL => StateType.FINAL
+        case modify.StateType.INITIAL_FINAL => StateType.INITIAL_FINAL
       }
     }
   }

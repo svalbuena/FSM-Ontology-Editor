@@ -13,14 +13,14 @@ class PrototypeUriParameter(name: String,
   def placeholder: String = _placeholder
 
   def placeholder_=(newPlaceholder: String): Either[DomainError, String] = {
-    placeholder = newPlaceholder
+    _placeholder = newPlaceholder
     Right(placeholder)
   }
 
   def query: String = _query
 
   def query_=(newQuery: String): Either[DomainError, String] = {
-    query = newQuery
+    _query = newQuery
     Right(query)
   }
 }

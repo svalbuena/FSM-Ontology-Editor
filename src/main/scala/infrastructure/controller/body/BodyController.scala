@@ -47,4 +47,11 @@ object BodyController {
         println("Body type changed to -> " + newBodyType)
     }
   }
+
+  def drawBody(body: Body): Unit = {
+    body.propertiesBox.setBodyType(body.bodyType)
+    body.propertiesBox.setBodyContent(body.content)
+
+    new BodyController(body)
+  }
 }

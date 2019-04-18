@@ -6,14 +6,12 @@ import application.command.guard.remove.RemoveGuardFromTransitionCommand
 import application.commandhandler.guard.add.AddGuardToTransitionHandler
 import application.commandhandler.guard.modify.ModifyGuardNameHandler
 import application.commandhandler.guard.remove.RemoveGuardFromTransitionHandler
-import infrastructure.controller.DrawingPaneController
 import infrastructure.controller.action.ActionController
 import infrastructure.controller.condition.ConditionController
 import infrastructure.element.guard.Guard
 import infrastructure.element.transition.Transition
-import infrastructure.id.IdGenerator
 
-class GuardController(guard: Guard, drawingPaneController: DrawingPaneController, idGenerator: IdGenerator) {
+class GuardController(guard: Guard) {
   private val propertiesBox = guard.propertiesBox
   private val shape = guard.shape
 
@@ -25,28 +23,31 @@ class GuardController(guard: Guard, drawingPaneController: DrawingPaneController
 
   propertiesBox.setOnRemoveGuardButtonClicked(() => removeGuardFromTransition())
 
-  private def addActionToGuard(): Unit = ActionController.addActionToGuard(guard, drawingPaneController)
+  private def addActionToGuard(): Unit = ActionController.addActionToGuard(guard)
 
-  private def addConditionToGuard(): Unit = ConditionController.addConditionToGuard(guard, drawingPaneController)
+  private def addConditionToGuard(): Unit = ConditionController.addConditionToGuard(guard)
 
   private def removeGuardFromTransition(): Unit = {
     if (guard.hasParent) {
       val transition = guard.getParent
-      GuardController.removeGuardFromTransition(guard, transition, drawingPaneController)
+      GuardController.removeGuardFromTransition(guard, transition)
     }
   }
 }
 
 object GuardController {
-  def addGuardToTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+  def addGuardToTransition(transition: Transition): Unit = {
     new AddGuardToTransitionHandler().execute(new AddGuardToTransitionCommand(transition.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(guardName) =>
         val guard = new Guard(guardName)
+        guard.setParent(transition)
 
-        transition.guards = guard :: transition.guards
+        transition.addGuard(guard)
 
-        drawingPaneController.addGuardToTransition(guard, transition)
+        drawGuard(guard)
+
+        new GuardController(guard)
 
         println("Adding a guard to a transition")
     }
@@ -63,15 +64,20 @@ object GuardController {
     }
   }
 
-  def removeGuardFromTransition(guard: Guard, transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+  def removeGuardFromTransition(guard: Guard, transition: Transition): Unit = {
     new RemoveGuardFromTransitionHandler().execute(new RemoveGuardFromTransitionCommand(guard.name, transition.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        transition.guards = transition.guards.filterNot(g => g == guard)
-
-        drawingPaneController.removeGuardFromTransition(guard, transition)
+        transition.removeGuard(guard)
 
         println("Removing a guard from a transition")
     }
+  }
+
+  def drawGuard(guard: Guard): Unit = {
+    guard.propertiesBox.setGuardTitledPaneName(guard.name)
+    guard.propertiesBox.setGuardName(guard.name)
+
+    guard.shape.setGuardName(guard.name)
   }
 }

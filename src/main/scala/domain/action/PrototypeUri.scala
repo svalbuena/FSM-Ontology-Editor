@@ -1,6 +1,6 @@
 package domain.action
 
-import domain.exception.DomainError
+import domain.exception.{DomainError, ElementNotFoundError, NameNotUniqueError}
 import domain.{Element, Environment}
 
 class PrototypeUri(name: String,
@@ -14,27 +14,27 @@ class PrototypeUri(name: String,
   def structure: String = _structure
 
   def structure_=(newStructure: String): Either[DomainError, String] = {
-    structure = newStructure
+    _structure = newStructure
     Right(structure)
   }
 
   def addPrototypeUriParameter(parameter: PrototypeUriParameter): Either[DomainError, _] = {
-    Element.addElementToList(parameter, prototypeUriParameters) match {
-      case Left(error) => Left(error)
-      case Right(modifiedParameterList) =>
-        prototypeUriParameters = modifiedParameterList
-        Environment.addName(parameter.name)
-        Right(())
+    if (Environment.isNameUnique(parameter.name)) {
+      prototypeUriParameters = parameter :: prototypeUriParameters
+      Environment.addName(parameter.name)
+      Right(())
+    } else {
+      Left(new NameNotUniqueError(s"Error -> Name '${parameter.name} is not unique"))
     }
   }
 
   def removePrototypeUriParameter(parameter: PrototypeUriParameter): Either[DomainError, _] = {
-    Element.removeElementFromList(parameter, prototypeUriParameters) match {
-      case Left(error) => Left(error)
-      case Right(modifiedParameterList) =>
-        prototypeUriParameters = modifiedParameterList
-        Environment.addName(parameter.name)
-        Right(())
+    if (prototypeUriParameters.contains(parameter)) {
+      prototypeUriParameters = prototypeUriParameters.filterNot(p => p == parameter)
+      Environment.removeName(parameter.name)
+      Right(())
+    } else {
+      Left(new ElementNotFoundError("PrototypeUriParameter not found"))
     }
   }
 

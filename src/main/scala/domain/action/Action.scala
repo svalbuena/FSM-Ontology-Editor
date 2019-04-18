@@ -24,28 +24,28 @@ class Action(name: String,
     if (actionType == ActionType.GUARD && (newActionType == ActionType.ENTRY || newActionType == ActionType.EXIT)) Left(new ActionTypeError("A guard action can't be converted to an entry or exit action"))
     if ((actionType == ActionType.ENTRY || actionType == ActionType.EXIT) && newActionType == ActionType.GUARD) Left(new ActionTypeError("An entry or exit action can't be converted to a guard action"))
 
-    actionType = newActionType
+    _actionType = newActionType
     Right(actionType)
   }
 
   def methodType: MethodType = _methodType
 
   def methodType_=(newMethodType: MethodType): Either[DomainError, MethodType] = {
-    methodType = newMethodType
+    _methodType = newMethodType
     Right(methodType)
   }
 
   def uriType: UriType = _uriType
 
   def uriType_=(newUriType: UriType): Either[DomainError, UriType] = {
-    uriType = newUriType
+    _uriType = newUriType
     Right(uriType)
   }
 
   def absoluteUri: String = _absoluteUri
 
   def absoluteUri_=(newAbsoluteUri: String): Either[DomainError, String] = {
-    absoluteUri = newAbsoluteUri
+    _absoluteUri = newAbsoluteUri
     Right(absoluteUri)
   }
 
@@ -53,7 +53,7 @@ class Action(name: String,
 
   def timeout_=(newTimeout: Int): Either[DomainError, Int] = {
     if (timeout < 0) Left(new InvalidTimeoutError("Timeout value can't be negative"))
-    timeout = newTimeout
+    _timeout = newTimeout
     Right(timeout)
   }
 

@@ -2,7 +2,7 @@ package domain
 
 import domain.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
 import domain.condition.Condition
-import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError}
+import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError, NameNotUniqueError}
 import domain.fsm.FiniteStateMachine
 import domain.guard.Guard
 import domain.state.State
@@ -14,12 +14,12 @@ object Environment {
   private var fsmList: List[FiniteStateMachine] = List()
 
   def addFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
-    Element.addElementToList(fsm, fsmList) match {
-      case Left(error) => Left(error)
-      case Right(modifiedFsmList) =>
-        fsmList = modifiedFsmList
-        (fsm.name :: fsm.getChildrenNames).foreach(addName)
-        Right(())
+    if (Environment.isNameUnique(fsm.name)) {
+      fsmList = fsm :: fsmList
+      (fsm.name :: fsm.getChildrenNames).foreach(Environment.addName)
+      Right(())
+    } else {
+      Left(new NameNotUniqueError(s"Error -> Name '${fsm.name} is not unique"))
     }
   }
 
@@ -35,12 +35,12 @@ object Environment {
   }
 
   def removeFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
-    Element.addElementToList(fsm, fsmList) match {
-      case Left(error) => Left(error)
-      case Right(modifiedFsmList) =>
-        fsmList = modifiedFsmList
-        (fsm.name :: fsm.getChildrenNames).foreach(removeName)
-        Right(())
+    if (fsmList.contains(fsm)) {
+      fsmList = fsmList.filterNot(f => f == fsm)
+      (fsm.name :: fsm.getChildrenNames).foreach(Environment.removeName)
+      Right(())
+    } else {
+      Left(new ElementNotFoundError("Fsm not found"))
     }
   }
 
@@ -69,7 +69,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (action <- fsm.states.flatMap(_.actions) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions))) {
-        if (action.name == actionName) Right(action)
+        if (action.name.equals(actionName)) return Right(action)
       }
 
       Left(new ElementNotFoundError("Action not found"))
@@ -82,7 +82,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (state <- fsm.states) {
-        if (state.name == stateName) Right(state)
+        if (state.name.equals(stateName)) return Right(state)
       }
 
       Left(new ElementNotFoundError("State not found"))
@@ -95,7 +95,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (transition <- fsm.transitions) {
-        if (transition.name == transitionName) Right(transition)
+        if (transition.name.equals(transitionName)) return Right(transition)
       }
 
       Left(new ElementNotFoundError("Transition not found"))
@@ -108,7 +108,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (guard <- fsm.transitions.flatMap(_.guards)) {
-        if (guard.name == guardName) Right(guard)
+        if (guard.name.equals(guardName)) return Right(guard)
       }
 
       Left(new ElementNotFoundError("Guard not found"))
@@ -121,7 +121,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (condition <- fsm.transitions.flatMap(_.guards.flatMap(_.conditions))) {
-        if (condition.name == conditionName) Right(condition)
+        if (condition.name.equals(conditionName)) return Right(condition)
       }
 
       Left(new ElementNotFoundError("Condition not found"))
@@ -134,7 +134,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (body <- fsm.states.flatMap(_.actions.map(_.body)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.body)))) {
-        if (body.name == bodyName) Right(body)
+        if (body.name.equals(bodyName)) return Right(body)
       }
 
       Left(new ElementNotFoundError("Body not found"))
@@ -147,7 +147,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (prototypeUri <- fsm.states.flatMap(_.actions.map(_.prototypeUri)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.prototypeUri)))) {
-        if (prototypeUri.name == prototypeUriName) Right(prototypeUri)
+        if (prototypeUri.name.equals(prototypeUriName)) return Right(prototypeUri)
       }
 
       Left(new ElementNotFoundError("Body not found"))
@@ -161,7 +161,7 @@ object Environment {
       val fsm = fsmList(fsmIndex)
 
       for (parameter <- fsm.states.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)))) {
-        if (parameter.name == prototypeUriParameterName) Right(parameter)
+        if (parameter.name.equals(prototypeUriParameterName)) return Right(parameter)
       }
 
       Left(new ElementNotFoundError("PrototypeUriParameter not found"))
@@ -175,5 +175,5 @@ object Environment {
 
   def addName(name: String): Unit = nameList = name :: nameList
 
-  def removeName(name: String): Unit = nameList = nameList.filterNot(n => n == name)
+  def removeName(name: String): Unit = nameList = nameList.filterNot(n => n.equals(name))
 }

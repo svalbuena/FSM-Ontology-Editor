@@ -12,7 +12,7 @@ class Condition(name: String,
   def query: String = _query
 
   def query_=(newQuery: String): Either[DomainError, String] = {
-    query = newQuery
+    _query = newQuery
     Right(query)
   }
 }

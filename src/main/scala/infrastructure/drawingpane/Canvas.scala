@@ -7,7 +7,7 @@ import javafx.scene.layout.Pane
 
 class Canvas extends Pane {
   /* Connectable Node */
-  def dragConnectableNode(connectableNode: Pane, deltaX: Double, deltaY: Double): Unit = {
+  def moveConnectableNode(connectableNode: Pane, deltaX: Double, deltaY: Double): Unit = {
     val newX = connectableNode.getTranslateX + deltaX
     val newY = connectableNode.getTranslateY + deltaY
 
@@ -24,12 +24,9 @@ class Canvas extends Pane {
     connectableNode.setTranslateY(y)
   }
 
-  def eraseConnectableNode(connectableNode: Pane): Unit = {
-    getChildren.remove(connectableNode)
-  }
 
   /* Transtion */
-  def dragTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
+  def moveTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
     updateTransitionPosition(transition, source, destination)
     transition.toBack()
   }
@@ -40,22 +37,11 @@ class Canvas extends Pane {
     transition.toBack()
   }
 
-  def eraseTransition(transition: TransitionShape): Unit = {
-    getChildren.remove(transition)
-  }
-
   def updateTransitionPosition(transitionShape: TransitionShape, src: Pane, dst: Pane): Unit = {
     layout()
 
-    val line = transitionShape.line
-
     val (srcWidth, srcHeight) = (src.getWidth, src.getHeight)
     val (dstWidth, dstHeight) = (dst.getWidth, dst.getHeight)
-
-    println(s"Src dimensions = $srcWidth, $srcHeight")
-    println(s"Src translate = ${src.getTranslateX}, ${src.getTranslateY}")
-
-    println(s"Dst dimensions = $dstWidth, $dstHeight")
 
 
     val srcCenter = new Point2D(src.getTranslateX + srcWidth / 2, src.getTranslateY + srcHeight / 2)
@@ -80,27 +66,7 @@ class Canvas extends Pane {
       else Equation.lineAndLineIntersection(srcCenter, dstCenter, lowerRightCorner, upperRightCorner)
     }
 
-    line.setStart(srcCenter)
-    line.setEnd(end)
-
-    updateTransitionGuardGroupPosition(transitionShape)
-  }
-
-  def updateTransitionGuardGroupPosition(transitionShape: TransitionShape): Unit = {
-    val line = transitionShape.line
-    val guardGroup = transitionShape.guardGroup
-
-    guardGroup.layout()
-    layout()
-
-    val (startX, startY) = line.getStart
-    val (endX, endY) = line.getEnd
-
-    val midX = startX + ((endX - startX) / 2) - guardGroup.getWidth / 2
-    val midY = startY + ((endY - startY) / 2) - guardGroup.getHeight
-
-    guardGroup.setTranslateX(midX)
-    guardGroup.setTranslateY(midY)
+    transitionShape.setPosition(srcCenter, end)
   }
 
   private def getHumanDegrees(start: Point2D, end: Point2D): Double = {

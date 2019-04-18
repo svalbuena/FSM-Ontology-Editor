@@ -2,19 +2,19 @@ package infrastructure.drawingpane.shape.transition
 
 import infrastructure.math.Equation
 import javafx.geometry.Point2D
-import javafx.scene.layout.Pane
+import javafx.scene.Group
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Line, Polygon}
 
-class Arrow extends Pane {
+class Arrow extends Group {
   private val line = new Line()
   private val edge = new Polygon()
 
   getChildren.addAll(line, edge)
 
-  def getStart: (Double, Double) = (line.getStartX, line.getStartY)
+  def getStart: Point2D = new Point2D(line.getStartX, line.getStartY)
 
-  def getEnd: (Double, Double) = (line.getEndX, line.getEndY)
+  def getEnd: Point2D = new Point2D(line.getEndX, line.getEndY)
 
   def setStart(start: Point2D): Unit = {
     line.setStartX(start.getX)

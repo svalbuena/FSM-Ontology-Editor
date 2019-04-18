@@ -1,20 +1,19 @@
 package infrastructure.controller.end
 
-import application.command.end.add.AddEndToFsmCommand
-import application.command.end.remove.RemoveEndFromFsmCommand
-import application.commandhandler.end.add.AddEndToFsmHandler
-import application.commandhandler.end.remove.RemoveEndFromFsmHandler
+import application.command.state.modify.ModifyStateTypeCommand
+import application.commandhandler.state.modify.ModifyStateTypeHandler
 import infrastructure.controller.DrawingPaneController
-import infrastructure.drawingpane.DrawingPane
+import infrastructure.controller.transition.TransitionController
 import infrastructure.element.end.End
+import infrastructure.element.state.{State, StateType}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class EndController(end: End, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane) {
+class EndController(end: End, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
   private val propertiesBox = drawingPaneController.propertiesBox
-  private val canvas = drawingPane.canvas
+  private val canvas = drawingPaneController.canvas
 
   private val endShape = end.shape
 
@@ -25,16 +24,11 @@ class EndController(end: End, drawingPaneController: DrawingPaneController, draw
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: TransitionItem =>
-            if (drawingPaneController.isTemporalTransitionDefined) {
-              drawingPaneController.establishTemporalTransition(end)
-              toolBox.setToolToDefault()
-            } else {
-              val point = endShape.getLocalToParentTransform.transform(event.getX, event.getY)
-              drawingPaneController.addTemporalTransition(end, point.getX, point.getY)
-            }
+            val point = endShape.getLocalToParentTransform.transform(event.getX, event.getY)
+            drawingPaneController.transitionToolUsed(end, point)
 
           case _: DeleteMouseSelector =>
-            EndController.removeEndFromFsm(end, drawingPaneController)
+            removeEnd()
             toolBox.setToolToDefault()
 
           case _ =>
@@ -52,37 +46,66 @@ class EndController(end: End, drawingPaneController: DrawingPaneController, draw
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        canvas.dragConnectableNode(endShape, deltaX, deltaY)
-        end.getTransitions.foreach(transition => canvas.dragTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        canvas.moveConnectableNode(endShape, deltaX, deltaY)
+        end.getTransitions.foreach(transition => canvas.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
-
     }
 
     drawingPaneController.updateMousePosition(event)
   })
+
+  private def removeEnd(): Unit = EndController.removeEnd(end, drawingPaneController)
 }
 
 object EndController {
-  def addEndToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    new AddEndToFsmHandler().execute(new AddEndToFsmCommand) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        val end = new End("end")
+  def addEnd(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+    val end = new End("end")
 
-        drawingPaneController.addEnd(end, x, y)
+    drawEnd(end, x, y, drawingPaneController)
+  }
 
-        println("Adding a end")
+  def removeEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
+    var ok = true
+
+    for (endInTransition <- end.inTransitions) {
+      endInTransition.source match {
+        case state: State =>
+          val (newInfStateType, newAppStateType) = state.stateType match {
+            case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
+            case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
+          }
+          new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+            case Left(error) =>
+              println(error.getMessage)
+              ok = false
+            case Right(_) =>
+              state.stateType = newInfStateType
+
+              state.outTransitions = state.outTransitions.filterNot(t => t == endInTransition)
+              TransitionController.eraseTransition(endInTransition, drawingPaneController)
+          }
+
+        case _ =>
+          endInTransition.source.outTransitions = endInTransition.source.outTransitions.filterNot(t => t == endInTransition)
+          TransitionController.eraseTransition(endInTransition, drawingPaneController)
+      }
+    }
+
+    if (ok) {
+      eraseEnd(end, drawingPaneController)
     }
   }
 
-  def removeEndFromFsm(end: End, drawingPaneController: DrawingPaneController): Unit = {
-    new RemoveEndFromFsmHandler().execute(new RemoveEndFromFsmCommand) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        drawingPaneController.removeConnectableElement(end, end.shape)
+  def drawEnd(end: End, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.canvas.drawConnectableNode(end.shape, x, y)
 
-        println("Removing end")
-    }
+    new EndController(end, drawingPaneController)
+  }
+
+  def eraseEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
+    val canvas = drawingPaneController.canvas
+
+    canvas.getChildren.remove(end.shape)
   }
 }

@@ -6,11 +6,10 @@ import application.command.condition.remove.RemoveConditionFromGuardCommand
 import application.commandhandler.condition.add.AddConditionToGuardHandler
 import application.commandhandler.condition.modify.{ModifyConditionNameHandler, ModifyConditionQueryHandler}
 import application.commandhandler.condition.remove.RemoveConditionFromGuardHandler
-import infrastructure.controller.DrawingPaneController
 import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
 
-class ConditionController(condition: Condition, drawingPaneController: DrawingPaneController) {
+class ConditionController(condition: Condition) {
   private val propertiesBox = condition.propertiesBox
   private val shape = condition.shape
 
@@ -23,21 +22,24 @@ class ConditionController(condition: Condition, drawingPaneController: DrawingPa
   private def removeCondition(): Unit = {
     if (condition.hasParent) {
       val guard = condition.getParent
-      ConditionController.removeConditionFromGuard(condition, guard, drawingPaneController)
+      ConditionController.removeConditionFromGuard(condition, guard)
     }
   }
 }
 
 object ConditionController {
-  def addConditionToGuard(guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+  def addConditionToGuard(guard: Guard): Unit = {
     new AddConditionToGuardHandler().execute(new AddConditionToGuardCommand(guard.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(conditionName) =>
         val condition = new Condition(conditionName)
+        condition.setParent(guard)
 
-        guard.conditions = condition :: guard.conditions
+        guard.addCondition(condition)
 
-        drawingPaneController.addConditionToGuard(condition, guard)
+        drawCondition(condition)
+
+        new ConditionController(condition)
 
         println("Adding a guard ")
     }
@@ -65,15 +67,20 @@ object ConditionController {
     }
   }
 
-  def removeConditionFromGuard(condition: Condition, guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+  def removeConditionFromGuard(condition: Condition, guard: Guard): Unit = {
     new RemoveConditionFromGuardHandler().execute(new RemoveConditionFromGuardCommand(condition.name, guard.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        guard.conditions = guard.conditions.filterNot(c => c == condition)
-
-        drawingPaneController.removeConditionFromGuard(condition, guard)
+        guard.removeCondition(condition)
 
         println("Removing a condition from a guard")
     }
+  }
+
+  def drawCondition(condition: Condition): Unit = {
+    condition.propertiesBox.setConditionName(condition.name)
+    condition.propertiesBox.setConditionQuery(condition.query)
+
+    condition.shape.setConditionName(condition.name)
   }
 }

@@ -15,4 +15,18 @@ class State(name: String,
   val shape = new StateShape()
   val propertiesBox = new StatePropertiesBox()
   val contextMenu = new StateContextMenu()
+
+  def addAction(action: Action): Unit = {
+    actions = action :: actions
+
+    propertiesBox.addAction(action.propertiesBox, action.actionType)
+    shape.addAction(action.shape, action.actionType)
+  }
+
+  def removeAction(action: Action): Unit = {
+    actions = actions.filterNot(a => a == action)
+
+    propertiesBox.removeAction(action.propertiesBox, action.actionType)
+    shape.removeAction(action.shape, action.actionType)
+  }
 }

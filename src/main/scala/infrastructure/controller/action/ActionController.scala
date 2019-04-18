@@ -7,7 +7,8 @@ import application.commandhandler.action.add.{AddActionToGuardHandler, AddAction
 import application.commandhandler.action.modify._
 import application.commandhandler.action.remove.{RemoveActionFromGuardHandler, RemoveActionFromStateHandler}
 import infrastructure.controller.DrawingPaneController
-import infrastructure.drawingpane.DrawingPane
+import infrastructure.controller.body.BodyController
+import infrastructure.controller.prototypeuri.PrototypeUriController
 import infrastructure.element.action.ActionType.ActionType
 import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
@@ -16,10 +17,9 @@ import infrastructure.element.body.Body
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
-import infrastructure.id.IdGenerator
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
-class ActionController(action: Action, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+class ActionController(action: Action) {
   private val propertiesBox = action.propertiesBox
   private val contextMenu = action.contextMenu
 
@@ -51,8 +51,8 @@ class ActionController(action: Action, drawingPaneController: DrawingPaneControl
   private def removeAction(): Unit = {
     if (action.hasParent) {
       action.getParent match {
-        case guard: Guard => ActionController.removeActionFromGuard(action, guard, drawingPaneController)
-        case state: State => ActionController.removeActionFromState(action, state, drawingPaneController)
+        case guard: Guard => ActionController.removeActionFromGuard(action, guard)
+        case state: State => ActionController.removeActionFromState(action, state)
         case _ =>
       }
     }
@@ -60,33 +60,42 @@ class ActionController(action: Action, drawingPaneController: DrawingPaneControl
 }
 
 object ActionController {
-  def addActionToGuard(guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+  def addActionToGuard(guard: Guard): Option[Action] = {
     new AddActionToGuardHandler().execute(new AddActionToGuardCommand(guard.name)) match {
-      case Left(error) => println(error.getMessage)
+      case Left(error) =>
+        println(error.getMessage)
+        None
       case Right(names) =>
         val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
         val action = new Action(actionName, ActionType.GUARD, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
 
-        guard.actions = action :: guard.actions
+        action.setParent(guard)
+        guard.addAction(action)
 
-        drawingPaneController.addActionToGuard(action, guard)
+        drawAction(action)
 
         println("Adding guard action to a guard")
+
+        Some(action)
     }
   }
 
-  def addActionToState(actionType: ActionType, state: State, drawingPaneController: DrawingPaneController): Unit = {
+  def addActionToState(actionType: ActionType, state: State, drawingPaneController: DrawingPaneController): Option[Action] = {
     new AddActionToStateHandler().execute(new AddActionToStateCommand(actionType, state.name)) match {
-      case Left(error) => println(error.getMessage)
+      case Left(error) =>
+        println(error.getMessage)
+        None
       case Right(names) =>
         val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
         val action = new Action(actionName, actionType, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
 
-        state.actions = action :: state.actions
+        action.setParent(state)
+        state.addAction(action)
 
-        drawingPaneController.addActionToState(action, state)
+        drawAction(action)
 
         println(s"Adding $actionType action to a state")
+        Some(action)
     }
   }
 
@@ -165,23 +174,35 @@ object ActionController {
     }
   }
 
-  def removeActionFromGuard(action: Action, guard: Guard, drawingPaneController: DrawingPaneController): Unit = {
+  def removeActionFromGuard(action: Action, guard: Guard): Unit = {
     new RemoveActionFromGuardHandler().execute(new RemoveActionFromGuardCommand(action.name, guard.name)) match {
       case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        guard.actions = guard.actions.filterNot(a => a == action)
-
-        drawingPaneController.removeActionFromGuard(action, guard)
+      case Right(_) => guard.removeAction(action)
     }
   }
 
-  def removeActionFromState(action: Action, state: State, drawingPaneController: DrawingPaneController): Unit = {
+  def removeActionFromState(action: Action, state: State): Unit = {
     new RemoveActionFromStateHandler().execute(new RemoveActionFromStateCommand(action.name, state.name)) match {
       case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        state.actions = state.actions.filterNot(a => a == action)
-
-        drawingPaneController.removeActionFromState(action, state)
+      case Right(_) => state.removeAction(action)
     }
+  }
+
+  def drawAction(action: Action): Unit = {
+    action.propertiesBox.setTiltedPaneName(action.name)
+    action.propertiesBox.setActionType(action.actionType)
+    action.propertiesBox.setActionName(action.name)
+    action.propertiesBox.setMethodType(action.method)
+    action.propertiesBox.setUriType(action.uriType)
+    action.propertiesBox.setTimeout(action.timeout)
+    action.propertiesBox.setAbsoluteUri(action.absoluteUri)
+
+    action.shape.setActionType(action.actionType)
+    action.shape.setActionName(action.name)
+
+    BodyController.drawBody(action.body)
+    PrototypeUriController.drawPrototypeUri(action.prototypeUri)
+
+    new ActionController(action)
   }
 }

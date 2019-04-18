@@ -1,21 +1,19 @@
 package infrastructure.controller.start
 
-import application.command.start.add.AddStartToFsmCommand
-import application.command.start.remove.RemoveStartFromFsmCommand
-import application.commandhandler.start.add.AddStartToFsmHandler
-import application.commandhandler.start.remove.RemoveStartFromFsmHandler
+import application.command.state.modify.ModifyStateTypeCommand
+import application.commandhandler.state.modify.ModifyStateTypeHandler
 import infrastructure.controller.DrawingPaneController
-import infrastructure.drawingpane.DrawingPane
+import infrastructure.controller.transition.TransitionController
 import infrastructure.element.start.Start
-import infrastructure.id.IdGenerator
+import infrastructure.element.state.{State, StateType}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
-class StartController(start: Start, drawingPaneController: DrawingPaneController, drawingPane: DrawingPane, idGenerator: IdGenerator) {
+class StartController(start: Start, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
   private val propertiesBox = drawingPaneController.propertiesBox
-  private val canvas = drawingPane.canvas
+  private val canvas = drawingPaneController.canvas
 
   private val startShape = start.shape
 
@@ -26,13 +24,8 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: TransitionItem =>
-            if (drawingPaneController.isTemporalTransitionDefined) {
-              drawingPaneController.establishTemporalTransition(start)
-              toolBox.setToolToDefault()
-            } else {
-              val point = startShape.getLocalToParentTransform.transform(event.getX, event.getY)
-              drawingPaneController.addTemporalTransition(start, point.getX, point.getY)
-            }
+            val point = startShape.getLocalToParentTransform.transform(event.getX, event.getY)
+            drawingPaneController.transitionToolUsed(start, point)
 
           case _: DeleteMouseSelector =>
             removeStart()
@@ -51,8 +44,8 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        canvas.dragConnectableNode(startShape, deltaX, deltaY)
-        start.getTransitions.foreach(transition => canvas.dragTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        canvas.moveConnectableNode(startShape, deltaX, deltaY)
+        start.getTransitions.foreach(transition => canvas.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
     }
@@ -60,31 +53,60 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
     drawingPaneController.updateMousePosition(event)
   })
 
-  def removeStart(): Unit = {
-    StartController.removeStartFromFsm(start, drawingPaneController)
+  private def removeStart(): Unit = {
+    StartController.removeStart(start, drawingPaneController)
   }
 }
 
 object StartController {
-  def addStartToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    new AddStartToFsmHandler().execute(new AddStartToFsmCommand) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        val start = new Start("start")
+  def addStart(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+    val start = new Start("start")
 
-        drawingPaneController.addStart(start, x, y)
+    drawStart(start, x, y, drawingPaneController)
+  }
 
-        println("Adding a start")
+  def removeStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
+    var ok = true
+
+    for (startOutTransition <- start.outTransitions) {
+      startOutTransition.source match {
+        case state: State =>
+          val (newInfStateType, newAppStateType) = state.stateType match {
+            case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
+            case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
+          }
+          new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+            case Left(error) =>
+              println(error.getMessage)
+              ok = false
+            case Right(_) =>
+              state.stateType = newInfStateType
+
+              state.inTransitions = state.inTransitions.filterNot(t => t == startOutTransition)
+              TransitionController.eraseTransition(startOutTransition, drawingPaneController)
+          }
+
+        case _ =>
+          startOutTransition.destination.inTransitions = startOutTransition.destination.inTransitions.filterNot(t => t == startOutTransition)
+          TransitionController.eraseTransition(startOutTransition, drawingPaneController)
+      }
+    }
+
+    if (ok) {
+      eraseStart(start, drawingPaneController)
     }
   }
 
-  def removeStartFromFsm(start: Start, drawingPaneController: DrawingPaneController): Unit = {
-    new RemoveStartFromFsmHandler().execute(new RemoveStartFromFsmCommand) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        drawingPaneController.removeConnectableElement(start, start.shape)
+  def drawStart(start: Start, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.canvas.drawConnectableNode(start.shape, x, y)
 
-        println("Removing start")
-    }
+    new StartController(start, drawingPaneController)
   }
+
+  def eraseStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
+    val canvas = drawingPaneController.canvas
+
+    canvas.getChildren.remove(start.shape)
+  }
+
 }

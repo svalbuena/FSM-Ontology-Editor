@@ -2,17 +2,16 @@ package infrastructure.controller.prototypeuri
 
 import application.command.prototypeuri.modify.ModifyPrototypeUriStructureCommand
 import application.commandhandler.prototypeuri.modify.ModifyPrototypeUriStructureHandler
-import infrastructure.controller.DrawingPaneController
 import infrastructure.controller.prototypeuriparameter.PrototypeUriParameterController
 import infrastructure.element.prototypeuri.PrototypeUri
 
-class PrototypeUriController(prototypeUri: PrototypeUri, drawingPaneController: DrawingPaneController) {
+class PrototypeUriController(prototypeUri: PrototypeUri) {
   private val propertiesBox = prototypeUri.propertiesBox
 
   propertiesBox.setOnStructureChanged(newStructure => PrototypeUriController.modifyPrototypeUriStructure(prototypeUri, newStructure))
   propertiesBox.setOnAddParameterButtonClicked(() => addPrototypeUriParameterToPrototypeUri())
 
-  private def addPrototypeUriParameterToPrototypeUri(): Unit = PrototypeUriParameterController.addPrototypeUriParameterToPrototypeUri(prototypeUri, drawingPaneController)
+  private def addPrototypeUriParameterToPrototypeUri(): Unit = PrototypeUriParameterController.addPrototypeUriParameterToPrototypeUri(prototypeUri)
 }
 
 object PrototypeUriController {
@@ -24,5 +23,11 @@ object PrototypeUriController {
 
         println("Structure name changed to -> " + newStructure)
     }
+  }
+
+  def drawPrototypeUri(prototypeUri: PrototypeUri): Unit = {
+    prototypeUri.propertiesBox.setStructure(prototypeUri.structure)
+
+    new PrototypeUriController(prototypeUri)
   }
 }
