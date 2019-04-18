@@ -9,7 +9,7 @@ class BodyController(body: Body) {
   private val propertiesBox = body.propertiesBox
 
   propertiesBox.setOnBodyContentChanged(newContent => BodyController.modifyBodyContent(body, newContent))
-  //propertiesBox.setOnBodyNameChanged(newName => BodyController.modifyBodyName(body, newName))
+  propertiesBox.setOnBodyNameChanged(newName => BodyController.modifyBodyName(body, newName))
   propertiesBox.setOnBodyTypeChanged(newBodyType => BodyController.modifyBodyType(body, newBodyType))
 }
 
@@ -49,6 +49,7 @@ object BodyController {
   }
 
   def drawBody(body: Body): Unit = {
+    body.propertiesBox.setBodyName(body.name)
     body.propertiesBox.setBodyType(body.bodyType)
     body.propertiesBox.setBodyContent(body.content)
 
