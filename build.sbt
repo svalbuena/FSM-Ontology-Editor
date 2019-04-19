@@ -16,7 +16,8 @@ osName := (System.getProperty("os.name") match {
 libraryDependencies ++= Seq (
   "org.openjfx" % "javafx-controls" % "12" classifier osName.value withSources() withJavadoc(),
   "org.openjfx" % "javafx-base" % "12" classifier osName.value withSources() withJavadoc(),
-  "org.openjfx" % "javafx-graphics" % "12" classifier osName.value withSources() withJavadoc()
+  "org.openjfx" % "javafx-graphics" % "12" classifier osName.value withSources() withJavadoc(),
+  "org.apache.jena" % "jena-core" % "3.10.0"
 )
 
 scalacOptions := Seq("-unchecked", "-deprecation")
