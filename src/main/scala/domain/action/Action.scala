@@ -9,12 +9,10 @@ import domain.{Element, Environment}
 class Action(name: String,
              private var _actionType: ActionType,
              private var _methodType: MethodType = MethodType.GET,
+             val body: Body, private var _absoluteUri: String = "",
              private var _uriType: UriType = UriType.ABSOLUTE,
-             private var _absoluteUri: String = "",
-             private var _timeout: Int = 0,
              val prototypeUri: PrototypeUri,
-             val body: Body
-            ) extends Element(name) {
+             private var _timeout: Int = 0) extends Element(name) {
 
   def this(actionType: ActionType) = this(name = Environment.generateUniqueName("action"), actionType, prototypeUri = new PrototypeUri(), body = new Body())
 
