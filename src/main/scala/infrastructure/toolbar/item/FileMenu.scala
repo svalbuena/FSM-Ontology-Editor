@@ -2,7 +2,7 @@ package infrastructure.toolbar.item
 
 import javafx.scene.control.{MenuButton, MenuItem}
 
-object FileMenuButton extends MenuButton {
+class FileMenu extends MenuButton {
   setText("File")
 
   val openMenuItem = new MenuItem()
