@@ -1,4 +1,4 @@
-@prefix : <file:///D:/projects/ontologies/siot/demo_siot.owl#> .
+@prefix : <file:///D:/projects/ontologies/demo_siot/demo_siot.owl#> .
 @prefix fsm: <file:///D:/projects/ontologies/fsm/fsm.owl#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -7,9 +7,9 @@
 @prefix http: <http://www.w3.org/2011/http#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix siot: <file:///D:/projects/ontologies/siot/siot.owl#> .
-@base <file:///D:/projects/ontologies/siot/demo_siot.owl> .
+@base <file:///D:/projects/ontologies/demo_siot/demo_siot.owl> .
 
-<file:///D:/projects/ontologies/siot/demo_siot.owl> rdf:type owl:Ontology ;
+<file:///D:/projects/ontologies/demo_siot/demo_siot.owl> rdf:type owl:Ontology ;
                                                           owl:imports <http://www.w3.org/2011/http> ,
                                                                       <file:///D:/projects/ontologies/fsm/fsm.owl> ,
                                                                       <file:///D:/projects/ontologies/siot/siot.owl> ,
@@ -131,7 +131,8 @@ ASK {
 
 ###  file:///D:/projects/ontologies/demo_siot/demo_siot.owl#S3_CheckCompatibilityState
 :S3_CheckCompatibilityState rdf:type owl:NamedIndividual ,
-                                     fsm:SimpleState ; ;
+                                     fsm:SimpleState ,
+                                     fsm:State ;
                             fsm:hasEntryAction :checkCompatibility .
 
 
@@ -339,15 +340,7 @@ self:data fsm:hasContent \"My data\" .""" .
                                      :S4_IsCompatibleState ,
                                      :S5_NotCompatibleState ,
                                      :S6_WaitingForPeerCompatibilityState ,
-                                     :S7_CompareCompatibilitiesState ,	
-									 :S1_to_S2_Transition ,
-									 :S2_to_S3_Transition ,
-									 :S3_to_S4_Transition ,
-									 :S3_to_S5_Transition ,
-									 :S4_to_S6_Transition ,
-									 :S5_to_S6_Transition ,
-									 :S6_to_S7_Transition .
-									 
+                                     :S7_CompareCompatibilitiesState .
 
 
 ###  http://localhost:9000/check_compatibility

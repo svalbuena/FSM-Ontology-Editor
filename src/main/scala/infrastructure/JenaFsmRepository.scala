@@ -1,31 +1,31 @@
 package infrastructure
 
-import java.io.{BufferedReader, File, FileInputStream, FileNotFoundException, FileReader}
-import java.util
+import java.io.{BufferedReader, FileNotFoundException, FileReader}
 
 import domain.FsmRepository
-import domain.action.{Action, ActionType, Body, BodyType, MethodType, PrototypeUri, PrototypeUriParameter, UriType}
 import domain.action.ActionType.ActionType
 import domain.action.BodyType.BodyType
 import domain.action.MethodType.MethodType
 import domain.action.UriType.UriType
+import domain.action._
+import domain.condition.Condition
 import domain.fsm.FiniteStateMachine
+import domain.guard.Guard
 import domain.state.StateType.StateType
 import domain.state.{State, StateType}
-import org.apache.jena.ontology.impl.ObjectPropertyImpl
+import domain.transition.Transition
 import org.apache.jena.rdf.model.impl.PropertyImpl
-import org.apache.jena.rdf.model.{Model, ModelFactory, Property, Resource}
-import org.apache.jena.util.iterator.ExtendedIterator
-
-import scala.collection.JavaConverters._
-import scala.io.Source
+import org.apache.jena.rdf.model.{Model, ModelFactory, Resource}
+import org.apache.jena.reasoner.ReasonerRegistry
+import org.apache.jena.util.FileManager
+import org.apache.jena.vocabulary.ReasonerVocabulary
 
 class JenaFsmRepository extends FsmRepository {
   val FsmPrefix = "file:///D:/projects/ontologies/fsm/fsm.owl#"
   val HttpPrefix = "http://www.w3.org/2011/http#"
   val RdfPrefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 
-  val HasStateMachineElement = new PropertyImpl(FsmPrefix + "hasStateMachineElement")
+  val Contains = new PropertyImpl(FsmPrefix + "contains")
   val HasEntryAction = new PropertyImpl(FsmPrefix + "hasEntryAction")
   val HasExitAction = new PropertyImpl(FsmPrefix + "hasExitAction")
   val HasBody = new PropertyImpl(FsmPrefix + "hasBody")
@@ -37,9 +37,19 @@ class JenaFsmRepository extends FsmRepository {
   val HasStructure = new PropertyImpl(FsmPrefix + "hasStructure")
   val HasPlaceholder = new PropertyImpl(FsmPrefix + "hasPlaceholder")
   val HasQuery = new PropertyImpl(FsmPrefix + "hasQuery")
+  val HasSourceState = new PropertyImpl(FsmPrefix + "hasSourceState")
+  val HasTargetState = new PropertyImpl(FsmPrefix + "hasTargetState")
+  val HasTransitionGuard = new PropertyImpl(FsmPrefix + "hasTransitionGuard")
+  val HasGuardCondition = new PropertyImpl(FsmPrefix + "hasGuardCondition")
+  val HasGuardAction = new PropertyImpl(FsmPrefix + "hasGuardAction")
+  val HasContent = new PropertyImpl(FsmPrefix + "hasContent")
+
 
   val HasMethod = new PropertyImpl(HttpPrefix + "mthd")
   val HasAbsoluteUri = new PropertyImpl(HttpPrefix + "absoluteURI")
+
+  val TransitionClass = new PropertyImpl(FsmPrefix + "Transition")
+  val StateClass = new PropertyImpl(FsmPrefix + "State")
 
   val Type = new PropertyImpl(RdfPrefix + "type")
 
@@ -48,21 +58,21 @@ class JenaFsmRepository extends FsmRepository {
   }
 
   override def loadFsm(filename: String): Either[Exception, FiniteStateMachine] = {
-    val fsmBaseUri = "file:///D:/projects/ontologies/demo_siot/demo_siot.owl"
-    val fsmUri = "file:///D:/projects/ontologies/demo_siot/demo_siot.owl#siot_fsm"
+    val fsmBaseUri = "file:///D:/projects/ontologies/siot/demo_siot.owl"
+    val fsmUri = "file:///D:/projects/ontologies/siot/demo_siot.owl#siot_fsm"
 
     getBufferedReaderFromFile(filename) match {
       case Left(error) =>
         println(error)
         Left(error)
       case Right(bufferedReader) =>
-        val fsmModel = ModelFactory.createDefaultModel().read(bufferedReader, null, "TURTLE")
-        val fsm = readFsm(fsmModel, fsmBaseUri, fsmUri)
+        val fsmModel = FileManager.get().loadModel(filename, "TURTLE")
+        val fsmSchema = FileManager.get().loadModel("D:\\projects\\ontologies\\fsm\\fsm.owl", "TURTLE")
+        val fsmInferredModel = ModelFactory.createRDFSModel(fsmSchema, fsmModel)
+        val fsm = readFsm(fsmInferredModel, fsmBaseUri, fsmUri)
 
         Right(fsm)
     }
-
-
   }
 
   private def getBufferedReaderFromFile(filename: String): Either[Exception, BufferedReader] = {
@@ -75,34 +85,81 @@ class JenaFsmRepository extends FsmRepository {
     }
   }
 
-  import org.apache.jena.rdf.model.Model
-
-
   private def readFsm(model: Model, fsmBaseUri: String, fsmUri: String): FiniteStateMachine = {
-    var states: List[State] = List()
-    val fsm = new FiniteStateMachine()
-
     val fsmRes = model.getResource(fsmUri)
-    fsmRes.listProperties(HasStateMachineElement).mapWith(_.getResource).forEachRemaining(resource => {
-      resource match {
-        case r: Resource =>
 
-      }
-
-      val state = getStateFromResource(resource)
-      states = state :: states
-
-      println(s"State ${state.name} ${state.stateType}")
-      for (action <- state.actions) {
-        println(s"\tAction ${action.name} ${action.actionType} ${action.methodType}")
-        println(s"\t\tTimeout ${action.timeout}")
+    //First retrieve the states
+    var states: List[State] = List()
+    fsmRes.listProperties(Contains).forEachRemaining(property => {
+      val resource = property.getResource
+      if (resource.hasProperty(Type, StateClass)) {
+        val state = getStateFromResource(resource)
+        states = state :: states
       }
     })
 
-    //println(stateRes)
-    //fsmRes.listProperties().forEachRemaining(p => println(p))
+    //Then retrieve the transitions
+    var transitions: List[Transition] = List()
+    fsmRes.listProperties(Contains).forEachRemaining(property => {
+      val resource = property.getResource
+      if (resource.hasProperty(Type, TransitionClass)) {
+        val transition = getTransitionFromResource(resource, states)
+        transitions = transition :: transitions
+      }
+    })
 
-    fsm
+    new FiniteStateMachine(name = fsmRes.getLocalName, states = states, transitions = transitions)
+  }
+
+  private def getTransitionFromResource(transitionRes: Resource, states: List[State]): Transition = {
+    var sourceState = new State(0, 0)
+    if (transitionRes.hasProperty(HasSourceState)) {
+      val sourceStateName = transitionRes.getProperty(HasSourceState).getResource.getLocalName
+      for (state <- states) {
+        if (state.name.equals(sourceStateName)) sourceState = state
+      }
+    }
+
+    var destinationState = new State(0, 0)
+    if (transitionRes.hasProperty(HasTargetState)) {
+      val destinationStateName = transitionRes.getProperty(HasTargetState).getResource.getLocalName
+      for (state <- states) {
+        if (state.name.equals(destinationStateName)) destinationState = state
+      }
+    }
+
+    var guards: List[Guard] = List()
+    transitionRes.listProperties(HasTransitionGuard).mapWith(_.getResource).forEachRemaining(guardRes => {
+      val guard = getGuardFromResource(guardRes)
+      guards = guard :: guards
+    })
+
+    new Transition(name = transitionRes.getLocalName, source = sourceState, destination = destinationState, guards = guards)
+  }
+
+  private def getGuardFromResource(guardRes: Resource): Guard = {
+    var actions: List[Action] = List()
+    guardRes.listProperties(HasGuardAction).mapWith(_.getResource).forEachRemaining(actionRes => {
+      val action = getActionFromResource(actionRes, ActionType.GUARD)
+      actions = action :: actions
+    })
+
+    var conditions: List[Condition] = List()
+    guardRes.listProperties(HasGuardCondition).mapWith(_.getResource).forEachRemaining(conditionRes => {
+      val condition = getConditionFromResource(conditionRes)
+      conditions = condition :: conditions
+    })
+
+    new Guard(name = guardRes.getLocalName, actions = actions, conditions = conditions)
+  }
+
+  private def getConditionFromResource(conditionRes: Resource): Condition = {
+    var content = ""
+    if (conditionRes.hasProperty(HasContent)) {
+      content = conditionRes.getProperty(HasContent).getString
+    }
+
+    new Condition(name = conditionRes.getLocalName, _query = content)
   }
 
   private def getStateFromResource(stateRes: Resource): State = {
@@ -110,7 +167,7 @@ class JenaFsmRepository extends FsmRepository {
     stateRes.listProperties(Type).mapWith(_.getResource).forEachRemaining(classRes => {
       (stateType, getStateTypeFromClassResource(classRes)) match {
         case (StateType.SIMPLE, StateType.INITIAL) => stateType = StateType.INITIAL
-        case (StateType.SIMPLE, StateType.FINAL) => stateType =  StateType.FINAL
+        case (StateType.SIMPLE, StateType.FINAL) => stateType = StateType.FINAL
         case (StateType.INITIAL, StateType.FINAL) => stateType = StateType.INITIAL_FINAL
         case (StateType.FINAL, StateType.INITIAL) => stateType = StateType.INITIAL_FINAL
         case (_, _) =>
@@ -180,7 +237,7 @@ class JenaFsmRepository extends FsmRepository {
       structure = prototypeUriRes.getProperty(HasStructure).getString
     }
 
-    var parameters: List[PrototypeUriParameter]  = List()
+    var parameters: List[PrototypeUriParameter] = List()
     prototypeUriRes.listProperties(HasParameter).mapWith(_.getResource).forEachRemaining(parameterRes => {
       parameters = getPrototypeUriParameterFromResource(parameterRes) :: parameters
     })

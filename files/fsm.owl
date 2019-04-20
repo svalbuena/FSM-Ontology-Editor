@@ -1,0 +1,379 @@
+@prefix : <file:///D:/projects/ontologies/fsm/fsm.owl#> .
+@prefix fsm: <file:///D:/projects/ontologies/fsm/fsm.owl#> .
+@prefix jms: <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rss: <http://purl.org/rss/1.0/> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix daml: <http://www.daml.org/2001/03/daml+oil#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vcard: <http://www.w3.org/2001/vcard-rdf/3.0#> .
+@base <file:///D:/projects/ontologies/fsm/fsm.owl> .
+
+<file:///D:/projects/ontologies/fsm/fsm.owl> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#contains
+fsm:contains rdf:type owl:ObjectProperty ;
+             rdfs:domain fsm:StateMachine ;
+             rdfs:range fsm:StateMachineElement .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasBody
+fsm:hasBody rdf:type owl:ObjectProperty ;
+            rdfs:domain [ rdf:type owl:Class ;
+                          owl:unionOf ( fsm:Action
+                                        fsm:Condition
+                                        fsm:Event
+                                      )
+                        ] ;
+            rdfs:range fsm:Body .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasBodyType
+fsm:hasBodyType rdf:type owl:ObjectProperty ;
+                rdfs:domain fsm:Body ;
+                rdfs:range fsm:BodyType .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasEntryAction
+fsm:hasEntryAction rdf:type owl:ObjectProperty ;
+                   rdfs:domain fsm:State ;
+                   rdfs:range fsm:Action .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasExitAction
+fsm:hasExitAction rdf:type owl:ObjectProperty ;
+                  rdfs:domain fsm:State ;
+                  rdfs:range fsm:Action .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasGuardAction
+fsm:hasGuardAction rdf:type owl:ObjectProperty ;
+                   rdfs:domain fsm:Guard ;
+                   rdfs:range fsm:Action .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasGuardCondition
+fsm:hasGuardCondition rdf:type owl:ObjectProperty ;
+                      rdfs:domain fsm:Guard ;
+                      rdfs:range fsm:Condition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasGuardEvent
+fsm:hasGuardEvent rdf:type owl:ObjectProperty ,
+                           owl:FunctionalProperty ;
+                  rdfs:domain fsm:Guard ;
+                  rdfs:range fsm:Event .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasParameter
+fsm:hasParameter rdf:type owl:ObjectProperty ;
+                 rdfs:domain fsm:PrototypeURI ;
+                 rdfs:range fsm:PrototypeParameter .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasPrototypeURI
+fsm:hasPrototypeURI rdf:type owl:ObjectProperty ;
+                    rdfs:domain fsm:Action ;
+                    rdfs:range fsm:PrototypeURI .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasSourceState
+fsm:hasSourceState rdf:type owl:ObjectProperty ;
+                   rdfs:domain fsm:Transition ;
+                   rdfs:range fsm:State .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasStateMachineElement
+fsm:hasStateMachineElement rdf:type owl:ObjectProperty ;
+                           rdfs:domain fsm:CompositeState ;
+                           rdfs:range fsm:StateMachineElement .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasTargetState
+fsm:hasTargetState rdf:type owl:ObjectProperty ;
+                   rdfs:domain fsm:Transition ;
+                   rdfs:range fsm:State .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasTransitionGuard
+fsm:hasTransitionGuard rdf:type owl:ObjectProperty ;
+                       rdfs:domain fsm:Transition ;
+                       rdfs:range fsm:Guard .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasContent
+fsm:hasContent rdf:type owl:DatatypeProperty .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasCount
+fsm:hasCount rdf:type owl:DatatypeProperty ,
+                      owl:FunctionalProperty ;
+             rdfs:domain fsm:SynchState ;
+             rdfs:range xsd:int .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasLabel
+fsm:hasLabel rdf:type owl:DatatypeProperty ,
+                      owl:FunctionalProperty ;
+             rdfs:domain [ rdf:type owl:Class ;
+                           owl:unionOf ( fsm:Action
+                                         fsm:Condition
+                                         fsm:Event
+                                         fsm:Guard
+                                       )
+                         ] ;
+             rdfs:range xsd:string .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasPlaceholder
+fsm:hasPlaceholder rdf:type owl:DatatypeProperty ;
+                   rdfs:domain fsm:PrototypeParameter .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasQuery
+fsm:hasQuery rdf:type owl:DatatypeProperty ;
+             rdfs:domain fsm:PrototypeParameter .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasStateName
+fsm:hasStateName rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:range xsd:string .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasStructure
+fsm:hasStructure rdf:type owl:DatatypeProperty ;
+                 rdfs:domain fsm:PrototypeURI .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasTimeoutInMs
+fsm:hasTimeoutInMs rdf:type owl:DatatypeProperty ;
+                   rdfs:domain fsm:Action ;
+                   rdfs:range xsd:integer .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#hasTransitionName
+fsm:hasTransitionName rdf:type owl:DatatypeProperty ,
+                               owl:FunctionalProperty ;
+                      rdfs:range xsd:string .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#isConcurrent
+fsm:isConcurrent rdf:type owl:DatatypeProperty ,
+                          owl:FunctionalProperty ;
+                 rdfs:domain fsm:CompositeState ;
+                 rdfs:range xsd:boolean .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#isRegion
+fsm:isRegion rdf:type owl:DatatypeProperty ,
+                      owl:FunctionalProperty ;
+             rdfs:domain fsm:CompositeState ;
+             rdfs:range xsd:boolean .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#onlyNewData
+fsm:onlyNewData rdf:type owl:DatatypeProperty ;
+                rdfs:domain fsm:State ;
+                rdfs:range xsd:boolean .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Action
+fsm:Action rdf:type owl:Class ;
+           rdfs:subClassOf fsm:StateMachineElement ;
+           owl:disjointWith fsm:Condition ,
+                            fsm:Event ,
+                            fsm:Guard ,
+                            fsm:State ,
+                            fsm:StateMachine ,
+                            fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Body
+fsm:Body rdf:type owl:Class .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#BodyType
+fsm:BodyType rdf:type owl:Class .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Branch
+fsm:Branch rdf:type owl:Class ;
+           rdfs:subClassOf fsm:Pseudostate ;
+           owl:disjointWith fsm:History ,
+                            fsm:Join ,
+                            fsm:Junction ,
+                            fsm:Split .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#CompositeState
+fsm:CompositeState rdf:type owl:Class ;
+                   rdfs:subClassOf fsm:State ;
+                   owl:disjointWith fsm:FinalState ,
+                                    fsm:InitialState ,
+                                    fsm:Pseudostate ,
+                                    fsm:SimpleState ,
+                                    fsm:SynchState .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Condition
+fsm:Condition rdf:type owl:Class ;
+              rdfs:subClassOf fsm:StateMachineElement ;
+              owl:disjointWith fsm:Event ,
+                               fsm:Guard ,
+                               fsm:State ,
+                               fsm:StateMachine ,
+                               fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Event
+fsm:Event rdf:type owl:Class ;
+          rdfs:subClassOf fsm:StateMachineElement ;
+          owl:disjointWith fsm:Guard ,
+                           fsm:State ,
+                           fsm:StateMachine ,
+                           fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#FinalState
+fsm:FinalState rdf:type owl:Class ;
+               rdfs:subClassOf fsm:State ;
+               owl:disjointWith fsm:InitialState ,
+                                fsm:Pseudostate ,
+                                fsm:SimpleState ,
+                                fsm:SynchState .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Guard
+fsm:Guard rdf:type owl:Class ;
+          rdfs:subClassOf fsm:StateMachineElement ;
+          owl:disjointWith fsm:State ,
+                           fsm:StateMachine ,
+                           fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#History
+fsm:History rdf:type owl:Class ;
+            rdfs:subClassOf fsm:Pseudostate ;
+            owl:disjointWith fsm:Join ,
+                             fsm:Junction ,
+                             fsm:Split .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#InitialState
+fsm:InitialState rdf:type owl:Class ;
+                 rdfs:subClassOf fsm:State ;
+                 owl:disjointWith fsm:Pseudostate ,
+                                  fsm:SimpleState ,
+                                  fsm:SynchState .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Join
+fsm:Join rdf:type owl:Class ;
+         rdfs:subClassOf fsm:Pseudostate ;
+         owl:disjointWith fsm:Junction ,
+                          fsm:Split .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Junction
+fsm:Junction rdf:type owl:Class ;
+             rdfs:subClassOf fsm:Pseudostate ;
+             owl:disjointWith fsm:Split .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#PrototypeParameter
+fsm:PrototypeParameter rdf:type owl:Class .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#PrototypeURI
+fsm:PrototypeURI rdf:type owl:Class .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Pseudostate
+fsm:Pseudostate rdf:type owl:Class ;
+                rdfs:subClassOf fsm:State ;
+                owl:disjointWith fsm:SimpleState ,
+                                 fsm:SynchState .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Region
+fsm:Region rdf:type owl:Class ;
+           rdfs:subClassOf fsm:CompositeState ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty fsm:isRegion ;
+                             owl:hasValue "true"^^xsd:boolean
+                           ] .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#SimpleState
+fsm:SimpleState rdf:type owl:Class ;
+                rdfs:subClassOf fsm:State ;
+                owl:disjointWith fsm:SynchState .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Split
+fsm:Split rdf:type owl:Class ;
+          rdfs:subClassOf fsm:Pseudostate .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#State
+fsm:State rdf:type owl:Class ;
+          rdfs:subClassOf fsm:StateMachineElement ;
+          owl:disjointWith fsm:StateMachine ,
+                           fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#StateMachine
+fsm:StateMachine rdf:type owl:Class ;
+                 rdfs:subClassOf fsm:StateMachineElement ;
+                 owl:disjointWith fsm:Transition .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#StateMachineElement
+fsm:StateMachineElement rdf:type owl:Class .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#SynchState
+fsm:SynchState rdf:type owl:Class ;
+               rdfs:subClassOf fsm:State .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#Transition
+fsm:Transition rdf:type owl:Class ;
+               rdfs:subClassOf fsm:StateMachineElement .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#other
+fsm:other rdf:type owl:NamedIndividual ,
+                   fsm:BodyType .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#rdf
+fsm:rdf rdf:type owl:NamedIndividual ,
+                 fsm:BodyType .
+
+
+###  file:///D:/projects/ontologies/fsm/fsm.owl#sparql
+fsm:sparql rdf:type owl:NamedIndividual ,
+                    fsm:BodyType .
+
+
+###  Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi
