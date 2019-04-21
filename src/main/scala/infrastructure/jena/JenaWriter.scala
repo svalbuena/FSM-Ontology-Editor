@@ -7,12 +7,20 @@ import domain.guard.Guard
 import domain.state.State
 import domain.transition.Transition
 import org.apache.jena.rdf.model.{Model, ModelFactory, Resource}
-import org.apache.jena.rdf.model.impl.{ResourceImpl, StatementImpl}
-import org.apache.jena.vocabulary.RDF
+import org.apache.jena.vocabulary.{RDF, RDFS}
 
 class JenaWriter(properties: Properties, fsmBaseUri: String) {
   def writeFsm(fsm: FiniteStateMachine, filename: String): Model = {
     val fsmModel = ModelFactory.createDefaultModel()
+    fsmModel.setNsPrefix("", fsmBaseUri)
+    fsmModel.setNsPrefix("fsm", properties.fsmPrefix)
+    fsmModel.setNsPrefix("http", properties.httpPrefix)
+    fsmModel.setNsPrefix("http-methods", properties.httpMethodsPrefix)
+
+    fsmModel.setNsPrefix("rdf", RDF.uri)
+    fsmModel.setNsPrefix("rdfs", RDFS.uri)
+    fsmModel.setNsPrefix("xml", "http://www.w3.org/2001/XMLSchema#")
+
 
     val fsmRes = fsmModel.createResource(fsmBaseUri + fsm.name)
     fsmRes.addProperty(RDF.`type`, properties.FsmClass)
@@ -24,7 +32,6 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
 
     for (transition <- fsm.transitions) {
       val transitionRes = getTransitionResource(fsmModel, transition)
-
       fsmRes.addProperty(properties.Contains, transitionRes)
     }
 

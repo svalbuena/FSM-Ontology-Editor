@@ -60,45 +60,27 @@ class EndController(end: End, drawingPaneController: DrawingPaneController) {
 
 object EndController {
   def addEnd(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    val end = new End("end")
+    val end = new End("end", x, y)
 
-    drawEnd(end, x, y, drawingPaneController)
+    drawEnd(end, drawingPaneController)
   }
 
   def removeEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
-    var ok = true
+    var success = true
 
     for (endInTransition <- end.inTransitions) {
-      endInTransition.source match {
-        case state: State =>
-          val (newInfStateType, newAppStateType) = state.stateType match {
-            case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
-            case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
-          }
-          new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
-            case Left(error) =>
-              println(error.getMessage)
-              ok = false
-            case Right(_) =>
-              state.stateType = newInfStateType
-
-              state.outTransitions = state.outTransitions.filterNot(t => t == endInTransition)
-              TransitionController.eraseTransition(endInTransition, drawingPaneController)
-          }
-
-        case _ =>
-          endInTransition.source.outTransitions = endInTransition.source.outTransitions.filterNot(t => t == endInTransition)
-          TransitionController.eraseTransition(endInTransition, drawingPaneController)
+      if (!TransitionController.removeTransitionFromFsm(endInTransition, drawingPaneController)) {
+        success = false
       }
     }
 
-    if (ok) {
+    if (success) {
       eraseEnd(end, drawingPaneController)
     }
   }
 
-  def drawEnd(end: End, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.canvas.drawConnectableNode(end.shape, x, y)
+  def drawEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.canvas.drawConnectableNode(end.shape, end.x, end.y)
 
     new EndController(end, drawingPaneController)
   }

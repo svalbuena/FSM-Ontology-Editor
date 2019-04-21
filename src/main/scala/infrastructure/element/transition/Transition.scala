@@ -2,6 +2,7 @@ package infrastructure.element.transition
 
 import infrastructure.drawingpane.shape.transition.TransitionShape
 import infrastructure.element.end.End
+import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.ghostnode.GhostNode
 import infrastructure.element.guard.Guard
 import infrastructure.element.start.Start
@@ -13,12 +14,14 @@ import javafx.scene.layout.Pane
 class Transition(name: String,
                  val source: ConnectableElement,
                  val destination: ConnectableElement,
-                 var isEditable: Boolean = false
+                 var isEditable: Boolean = false,
+                 val parent: FiniteStateMachine
                 ) extends Element(name) {
 
   var guards: List[Guard] = List()
   val propertiesBox = new TransitionPropertiesBox()
   val shape = new TransitionShape()
+
 
   def getSourceShape: Pane = getShape(source)
 

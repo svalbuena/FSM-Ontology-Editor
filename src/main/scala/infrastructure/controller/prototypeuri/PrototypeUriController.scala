@@ -28,6 +28,10 @@ object PrototypeUriController {
   def drawPrototypeUri(prototypeUri: PrototypeUri): Unit = {
     prototypeUri.propertiesBox.setStructure(prototypeUri.structure)
 
+    for (parameter <- prototypeUri.prototypeParameters) {
+      PrototypeUriParameterController.drawPrototypeUriParameter(parameter)
+    }
+
     new PrototypeUriController(prototypeUri)
   }
 }

@@ -8,13 +8,15 @@ import infrastructure.element.transition.Transition
 import infrastructure.propertybox.guard.GuardPropertiesBox
 
 class Guard(name: String,
-            var actions: List[Action] = List(),
-            var conditions: List[Condition] = List()
+            val parent: Transition
            ) extends Element(name) {
+
+  var actions: List[Action] = List()
+  var conditions: List[Condition] = List()
+
   val propertiesBox = new GuardPropertiesBox()
   val shape = new GuardPane()
 
-  var parent: Option[Transition] = None
 
   def addAction(action: Action): Unit = {
     actions = action :: actions
@@ -22,10 +24,8 @@ class Guard(name: String,
     propertiesBox.addAction(action.propertiesBox)
     shape.addAction(action.shape)
 
-    if (hasParent) {
-      //TODO: fix this
-      //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
-    }
+    //TODO: fix this
+    //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
   }
 
   def removeAction(action: Action): Unit = {
@@ -41,10 +41,8 @@ class Guard(name: String,
     propertiesBox.addCondition(condition.propertiesBox)
     shape.addCondition(condition.shape)
 
-    if (hasParent) {
-      //TODO: fix this
-      //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
-    }
+    //TODO: fix this
+    //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
   }
 
   def removeCondition(condition: Condition): Unit = {
@@ -53,10 +51,4 @@ class Guard(name: String,
     propertiesBox.removeCondition(condition.propertiesBox)
     shape.removeCondition(condition.shape)
   }
-
-  def hasParent: Boolean = parent.isDefined
-
-  def setParent(transition: Transition): Unit = parent = Some(transition)
-
-  def getParent: Transition = parent.get
 }

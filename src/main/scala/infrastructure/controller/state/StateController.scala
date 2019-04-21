@@ -10,6 +10,7 @@ import infrastructure.controller.DrawingPaneController
 import infrastructure.controller.action.ActionController
 import infrastructure.controller.transition.TransitionController
 import infrastructure.element.action.ActionType
+import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.state.StateType.StateType
 import infrastructure.element.state.{State, StateType}
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
@@ -86,15 +87,17 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
 }
 
 object StateController {
-  def addStateToFsm(x: Double, y: Double, drawingPaneController: DrawingPaneController): Option[State] = {
+  def addStateToFsm(x: Double, y: Double, fsm: FiniteStateMachine,drawingPaneController: DrawingPaneController): Option[State] = {
     new AddStateToFsmHandler().execute(new AddStateToFsmCommand(x, y)) match {
       case Left(error) =>
         println(error.getMessage)
         None
       case Right(stateName) =>
-        val state = new State(stateName, StateType.SIMPLE)
+        val state = new State(stateName, x, y, StateType.SIMPLE, parent = fsm)
 
-        drawState(state, x, y, drawingPaneController)
+        fsm.addState(state)
+
+        drawState(state, drawingPaneController)
 
         println("Adding a state")
         Some(state)
@@ -129,28 +132,29 @@ object StateController {
     new RemoveStateFromFsmHandler().execute(new RemoveStateFromFsmCommand(state.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
+        for (transition <- state.inTransitions ::: state.outTransitions) {
+          TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
+        }
+
+        state.parent.removeState(state)
+
         eraseState(state, drawingPaneController)
 
-        for (inTransition <- state.inTransitions) {
-          inTransition.source.outTransitions = inTransition.source.outTransitions.filterNot(t => t == inTransition)
-          TransitionController.eraseTransition(inTransition, drawingPaneController)
-        }
-
-        for (outTransition <- state.outTransitions) {
-          outTransition.source.inTransitions = outTransition.source.inTransitions.filterNot(t => t == outTransition)
-          TransitionController.eraseTransition(outTransition, drawingPaneController)
-        }
+        drawingPaneController.propertiesBox.removeContentIfEqual(state.propertiesBox)
 
         println("Removing a state")
     }
   }
 
-  def drawState(state: State, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-
+  def drawState(state: State, drawingPaneController: DrawingPaneController): Unit = {
     state.propertiesBox.setName(state.name)
 
     state.shape.setName(state.name)
-    drawingPaneController.canvas.drawConnectableNode(state.shape, x, y)
+    drawingPaneController.canvas.drawConnectableNode(state.shape, state.x, state.y)
+
+    for (action <- state.actions) {
+      ActionController.drawAction(action)
+    }
 
     new StateController(state, drawingPaneController)
   }

@@ -28,10 +28,8 @@ class GuardController(guard: Guard) {
   private def addConditionToGuard(): Unit = ConditionController.addConditionToGuard(guard)
 
   private def removeGuardFromTransition(): Unit = {
-    if (guard.hasParent) {
-      val transition = guard.getParent
-      GuardController.removeGuardFromTransition(guard, transition)
-    }
+    val transition = guard.parent
+    GuardController.removeGuardFromTransition(guard, transition)
   }
 }
 
@@ -40,14 +38,11 @@ object GuardController {
     new AddGuardToTransitionHandler().execute(new AddGuardToTransitionCommand(transition.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(guardName) =>
-        val guard = new Guard(guardName)
-        guard.setParent(transition)
+        val guard = new Guard(guardName, parent = transition)
 
         transition.addGuard(guard)
 
         drawGuard(guard)
-
-        new GuardController(guard)
 
         println("Adding a guard to a transition")
     }
@@ -79,5 +74,15 @@ object GuardController {
     guard.propertiesBox.setGuardName(guard.name)
 
     guard.shape.setGuardName(guard.name)
+
+    for (action <- guard.actions) {
+      ActionController.drawAction(action)
+    }
+
+    for (condition <- guard.conditions) {
+      ConditionController.drawCondition(condition)
+    }
+
+    new GuardController(guard)
   }
 }

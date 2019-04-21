@@ -2,7 +2,7 @@ package infrastructure.jena
 
 import org.apache.jena.rdf.model.impl.PropertyImpl
 
-class Properties(val fsmPrefix: String, val httpPrefix: String) {
+class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsPrefix: String) {
 
   val Contains = new PropertyImpl(fsmPrefix + "contains")
   val HasEntryAction = new PropertyImpl(fsmPrefix + "hasEntryAction")
@@ -35,8 +35,8 @@ class Properties(val fsmPrefix: String, val httpPrefix: String) {
   val ActionClass = new PropertyImpl(fsmPrefix + "Action")
   val GuardClass = new PropertyImpl(fsmPrefix + "Guard")
 
-  val GetMethod = new PropertyImpl("http://www.w3.org/2011/http-methods#GET")
-  val PostMethod = new PropertyImpl("http://www.w3.org/2011/http-methods#POST")
+  val GetMethod = new PropertyImpl(httpMethodsPrefix + "GET")
+  val PostMethod = new PropertyImpl(httpMethodsPrefix + "POST")
 
   val RdfBodyType = new PropertyImpl(fsmPrefix + "rdf")
   val SparqlBodyType = new PropertyImpl(fsmPrefix + "executableSparql")

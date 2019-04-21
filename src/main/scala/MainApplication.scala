@@ -1,4 +1,5 @@
-import infrastructure.controller.DrawingPaneController
+import infrastructure.controller.{DrawingPaneController, MainController}
+import infrastructure.controller.toolbar.FileMenuController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbar.MainToolBar
@@ -65,8 +66,7 @@ class MainApplication extends Application {
 
     borderPane.setCenter(drawingPane)
 
-    //Create the DrawingPaneController
-    val infrastrucutreController = new DrawingPaneController(drawingPane, toolBox, propertiesBox)
+    val mainController = new MainController(drawingPane, toolBox, propertiesBox, mainToolBar.fileMenu)
 
     stage.setScene(scene)
     stage.show()

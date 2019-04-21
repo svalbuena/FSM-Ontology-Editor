@@ -33,8 +33,7 @@ class Canvas extends Pane {
 
   def drawTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
     getChildren.add(transition)
-    updateTransitionPosition(transition, source, destination)
-    transition.toBack()
+    moveTransition(transition, source, destination)
   }
 
   def updateTransitionPosition(transitionShape: TransitionShape, src: Pane, dst: Pane): Unit = {

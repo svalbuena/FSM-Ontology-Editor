@@ -23,4 +23,11 @@ class PropertiesBox extends VBox {
     propertiesSection.setContent _
     propertiesSection.setVisible(false)
   }
+
+  def removeContentIfEqual(pane: Pane): Unit = {
+    val content = propertiesSection.getContent
+    if (content != null && content == pane) {
+      removeContent()
+    }
+  }
 }

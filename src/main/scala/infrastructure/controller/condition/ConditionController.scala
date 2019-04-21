@@ -20,10 +20,8 @@ class ConditionController(condition: Condition) {
   propertiesBox.setOnRemoveConditionButtonClicked(() => removeCondition())
 
   private def removeCondition(): Unit = {
-    if (condition.hasParent) {
-      val guard = condition.getParent
-      ConditionController.removeConditionFromGuard(condition, guard)
-    }
+    val guard = condition.parent
+    ConditionController.removeConditionFromGuard(condition, guard)
   }
 }
 
@@ -32,14 +30,11 @@ object ConditionController {
     new AddConditionToGuardHandler().execute(new AddConditionToGuardCommand(guard.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(conditionName) =>
-        val condition = new Condition(conditionName)
-        condition.setParent(guard)
+        val condition = new Condition(conditionName, parent = guard)
 
         guard.addCondition(condition)
 
         drawCondition(condition)
-
-        new ConditionController(condition)
 
         println("Adding a guard ")
     }
@@ -82,5 +77,7 @@ object ConditionController {
     condition.propertiesBox.setConditionQuery(condition.query)
 
     condition.shape.setConditionName(condition.name)
+
+    new ConditionController(condition)
   }
 }

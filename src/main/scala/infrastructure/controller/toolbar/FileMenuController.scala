@@ -1,5 +1,6 @@
 package infrastructure.controller.toolbar
 
+import infrastructure.controller.DrawingPaneController
 import infrastructure.toolbar.item.FileMenu
 
 class FileMenuController(fileMenu: FileMenu) {
@@ -12,6 +13,10 @@ class FileMenuController(fileMenu: FileMenu) {
   }
 
   private def onSaveFileButtonClicked(): Unit = {
+
+  }
+
+  private def onSaveAsFileButtonClicked(): Unit = {
 
   }
 }

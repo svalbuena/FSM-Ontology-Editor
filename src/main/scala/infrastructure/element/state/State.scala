@@ -3,14 +3,19 @@ package infrastructure.element.state
 import infrastructure.drawingpane.shape.state.StateShape
 import infrastructure.element.ConnectableElement
 import infrastructure.element.action.Action
+import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.state.StateType.StateType
 import infrastructure.menu.contextmenu.state.StateContextMenu
 import infrastructure.propertybox.state.StatePropertiesBox
 
 class State(name: String,
+            var x: Double,
+            var y: Double,
             var stateType: StateType = StateType.SIMPLE,
-            var actions: List[Action] = List()
+            val parent: FiniteStateMachine
            ) extends ConnectableElement(name) {
+
+  var actions: List[Action] = List()
 
   val shape = new StateShape()
   val propertiesBox = new StatePropertiesBox()

@@ -22,5 +22,4 @@ class PrototypeUri(name: String,
 
     propertiesBox.removePrototypeUriParameter(parameter.propertiesBox)
   }
-
 }

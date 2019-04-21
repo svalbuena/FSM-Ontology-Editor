@@ -6,14 +6,9 @@ import infrastructure.propertybox.prototypeuriparameter.PrototypeUriParameterPro
 
 class PrototypeUriParameter(name: String,
                             var query: String = "",
-                            var placeholder: String = ""
+                            var placeholder: String = "",
+                            val parent: PrototypeUri
                            ) extends Element(name) {
+
   val propertiesBox = new PrototypeUriParameterPropertiesBox()
-  var parent: Option[PrototypeUri] = None
-
-  def hasParent: Boolean = parent.isDefined
-
-  def getParent: PrototypeUri = parent.get
-
-  def setParent(prototypeUri: PrototypeUri): Unit = parent = Some(prototypeUri)
 }

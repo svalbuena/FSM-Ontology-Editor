@@ -11,10 +11,11 @@ import application.commandhandler.transition.remove.RemoveTransitionFromFsmHandl
 import infrastructure.controller.DrawingPaneController
 import infrastructure.controller.guard.GuardController
 import infrastructure.element.end.End
+import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.start.Start
 import infrastructure.element.state.{State, StateType}
 import infrastructure.element.transition.Transition
-import infrastructure.toolbox.section.selector.mouse.NormalMouseSelector
+import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
 class TransitionController(transition: Transition, drawingPaneController: DrawingPaneController) {
@@ -31,6 +32,10 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
             drawingPaneController.propertiesBox.setContent(propertiesBox)
+
+          case _: DeleteMouseSelector =>
+            TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
+
           case _ =>
 
         }
@@ -47,7 +52,7 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
 }
 
 object TransitionController {
-  def addStartToStateTransition(start: Start, state: State, drawingPaneController: DrawingPaneController): Unit = {
+  def addStartToStateTransition(start: Start, state: State, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
     val (newInfStateType, newAppStateType) = state.stateType match {
       case infrastructure.element.state.StateType.FINAL => (StateType.INITIAL_FINAL, application.command.state.modify.StateType.INITIAL_FINAL)
       case _ => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
@@ -55,7 +60,7 @@ object TransitionController {
     new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        val transition = new Transition("startToStateTransition", start, state)
+        val transition = new Transition("startToStateTransition", start, state, parent = fsm)
 
         state.stateType = newInfStateType
 
@@ -66,7 +71,7 @@ object TransitionController {
     }
   }
 
-  def addStateToEndTransition(state: State, end: End, drawingPaneController: DrawingPaneController): Unit = {
+  def addStateToEndTransition(state: State, end: End,  fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
     val (newInfStateType, newAppStateType) = state.stateType match {
       case infrastructure.element.state.StateType.INITIAL => (StateType.INITIAL_FINAL, application.command.state.modify.StateType.INITIAL_FINAL)
       case _ => (StateType.FINAL, application.command.state.modify.StateType.FINAL)
@@ -75,7 +80,7 @@ object TransitionController {
     new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
-        val transition = new Transition("stateToEndTransition", state, end)
+        val transition = new Transition("stateToEndTransition", state, end, parent = fsm)
 
         state.stateType = newInfStateType
 
@@ -86,13 +91,15 @@ object TransitionController {
     }
   }
 
-  def addStateToStateTransitionToFsm(source: State, destination: State, drawingPaneController: DrawingPaneController): Option[Transition] = {
+  def addStateToStateTransitionToFsm(source: State, destination: State, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Option[Transition] = {
     new AddTransitionToFsmHandler().execute(new AddTransitionToFsmCommand(source.name, destination.name)) match {
       case Left(error) =>
         println(error.getMessage)
         None
       case Right(transitionName) =>
-        val transition = new Transition(transitionName, source, destination, isEditable = true)
+        val transition = new Transition(transitionName, source, destination, isEditable = true, parent = fsm)
+
+        fsm.addTransition(transition)
 
         source.outTransitions = transition :: source.outTransitions
         destination.inTransitions = transition :: destination.inTransitions
@@ -112,18 +119,66 @@ object TransitionController {
     }
   }
 
-  def removeTransitionFromFsm(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
-    new RemoveTransitionFromFsmHandler().execute(new RemoveTransitionFromFsmCommand(transition.name)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-      //TODO: implement RemoveTransitionFromFsm
+  def removeTransitionFromFsm(transition: Transition, drawingPaneController: DrawingPaneController): Boolean = {
+    var success = false
+
+    (transition.source, transition.destination) match {
+      case (_: Start, state: State) =>
+        val (newInfStateType, newAppStateType) = state.stateType match {
+          case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.FINAL, application.command.state.modify.StateType.FINAL)
+          case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
+        }
+        new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+          case Left(error) => println(error.getMessage)
+          case Right(_) =>
+            state.stateType = newInfStateType
+            success = true
+        }
+
+      case (state: State, _: End) =>
+        val (newInfStateType, newAppStateType) = state.stateType match {
+          case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
+          case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
+        }
+        new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+          case Left(error) => println(error.getMessage)
+          case Right(_) =>
+            state.stateType = newInfStateType
+            success = true
+        }
+
+      case (_: State, _: State) =>
+        new RemoveTransitionFromFsmHandler().execute(new RemoveTransitionFromFsmCommand(transition.name)) match {
+          case Left(error) => println(error.getMessage)
+          case Right(_) =>
+            success = true
+        }
+
+      case (_, _) =>
     }
+
+    if (success) {
+      transition.source.outTransitions = transition.source.outTransitions.filterNot(t => t == transition)
+      transition.destination.inTransitions = transition.destination.inTransitions.filterNot(t => t == transition)
+
+      transition.parent.removeTransition(transition)
+
+      eraseTransition(transition, drawingPaneController)
+
+      drawingPaneController.propertiesBox.removeContentIfEqual(transition.propertiesBox)
+    }
+
+    success
   }
 
   def drawTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
     drawingPaneController.canvas.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
 
     transition.propertiesBox.setTransitionName(transition.name)
+
+    for (guard <- transition.guards) {
+      GuardController.drawGuard(guard)
+    }
 
     new TransitionController(transition, drawingPaneController)
   }

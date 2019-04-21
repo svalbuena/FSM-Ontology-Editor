@@ -17,10 +17,8 @@ class PrototypeUriParameterController(prototypeUriParameter: PrototypeUriParamet
   propertiesBox.setOnRemoveParameterButtonClicked(() => removePrototypeUriParameter())
 
   private def removePrototypeUriParameter(): Unit = {
-    if (prototypeUriParameter.hasParent) {
-      val prototypeUri = prototypeUriParameter.getParent
-      PrototypeUriParameterController.removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter, prototypeUri)
-    }
+    val prototypeUri = prototypeUriParameter.parent
+    PrototypeUriParameterController.removePrototypeUriParameterFromPrototypeUri(prototypeUriParameter, prototypeUri)
   }
 }
 
@@ -29,8 +27,7 @@ object PrototypeUriParameterController {
     new AddPrototypeUriParameterToPrototypeUriHandler().execute(new AddPrototypeUriParameterToPrototypeUriCommand(prototypeUri.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(parameterName) =>
-        val prototypeUriParameter = new PrototypeUriParameter(parameterName)
-        prototypeUriParameter.setParent(prototypeUri)
+        val prototypeUriParameter = new PrototypeUriParameter(parameterName, parent = prototypeUri)
 
         prototypeUri.addPrototypeUriParameter(prototypeUriParameter)
 

@@ -49,12 +49,10 @@ class ActionController(action: Action) {
   }
 
   private def removeAction(): Unit = {
-    if (action.hasParent) {
-      action.getParent match {
-        case guard: Guard => ActionController.removeActionFromGuard(action, guard)
-        case state: State => ActionController.removeActionFromState(action, state)
-        case _ =>
-      }
+    action.parent match {
+      case guard: Guard => ActionController.removeActionFromGuard(action, guard)
+      case state: State => ActionController.removeActionFromState(action, state)
+      case _ =>
     }
   }
 }
@@ -67,9 +65,8 @@ object ActionController {
         None
       case Right(names) =>
         val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
-        val action = new Action(actionName, ActionType.GUARD, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
+        val action = new Action(actionName, ActionType.GUARD, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = guard)
 
-        action.setParent(guard)
         guard.addAction(action)
 
         drawAction(action)
@@ -87,9 +84,8 @@ object ActionController {
         None
       case Right(names) =>
         val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
-        val action = new Action(actionName, actionType, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName))
+        val action = new Action(actionName, actionType, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = state)
 
-        action.setParent(state)
         state.addAction(action)
 
         drawAction(action)

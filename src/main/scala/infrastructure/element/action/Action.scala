@@ -17,18 +17,11 @@ class Action(name: String,
              var uriType: UriType = UriType.ABSOLUTE,
              var absoluteUri: String = "",
              var prototypeUri: PrototypeUri,
-             var timeout: Int = 0
+             var timeout: Int = 0,
+             val parent: Element
             ) extends Element(name) {
 
   val shape = new ActionPane()
   val propertiesBox = new ActionPropertiesBox(body.propertiesBox, prototypeUri.propertiesBox)
   val contextMenu = new ActionContextMenu
-
-  var parent: Option[Element] = None
-
-  def hasParent: Boolean = parent.isDefined
-
-  def setParent(element: Element): Unit = parent = Some(element)
-
-  def getParent: Element = parent.get
 }

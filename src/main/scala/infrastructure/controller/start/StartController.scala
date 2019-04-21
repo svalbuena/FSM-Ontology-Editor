@@ -60,45 +60,27 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
 
 object StartController {
   def addStart(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    val start = new Start("start")
+    val start = new Start("start", x, y)
 
-    drawStart(start, x, y, drawingPaneController)
+    drawStart(start, drawingPaneController)
   }
 
   def removeStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
-    var ok = true
+    var success = true
 
     for (startOutTransition <- start.outTransitions) {
-      startOutTransition.source match {
-        case state: State =>
-          val (newInfStateType, newAppStateType) = state.stateType match {
-            case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
-            case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
-          }
-          new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
-            case Left(error) =>
-              println(error.getMessage)
-              ok = false
-            case Right(_) =>
-              state.stateType = newInfStateType
-
-              state.inTransitions = state.inTransitions.filterNot(t => t == startOutTransition)
-              TransitionController.eraseTransition(startOutTransition, drawingPaneController)
-          }
-
-        case _ =>
-          startOutTransition.destination.inTransitions = startOutTransition.destination.inTransitions.filterNot(t => t == startOutTransition)
-          TransitionController.eraseTransition(startOutTransition, drawingPaneController)
+      if (!TransitionController.removeTransitionFromFsm(startOutTransition, drawingPaneController)) {
+        success = false
       }
     }
 
-    if (ok) {
+    if (success) {
       eraseStart(start, drawingPaneController)
     }
   }
 
-  def drawStart(start: Start, x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.canvas.drawConnectableNode(start.shape, x, y)
+  def drawStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.canvas.drawConnectableNode(start.shape, start.x, start.y)
 
     new StartController(start, drawingPaneController)
   }
