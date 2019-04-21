@@ -15,15 +15,12 @@ import org.apache.jena.rdf.model.{Model, Resource}
 import org.apache.jena.vocabulary.RDF
 
 class JenaReader(properties: Properties) {
-  def readFsm(model: Model, fsmUri: String, verbose: Boolean): FiniteStateMachine = {
+  def readFsm(model: Model, fsmUri: String): FiniteStateMachine = {
     val fsmRes = model.getResource(fsmUri)
 
     //First retrieve the states
     var states: List[State] = List()
     fsmRes.listProperties(properties.Contains).forEachRemaining(property => {
-      if (verbose) {
-        println(property)
-      }
       val resource = property.getResource
       if (resource.hasProperty(RDF.`type`, properties.StateClass)) {
         val state = getStateFromResource(resource)
@@ -97,15 +94,10 @@ class JenaReader(properties: Properties) {
 
   private def getStateFromResource(stateRes: Resource): State = {
     var stateType: StateType = StateType.SIMPLE
-    stateRes.listProperties(RDF.`type`).mapWith(_.getResource).forEachRemaining(classRes => {
-      (stateType, getStateTypeFromClassResource(classRes)) match {
-        case (StateType.SIMPLE, StateType.INITIAL) => stateType = StateType.INITIAL
-        case (StateType.SIMPLE, StateType.FINAL) => stateType = StateType.FINAL
-        case (StateType.INITIAL, StateType.FINAL) => stateType = StateType.INITIAL_FINAL
-        case (StateType.FINAL, StateType.INITIAL) => stateType = StateType.INITIAL_FINAL
-        case (_, _) =>
-      }
-    })
+    if (stateRes.hasProperty(RDF.`type`, properties.InitialStateClass) && stateRes.hasProperty(RDF.`type`, properties.FinalStateClass)) stateType = StateType.INITIAL_FINAL
+    else if (stateRes.hasProperty(RDF.`type`, properties.InitialStateClass)) stateType = StateType.INITIAL
+    else if (stateRes.hasProperty(RDF.`type`, properties.FinalStateClass)) stateType = StateType.FINAL
+    else if (stateRes.hasProperty(RDF.`type`, properties.SimpleStateClass)) stateType = StateType.SIMPLE
 
     var actions: List[Action] = List()
     stateRes.listProperties(properties.HasEntryAction).mapWith(_.getResource).forEachRemaining(actionRes => {
@@ -118,24 +110,10 @@ class JenaReader(properties: Properties) {
     new State(stateRes.getLocalName, 0, 0, stateType, actions)
   }
 
-  private def getStateTypeFromClassResource(stateClassRes: Resource): StateType = {
-    stateClassRes.getLocalName match {
-      case "SimpleState" => StateType.SIMPLE
-      case "InitialState" => StateType.INITIAL
-      case "FinalState" => StateType.FINAL
-      case _ => StateType.SIMPLE
-    }
-  }
-
   private def getActionFromResource(actionRes: Resource, actionType: ActionType): Action = {
     var methodType: MethodType = MethodType.GET
-    if (actionRes.hasProperty(properties.HasMethod)) {
-      methodType = actionRes.getProperty(properties.HasMethod).getResource.getLocalName match {
-        case "GET" => MethodType.GET
-        case "POST" => MethodType.POST
-        case _ => MethodType.GET
-      }
-    }
+    if (actionRes.hasProperty(properties.HasMethod, properties.GetMethod)) methodType = MethodType.GET
+    else if (actionRes.hasProperty(properties.HasMethod, properties.PostMethod)) methodType = MethodType.POST
 
     var uriType: UriType = UriType.ABSOLUTE
     var absoluteUri: String = ""
@@ -194,14 +172,9 @@ class JenaReader(properties: Properties) {
 
   private def getBodyFromResource(bodyRes: Resource): Body = {
     var bodyType: BodyType = BodyType.RDF
-    if (bodyRes.hasProperty(properties.HasBodyType)) {
-      bodyType = bodyRes.getProperty(properties.HasBodyType).getResource.getLocalName match {
-        case "rdf" => BodyType.RDF
-        case "executableSparql" => BodyType.SPARQL
-        case "other" => BodyType.JSON
-        case _ => BodyType.RDF
-      }
-    }
+    if (bodyRes.hasProperty(properties.HasBodyType, properties.RdfBodyType)) bodyType = BodyType.RDF
+    else if (bodyRes.hasProperty(properties.HasBodyType, properties.RdfBodyType)) bodyType = BodyType.SPARQL
+    else if (bodyRes.hasProperty(properties.HasBodyType, properties.OtherBodyType)) bodyType = BodyType.JSON
 
     var content = ""
     if (bodyRes.hasProperty(properties.HasBodyContent)) {

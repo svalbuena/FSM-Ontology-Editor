@@ -18,11 +18,11 @@ object Main {
     fsmRepository.loadFsm(FsmUri, properties, filename) match {
       case Left(error) => println(error.getMessage)
       case Right(fsmRead) =>
-        val jenaWriter = new JenaWriter(properties)
-        val model = jenaWriter.writeFsm(fsmRead, FsmBaseUri, "" )
+        val jenaWriter = new JenaWriter(properties, FsmBaseUri)
+        val model = jenaWriter.writeFsm(fsmRead,"" )
 
         val jenaReader = new JenaReader(properties)
-        val fsmOut = jenaReader.readFsm(model, FsmUri, true)
+        val fsmOut = jenaReader.readFsm(model, FsmUri)
 
         println(s"Fsm -> ${fsmOut.name}")
         println("-- States --")

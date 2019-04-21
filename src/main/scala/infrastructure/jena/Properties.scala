@@ -28,6 +28,19 @@ class Properties(val fsmPrefix: String, val httpPrefix: String) {
   val SimpleStateClass = new PropertyImpl(fsmPrefix + "SimpleState")
   val InitialStateClass = new PropertyImpl(fsmPrefix + "InitialState")
   val FinalStateClass = new PropertyImpl(fsmPrefix + "FinalState")
+  val BodyClass = new PropertyImpl(fsmPrefix + "Body")
+  val PrototypeUriClass = new PropertyImpl(fsmPrefix + "PrototypeURI")
+  val PrototypeUriParameterClass = new PropertyImpl(fsmPrefix + "PrototypeParameter")
+  val ConditionClass = new PropertyImpl(fsmPrefix + "Condition")
+  val ActionClass = new PropertyImpl(fsmPrefix + "Action")
+  val GuardClass = new PropertyImpl(fsmPrefix + "Guard")
+
+  val GetMethod = new PropertyImpl("http://www.w3.org/2011/http-methods#GET")
+  val PostMethod = new PropertyImpl("http://www.w3.org/2011/http-methods#POST")
+
+  val RdfBodyType = new PropertyImpl(fsmPrefix + "rdf")
+  val SparqlBodyType = new PropertyImpl(fsmPrefix + "executableSparql")
+  val OtherBodyType = new PropertyImpl(fsmPrefix + "other")
 
   val FsmClass = new PropertyImpl(fsmPrefix + "StateMachine")
 

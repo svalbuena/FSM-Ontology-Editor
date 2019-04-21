@@ -19,7 +19,7 @@ class JenaFsmRepository extends FsmRepository {
 
     val jenaReader = new JenaReader(properties)
 
-    val fsm = jenaReader.readFsm(fsmInferredModel, fsmUri, verbose = false)
+    val fsm = jenaReader.readFsm(fsmInferredModel, fsmUri)
 
     println(fsm.states.length)
 
