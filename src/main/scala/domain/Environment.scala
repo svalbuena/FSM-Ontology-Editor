@@ -7,25 +7,27 @@ import domain.fsm.FiniteStateMachine
 import domain.guard.Guard
 import domain.state.State
 import domain.transition.Transition
-import infrastructure.JenaFsmRepository
+import infrastructure.jena.{JenaFsmRepository, Properties}
 
 object Environment {
   private var selectedFsm: Option[Int] = None
   private var nameList: List[String] = List()
   private var fsmList: List[FiniteStateMachine] = List()
   private val fsmRepository: FsmRepository = new JenaFsmRepository
+  private val properties = new Properties("", "")
+  private val fsmUri = ""
 
   def saveFsm(filename: String): Either[Exception, _] = {
     if (selectedFsm.isDefined) {
       val fsm = fsmList(selectedFsm.get)
-      fsmRepository.saveFsm(fsm, filename)
+      fsmRepository.saveFsm(fsm, properties, filename)
     } else {
       Left(new FsmNotSelectedError)
     }
   }
 
   def loadFsm(filename: String): Either[Exception, FiniteStateMachine] = {
-    fsmRepository.loadFsm(filename) match {
+    fsmRepository.loadFsm(fsmUri, properties, filename) match {
       case Left(error) => Left(error)
       case Right(fsm) =>
         addFsm(fsm)

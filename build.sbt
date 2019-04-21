@@ -17,9 +17,7 @@ libraryDependencies ++= Seq (
   "org.openjfx" % "javafx-controls" % "12" classifier osName.value withSources() withJavadoc(),
   "org.openjfx" % "javafx-base" % "12" classifier osName.value withSources() withJavadoc(),
   "org.openjfx" % "javafx-graphics" % "12" classifier osName.value withSources() withJavadoc(),
-  "org.apache.jena" % "jena-core" % "3.10.0",
-  "org.slf4j" % "slf4j-api" % "1.7.26",
-  "org.slf4j" % "slf4j-simple" % "1.7.26"
+  "org.apache.jena" % "apache-jena-libs" % "3.10.0" pomOnly()
 )
 
 scalacOptions := Seq("-unchecked", "-deprecation")
