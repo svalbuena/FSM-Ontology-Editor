@@ -66,7 +66,7 @@ class MainApplication extends Application {
 
     borderPane.setCenter(drawingPane)
 
-    val mainController = new MainController(drawingPane, toolBox, propertiesBox, mainToolBar.fileMenu)
+    val mainController = new MainController(stage, drawingPane, toolBox, propertiesBox, mainToolBar.fileMenu)
 
     stage.setScene(scene)
     stage.show()

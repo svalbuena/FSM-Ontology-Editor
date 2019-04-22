@@ -24,7 +24,6 @@ class Canvas extends Pane {
     connectableNode.setTranslateY(y)
   }
 
-
   /* Transtion */
   def moveTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
     updateTransitionPosition(transition, source, destination)

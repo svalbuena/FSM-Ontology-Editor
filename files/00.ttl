@@ -1,0 +1,9 @@
+@prefix :      <file:///D:/projects/ontologies/siot/demo_siot.ttl#> .
+@prefix http-methods: <http://www.w3.org/2011/http-methods#> .
+@prefix fsm:   <file:///D:/projects/ontologies/fsm/fsm.ttl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix http:  <http://www.w3.org/2011/http#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+:fsm0   a       fsm:StateMachine .

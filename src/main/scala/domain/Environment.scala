@@ -53,6 +53,7 @@ object Environment {
     val fsmOption = fsmList.find(fsm => fsm.name.equals(name))
 
     if (fsmOption.isDefined) {
+      println(s"Select fsm -> ${fsmOption.get.name}")
       selectedFsmOption = Some(fsmOption.get)
       Right(fsmOption.get.name)
     } else {

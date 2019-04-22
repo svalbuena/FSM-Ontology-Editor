@@ -5,11 +5,18 @@ import javafx.scene.control.{MenuButton, MenuItem}
 class FileMenu extends MenuButton {
   setText("File")
 
+  val newMenuItem = new MenuItem()
+  newMenuItem.setText("New")
+
   val openMenuItem = new MenuItem()
   openMenuItem.setText("Open")
 
   val saveMenuItem = new MenuItem()
   saveMenuItem.setText("Save")
 
-  getItems.addAll(openMenuItem, saveMenuItem)
+  val saveAsMenuItem = new MenuItem()
+  saveAsMenuItem.setText("Save as")
+
+
+  getItems.addAll(newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem)
 }
