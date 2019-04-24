@@ -24,7 +24,7 @@ class JenaFsmRepository extends FsmRepository {
     Right(())
   }
 
-  override def loadFsm(fsmUri: String, properties: Properties,  filename: String): Either[Exception, FiniteStateMachine] = {
+  override def loadFsm(properties: Properties,  filename: String): Either[Exception, FiniteStateMachine] = {
     val fsmModel = RDFDataMgr.loadModel(filename)
     val fsmSchema = RDFDataMgr.loadModel("D:\\projects\\ontologies\\fsm\\fsm.ttl")
 
@@ -32,10 +32,6 @@ class JenaFsmRepository extends FsmRepository {
 
     val jenaReader = new JenaReader(properties)
 
-    val fsm = jenaReader.readFsm(fsmInferredModel, fsmUri)
-
-    println(fsm.states.length)
-
-    Right(fsm)
+    jenaReader.readFsm(fsmInferredModel)
   }
 }

@@ -1,5 +1,6 @@
 package infrastructure.propertybox
 
+import infrastructure.propertybox.fsm.FsmPropertiesBox
 import javafx.scene.control.{Label, ScrollPane}
 import javafx.scene.layout.{Pane, VBox}
 
@@ -9,10 +10,21 @@ class PropertiesBox extends VBox {
   val boxTitle = new Label()
   boxTitle.setText("Properties")
 
+  val fsmPropertiesBoxWrapper = new Pane()
+
   val propertiesSection = new ScrollPane()
   removeContent()
 
-  getChildren.addAll(boxTitle, propertiesSection)
+  getChildren.addAll(boxTitle, fsmPropertiesBoxWrapper, propertiesSection)
+
+
+  def setFsmPropertiesBox(fsmPropertiesBox: FsmPropertiesBox): Unit = {
+    fsmPropertiesBoxWrapper.getChildren.add(fsmPropertiesBox)
+  }
+
+  def removeFsmPropertiesBox(): Unit = {
+    fsmPropertiesBoxWrapper.getChildren.clear()
+  }
 
   def setContent(pane: Pane): Unit = {
     propertiesSection.setContent(pane)

@@ -1,4 +1,4 @@
-package infrastructure.controller.body
+package infrastructure.controller
 
 import application.command.body.modify.{ModifyBodyContentCommand, ModifyBodyNameCommand, ModifyBodyTypeCommand}
 import application.commandhandler.body.modify.{ModifyBodyContentHandler, ModifyBodyNameHandler, ModifyBodyTypeHandler}

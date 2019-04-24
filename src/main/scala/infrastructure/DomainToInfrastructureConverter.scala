@@ -14,7 +14,9 @@ import infrastructure.element.transition.Transition
 object DomainToInfrastructureConverter {
   def convertFsm(domainFsm: domain.fsm.FiniteStateMachine): FiniteStateMachine = {
     val fsmName = domainFsm.name
-    val fsm = new FiniteStateMachine(fsmName)
+    val fsmBaseUri = domainFsm.baseUri
+
+    val fsm = new FiniteStateMachine(fsmName, fsmBaseUri)
 
     for (domainState <- domainFsm.states) {
       val state = getState(domainState, fsm)

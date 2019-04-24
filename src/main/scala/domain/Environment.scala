@@ -10,10 +10,9 @@ import domain.transition.Transition
 import infrastructure.jena.{JenaFsmRepository, Properties}
 
 object Environment {
-  private val FsmPrefix = "file:///D:/projects/ontologies/fsm/fsm.ttl#"
+  private val FsmPrefix = "file:///D:/projects/ontologies/fsm/fsm#"
   private val HttpPrefix = "http://www.w3.org/2011/http#"
   private val HttpMethodsPrefix = "http://www.w3.org/2011/http-methods#"
-  private val FsmUri = "file:///D:/projects/ontologies/siot/demo_siot.ttl#siot_fsm"
 
   private var selectedFsmOption: Option[FiniteStateMachine] = None
   private var nameList: List[String] = List()
@@ -31,7 +30,7 @@ object Environment {
   }
 
   def loadFsm(filename: String): Either[Exception, FiniteStateMachine] = {
-    fsmRepository.loadFsm(FsmUri, properties, filename) match {
+    fsmRepository.loadFsm(properties, filename) match {
       case Left(error) => Left(error)
       case Right(fsm) =>
         addFsm(fsm)

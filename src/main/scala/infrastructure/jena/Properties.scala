@@ -23,6 +23,7 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val HasGuardAction = new PropertyImpl(fsmPrefix + "hasGuardAction")
   val HasContent = new PropertyImpl(fsmPrefix + "hasContent")
 
+  val StateMachineClass = new PropertyImpl(fsmPrefix + "StateMachine")
   val TransitionClass = new PropertyImpl(fsmPrefix + "Transition")
   val StateClass = new PropertyImpl(fsmPrefix + "State")
   val SimpleStateClass = new PropertyImpl(fsmPrefix + "SimpleState")

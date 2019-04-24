@@ -6,12 +6,23 @@ import domain.transition.Transition
 import domain.{Element, Environment}
 
 class FiniteStateMachine(name: String,
+                         var _baseUri: String,
                          var states: List[State] = List(),
                          var transitions: List[Transition] = List()
                         ) extends Element(name) {
 
-  def this() = this(Environment.generateUniqueName("fsm"))
+  def this() = this(Environment.generateUniqueName("fsm"), "www.example.com/myFsmDemo#")
 
+  def baseUri: String = _baseUri
+
+  def baseUri_=(newBaseUri: String): Either[DomainError, String] = {
+    if (newBaseUri.isEmpty || newBaseUri.isBlank) {
+      Left(new DomainError("Base URI can't be empty or blank"))
+    } else {
+      _baseUri = newBaseUri
+      Right(newBaseUri)
+    }
+  }
 
   def addState(state: State): Either[DomainError, _] = {
     if (Environment.isNameUnique(state.name)) {

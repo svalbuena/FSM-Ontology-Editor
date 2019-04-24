@@ -15,46 +15,54 @@ import org.apache.jena.rdf.model.{Model, Resource}
 import org.apache.jena.vocabulary.RDF
 
 class JenaReader(properties: Properties) {
-  def readFsm(model: Model, fsmUri: String): FiniteStateMachine = {
-    val fsmRes = model.getResource(fsmUri)
+  def readFsm(model: Model): Either[Exception, FiniteStateMachine] = {
+    val fsmIterator = model.listResourcesWithProperty(RDF.`type`, properties.StateMachineClass)
+    if (fsmIterator.hasNext) {
+      val fsmRes = fsmIterator.next()
 
-    val fsmName = fsmRes.getLocalName
+      val fsmName = fsmRes.getLocalName
 
-    //First retrieve the states
-    var states: List[State] = List()
-    fsmRes.listProperties(properties.Contains).forEachRemaining(property => {
-      val resource = property.getResource
-      if (resource.hasProperty(RDF.`type`, properties.StateClass)) {
-        val state = getStateFromResource(resource)
-        states = state :: states
-      }
-    })
+      val fsmBaseUri = fsmRes.getNameSpace
 
-    //Then retrieve the transitions
-    var transitions: List[Transition] = List()
-    fsmRes.listProperties(properties.Contains).forEachRemaining(property => {
-      val resource = property.getResource
-      if (resource.hasProperty(RDF.`type`, properties.TransitionClass)) {
-        var success = false
+      //First retrieve the states
+      var states: List[State] = List()
+      fsmRes.listProperties(properties.Contains).forEachRemaining(property => {
+        val resource = property.getResource
+        if (resource.hasProperty(RDF.`type`, properties.StateClass)) {
+          val state = getStateFromResource(resource)
+          states = state :: states
+        }
+      })
 
-        val transitionRes = resource
-        if (transitionRes.hasProperty(properties.HasSourceState) && transitionRes.hasProperty(properties.HasTargetState)) {
-          val srcStateOpt = states.find(s => s.name.equals(transitionRes.getProperty(properties.HasSourceState).getResource.getLocalName))
-          val dstStateOpt = states.find(s => s.name.equals(transitionRes.getProperty(properties.HasTargetState).getResource.getLocalName))
+      //Then retrieve the transitions
+      var transitions: List[Transition] = List()
+      fsmRes.listProperties(properties.Contains).forEachRemaining(property => {
+        val resource = property.getResource
+        if (resource.hasProperty(RDF.`type`, properties.TransitionClass)) {
+          var success = false
 
-          if (srcStateOpt.isDefined && dstStateOpt.isDefined) {
-            val transition = getTransitionFromResource(transitionRes, srcStateOpt.get, dstStateOpt.get)
-            transitions = transition :: transitions
-            success = true
+          val transitionRes = resource
+          if (transitionRes.hasProperty(properties.HasSourceState) && transitionRes.hasProperty(properties.HasTargetState)) {
+            val srcStateOpt = states.find(s => s.name.equals(transitionRes.getProperty(properties.HasSourceState).getResource.getLocalName))
+            val dstStateOpt = states.find(s => s.name.equals(transitionRes.getProperty(properties.HasTargetState).getResource.getLocalName))
+
+            if (srcStateOpt.isDefined && dstStateOpt.isDefined) {
+              val transition = getTransitionFromResource(transitionRes, srcStateOpt.get, dstStateOpt.get)
+              transitions = transition :: transitions
+              success = true
+            }
+          }
+          if (!success) {
+            println("Cannot find the states of the transition or the transition")
           }
         }
-        if (!success) {
-          println("Cannot find the states of the transition or the transition")
-        }
-      }
-    })
+      })
 
-    new FiniteStateMachine(name = fsmName, states = states, transitions = transitions)
+      val fsm = new FiniteStateMachine(name = fsmName, _baseUri = fsmBaseUri, states = states, transitions = transitions)
+      Right(fsm)
+    } else {
+      Left(new Exception("Fsm not found"))
+    }
   }
 
   private def getTransitionFromResource(transitionRes: Resource, srcState: State, dstState: State): Transition = {
@@ -193,17 +201,16 @@ class JenaReader(properties: Properties) {
   private def getBodyFromResource(bodyRes: Resource): Body = {
     val bodyName = bodyRes.getLocalName
 
-    var bodyType: BodyType = {
+    val bodyType: BodyType = {
       if (bodyRes.hasProperty(properties.HasBodyType, properties.RdfBodyType)) BodyType.RDF
       else if (bodyRes.hasProperty(properties.HasBodyType, properties.SparqlBodyType)) BodyType.SPARQL
       else if (bodyRes.hasProperty(properties.HasBodyType, properties.OtherBodyType)) BodyType.JSON
       else BodyType.RDF
     }
 
-
-    var content = ""
-    if (bodyRes.hasProperty(properties.HasBodyContent)) {
-      content = bodyRes.getProperty(properties.HasBodyContent).getString
+    val content = {
+      if (bodyRes.hasProperty(properties.HasBodyContent)) bodyRes.getProperty(properties.HasBodyContent).getString
+      else ""
     }
 
     new Body(bodyName, bodyType, content)

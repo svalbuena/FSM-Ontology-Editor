@@ -1,6 +1,5 @@
-package infrastructure.controller.toolbar
+package infrastructure.controller
 
-import infrastructure.controller.{DrawingPaneController, MainController}
 import infrastructure.toolbar.item.FileMenu
 
 class FileMenuController(fileMenu: FileMenu, mainController: MainController) {

@@ -1,4 +1,4 @@
-package infrastructure.controller.prototypeuriparameter
+package infrastructure.controller
 
 import application.command.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriCommand
 import application.command.prototypeuriparameter.modify.{ModifyPrototypeUriParameterPlaceholderCommand, ModifyPrototypeUriParameterQueryCommand}

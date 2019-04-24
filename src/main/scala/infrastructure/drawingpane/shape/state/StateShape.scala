@@ -5,7 +5,6 @@ import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSecti
 import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.layout.{Pane, VBox}
 
-// TODO Move shape and text area
 class StateShape extends Pane {
   private val ActionHeight = 25.0
   private val Width = 250.0

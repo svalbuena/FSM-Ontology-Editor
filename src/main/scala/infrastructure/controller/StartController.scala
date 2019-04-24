@@ -1,11 +1,6 @@
-package infrastructure.controller.start
+package infrastructure.controller
 
-import application.command.state.modify.ModifyStateTypeCommand
-import application.commandhandler.state.modify.ModifyStateTypeHandler
-import infrastructure.controller.DrawingPaneController
-import infrastructure.controller.transition.TransitionController
 import infrastructure.element.start.Start
-import infrastructure.element.state.{State, StateType}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
@@ -13,7 +8,6 @@ import javafx.scene.input.MouseButton
 class StartController(start: Start, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
   private val propertiesBox = drawingPaneController.propertiesBox
-  private val canvas = drawingPaneController.canvas
 
   private val startShape = start.shape
 
@@ -44,8 +38,8 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        canvas.moveConnectableNode(startShape, deltaX, deltaY)
-        start.getTransitions.foreach(transition => canvas.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        drawingPaneController.moveNode(startShape, deltaX, deltaY)
+        start.getTransitions.foreach(transition => drawingPaneController.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
     }
@@ -80,15 +74,12 @@ object StartController {
   }
 
   def drawStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.canvas.drawConnectableNode(start.shape, start.x, start.y)
+    drawingPaneController.drawNode(start.shape, start.x, start.y)
 
     new StartController(start, drawingPaneController)
   }
 
   def eraseStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
-    val canvas = drawingPaneController.canvas
-
-    canvas.getChildren.remove(start.shape)
+    drawingPaneController.removeNode(start.shape)
   }
-
 }

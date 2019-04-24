@@ -1,4 +1,4 @@
-package infrastructure.controller.guard
+package infrastructure.controller
 
 import application.command.guard.add.AddGuardToTransitionCommand
 import application.command.guard.modify.ModifyGuardNameCommand
@@ -6,8 +6,6 @@ import application.command.guard.remove.RemoveGuardFromTransitionCommand
 import application.commandhandler.guard.add.AddGuardToTransitionHandler
 import application.commandhandler.guard.modify.ModifyGuardNameHandler
 import application.commandhandler.guard.remove.RemoveGuardFromTransitionHandler
-import infrastructure.controller.action.ActionController
-import infrastructure.controller.condition.ConditionController
 import infrastructure.element.guard.Guard
 import infrastructure.element.transition.Transition
 

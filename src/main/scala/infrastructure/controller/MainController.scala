@@ -1,11 +1,6 @@
 package infrastructure.controller
 
 import infrastructure.DomainToInfrastructureConverter
-import infrastructure.controller.action.ActionController
-import infrastructure.controller.fsm.FsmController
-import infrastructure.controller.state.StateController
-import infrastructure.controller.toolbar.FileMenuController
-import infrastructure.controller.transition.TransitionController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.element.action.ActionType
 import infrastructure.element.fsm.FiniteStateMachine
@@ -49,8 +44,8 @@ class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBo
   def newFsm(): Unit = {
     FsmController.addFsm() match {
       case Left(error) => println(error.getMessage)
-      case Right(fsmName) =>
-        val fsm = new FiniteStateMachine(fsmName)
+      case Right((fsmName, fsmBaseUri)) =>
+        val fsm = new FiniteStateMachine(fsmName, fsmBaseUri)
         fsmList = fsm :: fsmList
 
         fileMenuController.setSaveButtonDisable(disable = true)
@@ -119,6 +114,7 @@ class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBo
       case Right(_) =>
         selectedFsmOption = Some(fsm)
         drawingPaneController.setFsm(fsm)
+        propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
         Right(())
     }
   }

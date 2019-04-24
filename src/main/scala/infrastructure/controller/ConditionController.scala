@@ -1,4 +1,4 @@
-package infrastructure.controller.condition
+package infrastructure.controller
 
 import application.command.condition.add.AddConditionToGuardCommand
 import application.command.condition.modify.{ModifyConditionNameCommand, ModifyConditionQueryCommand}

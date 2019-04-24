@@ -1,8 +1,7 @@
-package infrastructure.controller.prototypeuri
+package infrastructure.controller
 
 import application.command.prototypeuri.modify.ModifyPrototypeUriStructureCommand
 import application.commandhandler.prototypeuri.modify.ModifyPrototypeUriStructureHandler
-import infrastructure.controller.prototypeuriparameter.PrototypeUriParameterController
 import infrastructure.element.prototypeuri.PrototypeUri
 
 class PrototypeUriController(prototypeUri: PrototypeUri) {

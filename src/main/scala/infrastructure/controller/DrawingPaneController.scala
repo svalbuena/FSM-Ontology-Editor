@@ -1,10 +1,6 @@
 package infrastructure.controller
 
-import infrastructure.controller.end.EndController
-import infrastructure.controller.fsm.FsmController
-import infrastructure.controller.start.StartController
-import infrastructure.controller.state.StateController
-import infrastructure.controller.transition.TransitionController
+import infrastructure.drawingpane.shape.transition.TransitionShape
 import infrastructure.drawingpane.{Canvas, DrawingPane, MousePosition}
 import infrastructure.element.ConnectableElement
 import infrastructure.element.end.End
@@ -18,7 +14,9 @@ import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import javafx.event.EventHandler
 import javafx.geometry.Point2D
+import javafx.scene.Node
 import javafx.scene.input.{MouseButton, MouseEvent}
+import javafx.scene.layout.Pane
 
 class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox) {
   private val mousePosition = new MousePosition()
@@ -28,7 +26,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
   private var fsmOption: Option[FiniteStateMachine] = None
 
-  val canvas: Canvas = drawingPane.canvas
+  private val canvas: Canvas = drawingPane.canvas
   drawingPane.setOnMouseClicked(drawingPaneMouseClickedListener)
   drawingPane.setOnMouseMoved(drawingPaneMouseMovedListener)
 
@@ -75,7 +73,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
         if (isTemporalTransitionDefined) {
           val tempTransition = tempTransitionOption.get
           val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
-          canvas.moveConnectableNode(ghostNodeOption.get.shape, deltaX, deltaY)
+          canvas.moveNode(ghostNodeOption.get.shape, deltaX, deltaY)
           canvas.moveTransition(tempTransition.shape, tempTransition.getSourceShape, tempTransition.getDestinationShape)
         }
       case _ =>
@@ -111,15 +109,20 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     (event.getSceneX - mousePosition.x, event.getSceneY - mousePosition.y)
   }
 
-  def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
+  def removeNode(node: Node): Unit =  canvas.getChildren.remove(node)
+  def drawNode(node: Node, x: Double, y: Double): Unit = canvas.drawNode(node, x, y)
+  def moveNode(node: Node, deltaX: Double, deltaY: Double): Unit = canvas.moveNode(node, deltaX, deltaY)
+  def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.moveTransition(transition, source, destination)
+  def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
 
+  private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
 
   private def drawTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
     if (fsmOption.isDefined) {
       ghostNodeOption = Some(new GhostNode("ghostElement"))
       ghostNodeOption.get.shape.setPrefSize(1, 1)
 
-      canvas.drawConnectableNode(ghostNodeOption.get.shape, x, y)
+      canvas.drawNode(ghostNodeOption.get.shape, x, y)
 
       val transition = new Transition("tempTransition", source, ghostNodeOption.get, parent = fsmOption.get)
       TransitionController.drawTransition(transition, this)

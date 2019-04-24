@@ -3,43 +3,44 @@ package infrastructure.drawingpane
 import infrastructure.drawingpane.shape.transition.TransitionShape
 import infrastructure.math.Equation
 import javafx.geometry.Point2D
+import javafx.scene.Node
 import javafx.scene.layout.Pane
 
 class Canvas extends Pane {
   /* Connectable Node */
-  def moveConnectableNode(connectableNode: Pane, deltaX: Double, deltaY: Double): Unit = {
-    val newX = connectableNode.getTranslateX + deltaX
-    val newY = connectableNode.getTranslateY + deltaY
+  def moveNode(node: Node, deltaX: Double, deltaY: Double): Unit = {
+    val newX = node.getTranslateX + deltaX
+    val newY = node.getTranslateY + deltaY
 
-    if (getLayoutBounds.contains(newX, newY, connectableNode.getWidth, connectableNode.getHeight)) {
-      connectableNode.setTranslateX(newX)
-      connectableNode.setTranslateY(newY)
+    if (getLayoutBounds.contains(newX, newY, node.getLayoutBounds.getWidth, node.getLayoutBounds.getHeight)) {
+      node.setTranslateX(newX)
+      node.setTranslateY(newY)
     }
   }
 
-  def drawConnectableNode(connectableNode: Pane, x: Double, y: Double): Unit = {
-    getChildren.add(connectableNode)
+  def drawNode(node: Node, x: Double, y: Double): Unit = {
+    node.setTranslateX(x)
+    node.setTranslateY(y)
 
-    connectableNode.setTranslateX(x)
-    connectableNode.setTranslateY(y)
+    getChildren.add(node)
   }
 
   /* Transtion */
-  def moveTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
+  def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = {
     updateTransitionPosition(transition, source, destination)
     transition.toBack()
   }
 
-  def drawTransition(transition: TransitionShape, source: Pane, destination: Pane): Unit = {
+  def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = {
     getChildren.add(transition)
     moveTransition(transition, source, destination)
   }
 
-  def updateTransitionPosition(transitionShape: TransitionShape, src: Pane, dst: Pane): Unit = {
+  def updateTransitionPosition(transitionShape: TransitionShape, src: Node, dst: Node): Unit = {
     layout()
 
-    val (srcWidth, srcHeight) = (src.getWidth, src.getHeight)
-    val (dstWidth, dstHeight) = (dst.getWidth, dst.getHeight)
+    val (srcWidth, srcHeight) = (src.getLayoutBounds.getWidth, src.getLayoutBounds.getHeight)
+    val (dstWidth, dstHeight) = (dst.getLayoutBounds.getWidth, dst.getLayoutBounds.getHeight)
 
 
     val srcCenter = new Point2D(src.getTranslateX + srcWidth / 2, src.getTranslateY + srcHeight / 2)

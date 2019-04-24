@@ -1,4 +1,4 @@
-package infrastructure.controller.state
+package infrastructure.controller
 
 import application.command.state.add.AddStateToFsmCommand
 import application.command.state.modify.{ModifyStateNameCommand, ModifyStateTypeCommand}
@@ -6,9 +6,6 @@ import application.command.state.remove.RemoveStateFromFsmCommand
 import application.commandhandler.state.add.AddStateToFsmHandler
 import application.commandhandler.state.modify.{ModifyStateNameHandler, ModifyStateTypeHandler}
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
-import infrastructure.controller.DrawingPaneController
-import infrastructure.controller.action.ActionController
-import infrastructure.controller.transition.TransitionController
 import infrastructure.element.action.ActionType
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.state.StateType.StateType
@@ -20,7 +17,6 @@ import javafx.scene.input.MouseButton
 
 class StateController(state: State, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
-  private val canvas = drawingPaneController.canvas
 
   private val shape = state.shape
   private val propertiesBox = state.propertiesBox
@@ -57,8 +53,8 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        canvas.moveConnectableNode(shape, deltaX, deltaY)
-        state.getTransitions.foreach(transition => canvas.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        drawingPaneController.moveNode(shape, deltaX, deltaY)
+        state.getTransitions.foreach(transition => drawingPaneController.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
 
       case _ =>
     }
@@ -150,7 +146,7 @@ object StateController {
     state.propertiesBox.setName(state.name)
 
     state.shape.setName(state.name)
-    drawingPaneController.canvas.drawConnectableNode(state.shape, state.x, state.y)
+    drawingPaneController.drawNode(state.shape, state.x, state.y)
 
     for (action <- state.actions) {
       ActionController.drawAction(action)
@@ -160,8 +156,6 @@ object StateController {
   }
 
   def eraseState(state: State, drawingPaneController: DrawingPaneController): Unit = {
-    val canvas = drawingPaneController.canvas
-
-    canvas.getChildren.remove(state.shape)
+    drawingPaneController.removeNode(state.shape)
   }
 }

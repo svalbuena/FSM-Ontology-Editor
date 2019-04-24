@@ -1,4 +1,4 @@
-package infrastructure.controller.transition
+package infrastructure.controller
 
 import application.command.state.modify.ModifyStateTypeCommand
 import application.command.transition.add.AddTransitionToFsmCommand
@@ -8,8 +8,6 @@ import application.commandhandler.state.modify.ModifyStateTypeHandler
 import application.commandhandler.transition.add.AddTransitionToFsmHandler
 import application.commandhandler.transition.modify.ModifyTransitionNameHandler
 import application.commandhandler.transition.remove.RemoveTransitionFromFsmHandler
-import infrastructure.controller.DrawingPaneController
-import infrastructure.controller.guard.GuardController
 import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.start.Start
@@ -172,7 +170,7 @@ object TransitionController {
   }
 
   def drawTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.canvas.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
+    drawingPaneController.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
 
     transition.propertiesBox.setTransitionName(transition.name)
 
@@ -184,8 +182,6 @@ object TransitionController {
   }
 
   def eraseTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
-    val canvas = drawingPaneController.canvas
-
-    canvas.getChildren.remove(transition.shape)
+    drawingPaneController.removeNode(transition.shape)
   }
 }

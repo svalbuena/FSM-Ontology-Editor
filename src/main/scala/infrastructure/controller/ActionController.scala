@@ -1,4 +1,4 @@
-package infrastructure.controller.action
+package infrastructure.controller
 
 import application.command.action.add.{AddActionToGuardCommand, AddActionToStateCommand}
 import application.command.action.modify._
@@ -6,9 +6,6 @@ import application.command.action.remove.{RemoveActionFromGuardCommand, RemoveAc
 import application.commandhandler.action.add.{AddActionToGuardHandler, AddActionToStateHandler}
 import application.commandhandler.action.modify._
 import application.commandhandler.action.remove.{RemoveActionFromGuardHandler, RemoveActionFromStateHandler}
-import infrastructure.controller.DrawingPaneController
-import infrastructure.controller.body.BodyController
-import infrastructure.controller.prototypeuri.PrototypeUriController
 import infrastructure.element.action.ActionType.ActionType
 import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
