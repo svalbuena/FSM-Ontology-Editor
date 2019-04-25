@@ -1,4 +1,6 @@
-import infrastructure.controller.{DrawingPaneController, FileMenuController, MainController}
+package infrastructure
+
+import infrastructure.controller.MainController
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.propertybox.PropertiesBox
 import infrastructure.toolbar.MainToolBar
@@ -10,6 +12,7 @@ import javafx.scene.Scene
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 
+
 class MainApplication extends Application {
   val SceneDimension = new Dimension2D(1000, 600)
 
@@ -20,15 +23,6 @@ class MainApplication extends Application {
   val PropertiesBoxDimension = new Dimension2D(250, 0)
 
   val CanvasDimension = new Dimension2D(4000, 3000)
-
-
-  val (toolBarWidthProportion, toolBarHeightProportion) = (1.0, 0.08)
-  val (viewBarWidthProportion, viewBarHeightProportion) = (1.0, 0.08)
-
-  val (toolBoxWidthProportion, toolBoxHeightProportion) = (0.10, 0.8)
-  val (propertiesBoxWidthProportion, propertiesBoxHeightProportion) = (0.15, 0.8)
-
-  val (drawingPaneWidthProportion, drawingPaneHeightProportion) = (1.0 - toolBoxWidthProportion - propertiesBoxWidthProportion, 1.0 - toolBarHeightProportion - viewBarHeightProportion)
 
 
   override def start(stage: Stage): Unit = {

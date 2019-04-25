@@ -16,6 +16,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     fsmModel.setNsPrefix("fsm", properties.fsmPrefix)
     fsmModel.setNsPrefix("http", properties.httpPrefix)
     fsmModel.setNsPrefix("http-methods", properties.httpMethodsPrefix)
+    fsmModel.setNsPrefix("geom", properties.geometryPrefix)
 
     fsmModel.setNsPrefix("rdf", RDF.uri)
     fsmModel.setNsPrefix("rdfs", RDFS.uri)
@@ -40,6 +41,13 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
 
   private def getStateResource(fsmModel: Model, state: State): Resource = {
     val stateRes = fsmModel.createResource(fsmBaseUri + state.name)
+
+    val pointRes = fsmModel.createResource(fsmBaseUri + state.name + "Point")
+    pointRes.addLiteral(properties.coordX, state.x)
+    pointRes.addLiteral(properties.coordY, state.y)
+
+    stateRes.addProperty(properties.lowerCorner, pointRes)
+
     state.stateType match {
       case domain.state.StateType.INITIAL =>
         stateRes.addProperty(RDF.`type`, properties.InitialStateClass)

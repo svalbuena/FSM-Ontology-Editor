@@ -1,10 +1,10 @@
 package infrastructure.controller
 
 import application.command.state.add.AddStateToFsmCommand
-import application.command.state.modify.{ModifyStateNameCommand, ModifyStateTypeCommand}
+import application.command.state.modify.{ModifyStateCoordinatesCommand, ModifyStateNameCommand, ModifyStateTypeCommand}
 import application.command.state.remove.RemoveStateFromFsmCommand
 import application.commandhandler.state.add.AddStateToFsmHandler
-import application.commandhandler.state.modify.{ModifyStateNameHandler, ModifyStateTypeHandler}
+import application.commandhandler.state.modify.{ModifyStateCoordinatesHandler, ModifyStateNameHandler, ModifyStateTypeHandler}
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
 import infrastructure.element.action.ActionType
 import infrastructure.element.fsm.FiniteStateMachine
@@ -53,8 +53,9 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
     toolBox.getSelectedTool match {
       case _: NormalMouseSelector =>
         val (deltaX, deltaY) = drawingPaneController.calculateDeltaFromMouseEvent(event)
-        drawingPaneController.moveNode(shape, deltaX, deltaY)
+        val newPosition = drawingPaneController.moveNode(shape, deltaX, deltaY)
         state.getTransitions.foreach(transition => drawingPaneController.moveTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape))
+        StateController.modifyStateCoordinates(state, newPosition.getX, newPosition.getY)
 
       case _ =>
     }
@@ -97,6 +98,15 @@ object StateController {
 
         println("Adding a state")
         Some(state)
+    }
+  }
+
+  def modifyStateCoordinates(state: State, newX: Double, newY: Double): Unit = {
+    new ModifyStateCoordinatesHandler().execute(new ModifyStateCoordinatesCommand(state.name, newX, newY)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.x = newX
+        state.y = newY
     }
   }
 

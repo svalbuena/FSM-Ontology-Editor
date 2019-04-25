@@ -13,12 +13,13 @@ object Environment {
   private val FsmPrefix = "file:///D:/projects/ontologies/fsm/fsm#"
   private val HttpPrefix = "http://www.w3.org/2011/http#"
   private val HttpMethodsPrefix = "http://www.w3.org/2011/http-methods#"
+  private val GeometryPrefix = "http://data.ign.fr/ontologies/geometrie#"
 
   private var selectedFsmOption: Option[FiniteStateMachine] = None
   private var nameList: List[String] = List()
   private var fsmList: List[FiniteStateMachine] = List()
   private val fsmRepository: FsmRepository = new JenaFsmRepository
-  private val properties = new Properties(FsmPrefix, HttpPrefix, HttpMethodsPrefix)
+  private val properties = new Properties(FsmPrefix, HttpPrefix, HttpMethodsPrefix, GeometryPrefix)
 
   def saveFsm(filename: String): Either[Exception, _] = {
     if (selectedFsmOption.isDefined) {

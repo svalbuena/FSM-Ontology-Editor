@@ -11,10 +11,14 @@ import domain.guard.Guard
 import domain.state.{State, StateType}
 import domain.state.StateType.StateType
 import domain.transition.Transition
+import org.apache.jena.rdf.model.impl.PropertyImpl
 import org.apache.jena.rdf.model.{Model, Resource}
 import org.apache.jena.vocabulary.RDF
 
 class JenaReader(properties: Properties) {
+
+  implicit def toJenaProperty(p: String): PropertyImpl = new PropertyImpl(p)
+
   def readFsm(model: Model): Either[Exception, FiniteStateMachine] = {
     val fsmIterator = model.listResourcesWithProperty(RDF.`type`, properties.StateMachineClass)
     if (fsmIterator.hasNext) {
@@ -109,6 +113,31 @@ class JenaReader(properties: Properties) {
   private def getStateFromResource(stateRes: Resource): State = {
     val stateName = stateRes.getLocalName
 
+    //paper http://www.eurecom.fr/~troncy/Publications/Troncy-lgd14.pdf
+    val (x, y) = {
+      if (stateRes.hasProperty(properties.lowerCorner) && stateRes.getProperty(properties.lowerCorner).getResource.hasProperty(RDF.`type`, properties.pointClass)) {
+        val lowerCornerRes = stateRes.getProperty(properties.lowerCorner).getResource
+        val x = {
+          if (lowerCornerRes.hasProperty(properties.coordX)) {
+            lowerCornerRes.getProperty(properties.coordX).getDouble
+          } else {
+            0.0
+          }
+        }
+
+        val y = {
+          if (lowerCornerRes.hasProperty(properties.coordY)) {
+            lowerCornerRes.getProperty(properties.coordY).getDouble
+          } else {
+            0.0
+          }
+        }
+        (x, y)
+      } else {
+        (0.0, 0.0)
+      }
+    }
+
     val stateType: StateType = {
       if (stateRes.hasProperty(RDF.`type`, properties.InitialStateClass) && stateRes.hasProperty(RDF.`type`, properties.FinalStateClass)) StateType.INITIAL_FINAL
       else if (stateRes.hasProperty(RDF.`type`, properties.InitialStateClass)) StateType.INITIAL
@@ -125,7 +154,7 @@ class JenaReader(properties: Properties) {
       actions = getActionFromResource(actionRes, ActionType.EXIT) :: actions
     })
 
-    new State(stateName, 0, 0, stateType, actions)
+    new State(stateName, x, y, stateType, actions)
   }
 
   private def getActionFromResource(actionRes: Resource, actionType: ActionType): Action = {

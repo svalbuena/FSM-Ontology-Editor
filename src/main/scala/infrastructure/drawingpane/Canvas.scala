@@ -8,14 +8,17 @@ import javafx.scene.layout.Pane
 
 class Canvas extends Pane {
   /* Connectable Node */
-  def moveNode(node: Node, deltaX: Double, deltaY: Double): Unit = {
+  def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = {
     val newX = node.getTranslateX + deltaX
     val newY = node.getTranslateY + deltaY
 
     if (getLayoutBounds.contains(newX, newY, node.getLayoutBounds.getWidth, node.getLayoutBounds.getHeight)) {
       node.setTranslateX(newX)
       node.setTranslateY(newY)
+      true
     }
+
+    new Point2D(newX, newY)
   }
 
   def drawNode(node: Node, x: Double, y: Double): Unit = {
@@ -65,7 +68,7 @@ class Canvas extends Pane {
       else Equation.lineAndLineIntersection(srcCenter, dstCenter, lowerRightCorner, upperRightCorner)
     }
 
-    transitionShape.setPosition(srcCenter, end)
+    transitionShape.setPosition(srcCenter, end, dstCenter)
   }
 
   private def getHumanDegrees(start: Point2D, end: Point2D): Double = {

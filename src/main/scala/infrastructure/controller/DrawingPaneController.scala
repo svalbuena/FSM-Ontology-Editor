@@ -111,7 +111,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
   def removeNode(node: Node): Unit =  canvas.getChildren.remove(node)
   def drawNode(node: Node, x: Double, y: Double): Unit = canvas.drawNode(node, x, y)
-  def moveNode(node: Node, deltaX: Double, deltaY: Double): Unit = canvas.moveNode(node, deltaX, deltaY)
+  def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = canvas.moveNode(node, deltaX, deltaY)
   def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.moveTransition(transition, source, destination)
   def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
 

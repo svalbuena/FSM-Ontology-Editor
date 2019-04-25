@@ -2,7 +2,6 @@ package infrastructure.controller
 
 import infrastructure.DomainToInfrastructureConverter
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.element.action.ActionType
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.filechooser.FsmFileChooser
 import infrastructure.propertybox.PropertiesBox
@@ -11,16 +10,15 @@ import infrastructure.toolbox.ToolBox
 import javafx.stage.Stage
 
 class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox, fileMenu: FileMenu) {
-  private var fsmList: List[FiniteStateMachine] = List()
-  private var selectedFsmOption: Option[FiniteStateMachine] = None
 
   //Create the DrawingPaneController
   private val drawingPaneController = new DrawingPaneController(drawingPane, toolBox, propertiesBox)
-
   //Create the FileMenuController
   private val fileMenuController = new FileMenuController(fileMenu, this)
 
   private val fsmFileChooser = new FsmFileChooser(stage)
+  private var fsmList: List[FiniteStateMachine] = List()
+  private var selectedFsmOption: Option[FiniteStateMachine] = None
 
   newFsm()
   //loadFsm("D:\\projects\\ontologies\\siot\\demo_siot.ttl")
@@ -55,7 +53,7 @@ class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBo
   }
 
   def loadFsm(): Unit = {
-    fsmFileChooser.askForFilename() match {
+    fsmFileChooser.askForFileToOpen() match {
       case Some(filename) =>
         //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
         println(filename)
@@ -69,6 +67,32 @@ class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBo
             selectFsm(fsm)
         }
       case None =>
+    }
+  }
+
+  def selectFsm(fsm: FiniteStateMachine): Either[Exception, _] = {
+    FsmController.selectFsm(fsm.name) match {
+      case Left(error) =>
+        println(error.getMessage)
+        Left(error)
+      case Right(_) =>
+        selectedFsmOption = Some(fsm)
+        drawingPaneController.setFsm(fsm)
+        propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
+        Right(())
+    }
+  }
+
+  def saveAsFsm(): Unit = {
+    if (selectedFsmOption.isDefined) {
+      fsmFileChooser.askForFileToSave() match {
+        case Some(filename) =>
+          //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
+          val fsm = selectedFsmOption.get
+          fsm.setFilename(filename)
+          saveFsm()
+        case None =>
+      }
     }
   }
 
@@ -90,32 +114,6 @@ class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBo
       }
     } else {
       println("Save error -> FSM not selected")
-    }
-  }
-
-  def saveAsFsm(): Unit = {
-    if (selectedFsmOption.isDefined) {
-      fsmFileChooser.askForFilename() match {
-        case Some(filename) =>
-          //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
-          val fsm = selectedFsmOption.get
-          fsm.setFilename(filename)
-          saveFsm()
-        case None =>
-      }
-    }
-  }
-
-  def selectFsm(fsm: FiniteStateMachine): Either[Exception, _] = {
-    FsmController.selectFsm(fsm.name) match {
-      case Left(error) =>
-        println(error.getMessage)
-        Left(error)
-      case Right(_) =>
-        selectedFsmOption = Some(fsm)
-        drawingPaneController.setFsm(fsm)
-        propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
-        Right(())
     }
   }
 }

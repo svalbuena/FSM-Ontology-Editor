@@ -2,7 +2,7 @@ package infrastructure.jena
 
 import org.apache.jena.rdf.model.impl.PropertyImpl
 
-class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsPrefix: String) {
+class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsPrefix: String, val geometryPrefix: String) {
 
   val Contains = new PropertyImpl(fsmPrefix + "contains")
   val HasEntryAction = new PropertyImpl(fsmPrefix + "hasEntryAction")
@@ -22,6 +22,7 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val HasGuardCondition = new PropertyImpl(fsmPrefix + "hasGuardCondition")
   val HasGuardAction = new PropertyImpl(fsmPrefix + "hasGuardAction")
   val HasContent = new PropertyImpl(fsmPrefix + "hasContent")
+
 
   val StateMachineClass = new PropertyImpl(fsmPrefix + "StateMachine")
   val TransitionClass = new PropertyImpl(fsmPrefix + "Transition")
@@ -45,7 +46,11 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
 
   val FsmClass = new PropertyImpl(fsmPrefix + "StateMachine")
 
-
   val HasMethod = new PropertyImpl(httpPrefix + "mthd")
   val HasAbsoluteUri = new PropertyImpl(httpPrefix + "absoluteURI")
+
+  val lowerCorner = new PropertyImpl(geometryPrefix + "lowerCorner")
+  val coordX = new PropertyImpl(geometryPrefix + "coordX")
+  val coordY = new PropertyImpl(geometryPrefix + "coordY")
+  val pointClass = new PropertyImpl(geometryPrefix + "Point")
 }
