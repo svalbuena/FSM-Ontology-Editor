@@ -43,6 +43,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val stateRes = fsmModel.createResource(fsmBaseUri + state.name)
 
     val pointRes = fsmModel.createResource(fsmBaseUri + state.name + "Point")
+    pointRes.addProperty(RDF.`type`, properties.pointClass)
     pointRes.addLiteral(properties.coordX, state.x)
     pointRes.addLiteral(properties.coordY, state.y)
 

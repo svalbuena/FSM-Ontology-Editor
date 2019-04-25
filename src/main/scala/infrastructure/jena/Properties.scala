@@ -53,4 +53,5 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val coordX = new PropertyImpl(geometryPrefix + "coordX")
   val coordY = new PropertyImpl(geometryPrefix + "coordY")
   val pointClass = new PropertyImpl(geometryPrefix + "Point")
+  println(pointClass)
 }

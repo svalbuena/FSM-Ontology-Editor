@@ -27,8 +27,8 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   private var fsmOption: Option[FiniteStateMachine] = None
 
   private val canvas: Canvas = drawingPane.canvas
-  drawingPane.setOnMouseClicked(drawingPaneMouseClickedListener)
-  drawingPane.setOnMouseMoved(drawingPaneMouseMovedListener)
+  canvas.setOnMouseClicked(drawingPaneMouseClickedListener)
+  canvas.setOnMouseMoved(drawingPaneMouseMovedListener)
 
 
   def setFsm(fsm: FiniteStateMachine): Unit = {

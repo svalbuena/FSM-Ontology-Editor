@@ -137,6 +137,7 @@ class JenaReader(properties: Properties) {
         (0.0, 0.0)
       }
     }
+    println(s"Coords = $x $y")
 
     val stateType: StateType = {
       if (stateRes.hasProperty(RDF.`type`, properties.InitialStateClass) && stateRes.hasProperty(RDF.`type`, properties.FinalStateClass)) StateType.INITIAL_FINAL
