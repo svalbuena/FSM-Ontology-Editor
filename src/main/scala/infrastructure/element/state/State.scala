@@ -24,7 +24,7 @@ class State(name: String,
   def addAction(action: Action): Unit = {
     actions = action :: actions
 
-    propertiesBox.addAction(action.propertiesBox, action.actionType)
+    propertiesBox.addAction(action.propertiesBox, action.actionType, action.name)
     shape.addAction(action.shape, action.actionType)
   }
 

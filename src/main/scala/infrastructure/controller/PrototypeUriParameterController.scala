@@ -1,10 +1,10 @@
 package infrastructure.controller
 
 import application.command.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriCommand
-import application.command.prototypeuriparameter.modify.{ModifyPrototypeUriParameterPlaceholderCommand, ModifyPrototypeUriParameterQueryCommand}
+import application.command.prototypeuriparameter.modify.{ModifyPrototypeUriParameterNameCommand, ModifyPrototypeUriParameterPlaceholderCommand, ModifyPrototypeUriParameterQueryCommand}
 import application.command.prototypeuriparameter.remove.RemovePrototypeUriParameterFromPrototypeUriCommand
 import application.commandhandler.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriHandler
-import application.commandhandler.prototypeuriparameter.modify.{ModifyPrototypeUriParameterPlaceholderHandler, ModifyPrototypeUriParameterQueryHandler}
+import application.commandhandler.prototypeuriparameter.modify.{ModifyPrototypeUriParameterNameHandler, ModifyPrototypeUriParameterPlaceholderHandler, ModifyPrototypeUriParameterQueryHandler}
 import application.commandhandler.prototypeuriparameter.remove.RemovePrototypeUriParameterFromPrototypeUriHandler
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
@@ -34,6 +34,18 @@ object PrototypeUriParameterController {
         drawPrototypeUriParameter(prototypeUriParameter)
 
         println("Adding a parameter to a prototype uri")
+    }
+  }
+
+  def modifyPrototypeUriParameterNam(prototypeUriParameter: PrototypeUriParameter, newName: String): Unit = {
+    new ModifyPrototypeUriParameterNameHandler().execute(new ModifyPrototypeUriParameterNameCommand(prototypeUriParameter.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        prototypeUriParameter.name = newName
+
+        prototypeUriParameter.parent.propertiesBox.setParameterPropertiesBoxTitle(prototypeUriParameter.propertiesBox, prototypeUriParameter.name)
+
+        println("Parameter name changed to -> " + newName)
     }
   }
 
@@ -68,8 +80,8 @@ object PrototypeUriParameterController {
   }
 
   def drawPrototypeUriParameter(prototypeUriParameter: PrototypeUriParameter): Unit = {
-    prototypeUriParameter.propertiesBox.setQuery(prototypeUriParameter.query)
     prototypeUriParameter.propertiesBox.setPlaceholder(prototypeUriParameter.placeholder)
+    prototypeUriParameter.propertiesBox.setQuery(prototypeUriParameter.query)
 
     new PrototypeUriParameterController(prototypeUriParameter)
   }

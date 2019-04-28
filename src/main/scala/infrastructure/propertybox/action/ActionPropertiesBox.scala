@@ -1,50 +1,77 @@
 package infrastructure.propertybox.action
 
-import infrastructure.element.action.ActionType.ActionType
+import infrastructure.element.action.ActionType.{ActionType, ENTRY, EXIT, GUARD}
 import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
-import infrastructure.propertybox.action.section.{ActionTimeoutSection, MethodSection, NameTypeSection, UriSection}
+import infrastructure.element.action.{MethodType, UriType}
 import infrastructure.propertybox.body.BodyPropertiesBox
 import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox
-import javafx.scene.control.TitledPane
+import infrastructure.propertybox.{ComboBoxSection, LabelTextFieldSection}
+import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
-class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prototypeUriPropertiesBox: PrototypeUriPropertiesBox) extends TitledPane {
-  private val actionPropertiesBoxPane = new VBox()
+class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prototypeUriPropertiesBox: PrototypeUriPropertiesBox) extends VBox() {
+  private val removeButton = new Button()
+  removeButton.setText("Remove")
 
-  private val nameTypeSection = new NameTypeSection()
-  private val methodTypeSection = new MethodSection()
-  private val uriSection = new UriSection(prototypeUriPropertiesBox)
-  private val timeoutSection = new ActionTimeoutSection()
+  private val nameSection = new LabelTextFieldSection()
 
-  actionPropertiesBoxPane.getChildren.addAll(nameTypeSection, methodTypeSection, uriSection, timeoutSection, bodyPropertiesBox)
+  private val methodTypeSection = new ComboBoxSection[MethodType]
+  methodTypeSection.setLabelText("Request method type:")
+  methodTypeSection.setItems(List(MethodType.GET, MethodType.POST))
 
-  setContent(actionPropertiesBoxPane)
+  private val uriTypeSection = new ComboBoxSection[UriType]
+  uriTypeSection.setLabelText("Select the URI type:")
+  uriTypeSection.setItems(List(UriType.ABSOLUTE, UriType.PROTOTYPE))
+
+  private val absoluteUriSection = new LabelTextFieldSection
+  absoluteUriSection.setLabelText("Absolute URI:")
+
+  private val timeoutSection = new LabelTextFieldSection
+  timeoutSection.setLabelText("Timeout (ms):")
+
+  getChildren.addAll(removeButton, nameSection, methodTypeSection, uriTypeSection, absoluteUriSection, prototypeUriPropertiesBox, timeoutSection, bodyPropertiesBox)
 
 
-  def setTiltedPaneName(actionName: String): Unit = setText(actionName)
+  def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = removeButton.setOnMouseClicked(_ => callback())
 
-  def setActionType(actionType: ActionType): Unit = nameTypeSection.setActionType(actionType)
+  def setActionType(actionType: ActionType): Unit = {
+    val typeText = actionType match {
+      case ENTRY => "/entry"
+      case EXIT => "/exit"
+      case GUARD => "/"
+    }
 
-  def setActionName(actionName: String): Unit = nameTypeSection.setActionName(actionName)
+    nameSection.setLabelText(typeText)
+  }
 
-  def setMethodType(methodType: MethodType): Unit = methodTypeSection.setMethodType(methodType)
+  def setActionName(actionName: String): Unit = nameSection.setText(actionName)
 
-  def setUriType(uriType: UriType): Unit = uriSection.setUriType(uriType)
+  def setOnActionNameChanged(actionNameChangedHandler: String => Unit): Unit = nameSection.setOnTextChanged(actionNameChangedHandler)
 
-  def setAbsoluteUri(absoluteUri: String): Unit = uriSection.setAbsoluteUri(absoluteUri)
+  def setMethodType(methodType: MethodType): Unit = methodTypeSection.setSelection(methodType)
 
-  def setOnActionNameChanged(actionNameChangedHandler: String => Unit): Unit = nameTypeSection.setOnActionNameChanged(actionNameChangedHandler)
+  def setOnMethodTypeChanged(methodTypeChangedHandler: MethodType => Unit): Unit = methodTypeSection.setOnSelectionChanged(methodTypeChangedHandler)
 
-  def setOnUriTypeChanged(uriTypeChangedHandler: UriType => Unit): Unit = uriSection.setOnUriTypeChanged(uriTypeChangedHandler)
+  def setUriType(uriType: UriType): Unit = {
+    uriTypeSection.setSelection(uriType)
 
-  def setOnMethodTypeChanged(methodTypeChangedHandler: MethodType => Unit): Unit = methodTypeSection.setOnMethodTypeChanged(methodTypeChangedHandler)
+    if (uriType == UriType.ABSOLUTE) {
+      absoluteUriSection.setDisable(false)
+      prototypeUriPropertiesBox.setDisable(true)
+    } else {
+      absoluteUriSection.setDisable(true)
+      prototypeUriPropertiesBox.setDisable(false)
+    }
+  }
 
-  def setOnAbsoluteUriChanged(absoluteUriChangedHandler: String => Unit): Unit = uriSection.setOnAbsoluteUriChanged(absoluteUriChangedHandler)
+  def setOnUriTypeChanged(uriTypeChangedHandler: UriType => Unit): Unit = uriTypeSection.setOnSelectionChanged(uriTypeChangedHandler)
 
-  def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = nameTypeSection.setOnRemoveActionButtonClicked(callback)
+  def setAbsoluteUri(absoluteUri: String): Unit = absoluteUriSection.setText(absoluteUri)
 
-  def setTimeout(timeout: Int): Unit = timeoutSection.setTimeout(timeout)
+  def setOnAbsoluteUriChanged(absoluteUriChangedHandler: String => Unit): Unit = absoluteUriSection.setOnTextChanged(absoluteUriChangedHandler)
 
-  def setOnTimeoutChanged(timeoutChangedHandler: Int => Unit): Unit = timeoutSection.setOnTimeoutChanged(timeoutChangedHandler)
+  def setTimeout(timeout: String): Unit = timeoutSection.setText(timeout)
+
+  def setOnTimeoutChanged(timeoutChangedHandler: String => Unit): Unit = timeoutSection.setOnTextChanged(timeoutChangedHandler)
 }

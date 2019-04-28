@@ -219,7 +219,6 @@ class JenaReader(properties: Properties) {
       else ""
     }
 
-
     val query: String = {
       if (parameterRes.hasProperty(properties.HasQuery)) parameterRes.getProperty(properties.HasQuery).getString
       else ""

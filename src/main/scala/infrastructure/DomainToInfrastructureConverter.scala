@@ -16,7 +16,7 @@ object DomainToInfrastructureConverter {
     val fsmName = domainFsm.name
     val fsmBaseUri = domainFsm.baseUri
 
-    val fsm = new FiniteStateMachine(fsmName, fsmBaseUri)
+    val fsm = new FiniteStateMachine(name = fsmName, baseUri = fsmBaseUri)
 
     for (domainState <- domainFsm.states) {
       val state = getState(domainState, fsm)
@@ -50,7 +50,7 @@ object DomainToInfrastructureConverter {
       case domain.state.StateType.INITIAL_FINAL => StateType.INITIAL_FINAL
     }
 
-    val state = new State(stateName, x, y, stateType, parent)
+    val state = new State(name = stateName, x = x, y = y, stateType = stateType, parent = parent)
 
     for (domainAction <- domainState.actions) {
       val action = getAction(domainAction, state)
@@ -85,9 +85,9 @@ object DomainToInfrastructureConverter {
 
     val body = getBody(domainAction.body)
 
-    val timeout = domainAction.timeout
+    val timeout = domainAction.timeout.toString
 
-    new Action(actionName, actionType, methodType, body, uriType, absoluteUri, prototypeUri, timeout, parent)
+    new Action(name = actionName, actionType = actionType, method = methodType, body = body, uriType = uriType, absoluteUri = absoluteUri, prototypeUri = prototypeUri, timeout = timeout, parent = parent)
   }
 
   private def getPrototypeUri(domainPrototypeUri: domain.action.PrototypeUri): PrototypeUri = {
@@ -95,7 +95,7 @@ object DomainToInfrastructureConverter {
 
     val structure = domainPrototypeUri.structure
 
-    val prototypeUri = new PrototypeUri(prototypeUriName, structure)
+    val prototypeUri = new PrototypeUri(name = prototypeUriName, structure = structure)
 
     for (domainParameter <- domainPrototypeUri.prototypeUriParameters) {
       val parameter = getPrototypeUriParameter(domainParameter, prototypeUri)
@@ -112,7 +112,7 @@ object DomainToInfrastructureConverter {
 
     val query = domainParameter.query
 
-    new PrototypeUriParameter(parameterName, placeholder, query, parent)
+    new PrototypeUriParameter(name = parameterName, placeholder = placeholder, query = query, parent = parent)
   }
 
   private def getBody(domainBody: domain.action.Body): Body = {
@@ -126,13 +126,13 @@ object DomainToInfrastructureConverter {
 
     val content = domainBody.content
 
-    new Body(bodyName, bodyType, content)
+    new Body(name = bodyName, bodyType = bodyType, content = content)
   }
 
   private def getTransition(domainTransition: domain.transition.Transition, srcState: State, dstState: State, parent: FiniteStateMachine): Transition = {
     val transitionName = domainTransition.name
 
-    val transition = new Transition(transitionName, srcState, dstState, isEditable = true, parent)
+    val transition = new Transition(name = transitionName, source = srcState, destination = dstState, isEditable = true, parent = parent)
 
     for (domainGuard <- domainTransition.guards) {
       val guard = getGuard(domainGuard, transition)
@@ -148,7 +148,7 @@ object DomainToInfrastructureConverter {
   private def getGuard(domainGuard: domain.guard.Guard, parent: Transition): Guard = {
     val guardName = domainGuard.name
 
-    val guard = new Guard(guardName, parent)
+    val guard = new Guard(name = guardName, parent = parent)
 
     for (domainAction <- domainGuard.actions) {
      val action = getAction(domainAction, guard)
@@ -168,6 +168,6 @@ object DomainToInfrastructureConverter {
 
     val query = domainCondition.query
 
-    new Condition(conditionName, query, parent)
+    new Condition(name = conditionName, query = query, parent = parent)
   }
 }

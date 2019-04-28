@@ -21,7 +21,7 @@ class Guard(name: String,
   def addAction(action: Action): Unit = {
     actions = action :: actions
 
-    propertiesBox.addAction(action.propertiesBox)
+    propertiesBox.addAction(action.propertiesBox, action.name)
     shape.addAction(action.shape)
 
     //TODO: fix this
@@ -38,7 +38,7 @@ class Guard(name: String,
   def addCondition(condition: Condition): Unit = {
     conditions = condition :: conditions
 
-    propertiesBox.addCondition(condition.propertiesBox)
+    propertiesBox.addCondition(condition.propertiesBox, condition.name)
     shape.addCondition(condition.shape)
 
     //TODO: fix this

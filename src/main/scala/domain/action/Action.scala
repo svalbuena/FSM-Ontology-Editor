@@ -49,10 +49,18 @@ class Action(name: String,
 
   def timeout: Int = _timeout
 
-  def timeout_=(newTimeout: Int): Either[DomainError, Int] = {
-    if (timeout < 0) Left(new InvalidTimeoutError("Timeout value can't be negative"))
-    _timeout = newTimeout
-    Right(timeout)
+  def timeout_=(newTimeout: String): Either[DomainError, Int] = {
+    if (newTimeout.forall(_.isDigit)) {
+      if (newTimeout.toInt < 0) {
+        _timeout = newTimeout.toInt
+        Right(timeout)
+
+      } else {
+        Left(new InvalidTimeoutError("Timeout value can't be negative"))
+      }
+    } else {
+      Left(new InvalidTimeoutError("Timeout value must be an integer"))
+    }
   }
 
   def getChildrenNames: List[String] = List(body.name, prototypeUri.name) ::: prototypeUri.getChildrenNames

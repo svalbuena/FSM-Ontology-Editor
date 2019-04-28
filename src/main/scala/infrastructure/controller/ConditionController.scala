@@ -48,6 +48,8 @@ object ConditionController {
 
         condition.shape.setConditionName(newName)
 
+        condition.parent.propertiesBox.setConditionPropertiesBoxTitle(condition.propertiesBox, condition.name)
+
         println("Condition name changed to -> " + newName)
     }
   }

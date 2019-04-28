@@ -1,22 +1,29 @@
 package infrastructure.propertybox.condition
 
-import infrastructure.propertybox.condition.section.{ConditionNameSection, ConditionQuerySection}
+import infrastructure.propertybox.{LabelTextAreaSection, LabelTextFieldSection}
+import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 class ConditionPropertiesBox extends VBox {
-  private val conditionNameSection = new ConditionNameSection()
-  private val conditionQuerySection = new ConditionQuerySection()
+  private val removeConditionButton = new Button()
+  removeConditionButton.setText("Remove")
 
-  getChildren.addAll(conditionNameSection, conditionQuerySection)
+  private val conditionNameSection = new LabelTextFieldSection
+  conditionNameSection.setLabelText("Name:")
+
+  private val conditionQuerySection = new LabelTextAreaSection
+  conditionQuerySection.setLabelText("Query:")
+
+  getChildren.addAll(removeConditionButton, conditionNameSection, conditionQuerySection)
 
 
-  def setConditionName(name: String): Unit = conditionNameSection.setConditionName(name)
+  def setConditionName(name: String): Unit = conditionNameSection.setText(name)
 
-  def setOnConditionNameChanged(conditionNameChangedHandler: String => Unit): Unit = conditionNameSection.setOnConditionNameChanged(conditionNameChangedHandler)
+  def setOnConditionNameChanged(conditionNameChangedHandler: String => Unit): Unit = conditionNameSection.setOnTextChanged(conditionNameChangedHandler)
 
-  def setConditionQuery(query: String): Unit = conditionQuerySection.setConditionQuery(query)
+  def setConditionQuery(query: String): Unit = conditionQuerySection.setText(query)
 
-  def setOnConditionQueryChanged(conditionQueryChangedHandler: String => Unit): Unit = conditionQuerySection.setOnConditionQueryChanged(conditionQueryChangedHandler)
+  def setOnConditionQueryChanged(conditionQueryChangedHandler: String => Unit): Unit = conditionQuerySection.setOnTextChanged(conditionQueryChangedHandler)
 
-  def setOnRemoveConditionButtonClicked(callback: () => Unit): Unit = conditionNameSection.setOnRemoveConditionButtonClicked(callback)
+  def setOnRemoveConditionButtonClicked(callback: () => Unit): Unit = removeConditionButton.setOnAction(_ => callback())
 }

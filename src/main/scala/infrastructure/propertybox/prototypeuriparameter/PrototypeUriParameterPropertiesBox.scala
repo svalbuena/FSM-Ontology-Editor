@@ -1,29 +1,28 @@
 package infrastructure.propertybox.prototypeuriparameter
 
-import infrastructure.propertybox.prototypeuriparameter.section.{PrototypeParameterPlaceholderSection, PrototypeParameterQuerySection}
+import infrastructure.propertybox.LabelTextFieldSection
 import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 class PrototypeUriParameterPropertiesBox extends VBox {
-  private val querySection = new PrototypeParameterQuerySection()
-  private val placeholderSection = new PrototypeParameterPlaceholderSection()
-
   private val removeButton = new Button()
   removeButton.setText("Remove")
 
-  getChildren.addAll(querySection, placeholderSection, removeButton)
+  private val placeholderSection = new LabelTextFieldSection
+  placeholderSection.setLabelText("Placeholder:")
 
-  def setQuery(query: String): Unit = querySection.setQuery(query)
+  private val querySection = new LabelTextFieldSection
+  querySection.setLabelText("Query:")
 
-  def setOnParameterQueryChanged(parameterQueryChangedHandler: String => Unit): Unit = querySection.setOnParameterQueryChanged(parameterQueryChangedHandler)
+  getChildren.addAll(removeButton, placeholderSection, querySection)
 
-  def setPlaceholder(placeholder: String): Unit = placeholderSection.setPlaceholder(placeholder)
+  def setPlaceholder(placeholder: String): Unit = placeholderSection.setText(placeholder)
 
-  def setOnParameterPlaceholderChanged(parameterPlaceholderChangedHandler: String => Unit): Unit = placeholderSection.setOnParameterPlaceholderChanged(parameterPlaceholderChangedHandler)
+  def setOnParameterPlaceholderChanged(parameterPlaceholderChangedHandler: String => Unit): Unit = placeholderSection.setOnTextChanged(parameterPlaceholderChangedHandler)
 
-  def setOnRemoveParameterButtonClicked(callback: () => Unit): Unit = {
-    removeButton.setOnMouseClicked(event => {
-      callback()
-    })
-  }
+  def setQuery(query: String): Unit = querySection.setText(query)
+
+  def setOnParameterQueryChanged(parameterQueryChangedHandler: String => Unit): Unit = querySection.setOnTextChanged(parameterQueryChangedHandler)
+
+  def setOnRemoveParameterButtonClicked(callback: () => Unit): Unit = removeButton.setOnAction(_ => callback())
 }

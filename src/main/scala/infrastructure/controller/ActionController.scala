@@ -11,6 +11,7 @@ import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
 import infrastructure.element.action.{Action, ActionType}
 import infrastructure.element.body.Body
+import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
@@ -121,14 +122,21 @@ object ActionController {
       case Right(_) =>
         action.name = newName
 
-        action.propertiesBox.setTiltedPaneName(newName)
         action.shape.setActionName(newName)
+
+        action.parent match {
+          case guard: Guard =>
+            guard.propertiesBox.setActionPropertiesBoxTitle(action.propertiesBox, action.name)
+
+          case condition: Condition =>
+          case _ =>
+        }
 
         println("Action name changed to -> " + newName)
     }
   }
 
-  def modifyActionTimeout(action: Action, newTimeout: Int): Unit = {
+  def modifyActionTimeout(action: Action, newTimeout: String): Unit = {
     new ModifyActionTimeoutHandler().execute(new ModifyActionTimeoutCommand(action.name, newTimeout)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
@@ -182,7 +190,6 @@ object ActionController {
   }
 
   def drawAction(action: Action): Unit = {
-    action.propertiesBox.setTiltedPaneName(action.name)
     action.propertiesBox.setActionType(action.actionType)
     action.propertiesBox.setActionName(action.name)
     action.propertiesBox.setMethodType(action.method)

@@ -14,7 +14,7 @@ class PrototypeUri(name: String,
   def addPrototypeUriParameter(parameter: PrototypeUriParameter): Unit = {
     prototypeParameters = parameter :: prototypeParameters
 
-    propertiesBox.addParameter(parameter.propertiesBox)
+    propertiesBox.addParameter(parameter.propertiesBox, parameter.name)
   }
 
   def removePrototypeUriParameter(parameter: PrototypeUriParameter): Unit = {

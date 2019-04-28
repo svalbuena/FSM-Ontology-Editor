@@ -68,7 +68,6 @@ object GuardController {
   }
 
   def drawGuard(guard: Guard): Unit = {
-    guard.propertiesBox.setGuardTitledPaneName(guard.name)
     guard.propertiesBox.setGuardName(guard.name)
 
     guard.shape.setGuardName(guard.name)

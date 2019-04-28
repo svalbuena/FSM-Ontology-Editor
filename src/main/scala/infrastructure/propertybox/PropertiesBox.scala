@@ -1,25 +1,32 @@
 package infrastructure.propertybox
 
 import infrastructure.propertybox.fsm.FsmPropertiesBox
+import javafx.geometry.Insets
 import javafx.scene.control.{Label, ScrollPane}
 import javafx.scene.layout.{Pane, VBox}
 
 class PropertiesBox extends VBox {
   setStyle("-fx-background-color: #b3c6b3")
 
-  val boxTitle = new Label()
+  private val boxTitle = new Label()
   boxTitle.setText("Properties")
 
-  val fsmPropertiesBoxWrapper = new Pane()
+  private val fsmPropertiesBoxWrapper = new Pane()
 
-  val propertiesSection = new ScrollPane()
+  private val propertiesSection = new ScrollPane()
   removeContent()
 
   getChildren.addAll(boxTitle, fsmPropertiesBoxWrapper, propertiesSection)
 
 
   def setFsmPropertiesBox(fsmPropertiesBox: FsmPropertiesBox): Unit = {
+    fsmPropertiesBoxWrapper.getChildren.clear()
+
     fsmPropertiesBoxWrapper.getChildren.add(fsmPropertiesBox)
+    fsmPropertiesBox.prefWidthProperty().bind(widthProperty())
+
+    val insets = new Insets(5)
+    fsmPropertiesBox.setPadding(insets)
   }
 
   def removeFsmPropertiesBox(): Unit = {
