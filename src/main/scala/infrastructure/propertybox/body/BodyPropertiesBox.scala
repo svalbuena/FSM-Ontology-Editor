@@ -6,8 +6,8 @@ import infrastructure.propertybox.{ComboBoxSection, LabelTextAreaSection, LabelT
 import javafx.scene.layout.VBox
 
 class BodyPropertiesBox extends VBox {
-  private val bodyNameSection = new LabelTextFieldSection
-  bodyNameSection.setLabelText("Content:")
+  private val nameSection = new LabelTextFieldSection
+  nameSection.setLabelText("Name:")
 
   private val bodyTypeSection = new ComboBoxSection[BodyType]
   bodyTypeSection.setLabelText("Body type:")
@@ -16,12 +16,14 @@ class BodyPropertiesBox extends VBox {
   private val bodyContentSection = new LabelTextAreaSection
   bodyContentSection.setLabelText("Content:")
 
-  getChildren.addAll(bodyNameSection, bodyTypeSection, bodyContentSection)
+  getChildren.addAll(nameSection, bodyTypeSection, bodyContentSection)
+
+  setStyle()
 
 
-  def setBodyName(content: String): Unit = bodyNameSection.setText(content)
+  def setBodyName(content: String): Unit = nameSection.setText(content)
 
-  def setOnBodyNameChanged(bodyContentChangedHandler: String => Unit): Unit = bodyNameSection.setOnTextChanged(bodyContentChangedHandler)
+  def setOnBodyNameChanged(bodyContentChangedHandler: String => Unit): Unit = nameSection.setOnTextChanged(bodyContentChangedHandler)
 
   def setBodyType(bodyType: BodyType): Unit = bodyTypeSection.setSelection(bodyType)
 
@@ -30,4 +32,8 @@ class BodyPropertiesBox extends VBox {
   def setBodyContent(content: String): Unit = bodyContentSection.setText(content)
 
   def setOnBodyContentChanged(bodyContentChangedHandler: String => Unit): Unit = bodyContentSection.setOnTextChanged(bodyContentChangedHandler)
+
+  private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-vbox")
+  }
 }

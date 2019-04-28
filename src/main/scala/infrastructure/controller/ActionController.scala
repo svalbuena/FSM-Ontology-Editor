@@ -11,7 +11,6 @@ import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
 import infrastructure.element.action.{Action, ActionType}
 import infrastructure.element.body.Body
-import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
@@ -125,10 +124,12 @@ object ActionController {
         action.shape.setActionName(newName)
 
         action.parent match {
+          case state: State =>
+            state.propertiesBox.setActionPropertiesBoxTitle(action.propertiesBox, action.actionType, action.name)
+
           case guard: Guard =>
             guard.propertiesBox.setActionPropertiesBoxTitle(action.propertiesBox, action.name)
 
-          case condition: Condition =>
           case _ =>
         }
 

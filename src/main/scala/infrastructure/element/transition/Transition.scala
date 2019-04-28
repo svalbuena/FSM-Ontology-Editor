@@ -30,7 +30,7 @@ class Transition(name: String,
   def addGuard(guard: Guard): Unit = {
     guards = guard :: guards
 
-    propertiesBox.addTransitionGuard(guard.propertiesBox)
+    propertiesBox.addTransitionGuard(guard.propertiesBox, guard.name)
     shape.addTransitionGuard(guard.shape)
 
     //TODO: fix this

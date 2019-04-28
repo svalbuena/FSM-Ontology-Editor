@@ -1,12 +1,16 @@
 package infrastructure.propertybox.prototypeuriparameter
 
-import infrastructure.propertybox.LabelTextFieldSection
+import infrastructure.propertybox.{LabelButtonSection, LabelTextFieldSection}
 import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 class PrototypeUriParameterPropertiesBox extends VBox {
-  private val removeButton = new Button()
-  removeButton.setText("Remove")
+  private val titleAndRemoveSection = new LabelButtonSection
+  titleAndRemoveSection.setLabelText("Parameter")
+  titleAndRemoveSection.setButtonText("Remove")
+
+  private val nameSection = new LabelTextFieldSection
+  nameSection.setLabelText("Name:")
 
   private val placeholderSection = new LabelTextFieldSection
   placeholderSection.setLabelText("Placeholder:")
@@ -14,7 +18,13 @@ class PrototypeUriParameterPropertiesBox extends VBox {
   private val querySection = new LabelTextFieldSection
   querySection.setLabelText("Query:")
 
-  getChildren.addAll(removeButton, placeholderSection, querySection)
+  getChildren.addAll(titleAndRemoveSection, nameSection, placeholderSection, querySection)
+
+  setStyle()
+
+  def setName(name: String): Unit = nameSection.setText(name)
+
+  def setOnNameChanged(nameChangedHandler: String => Unit): Unit = nameSection.setOnTextChanged(nameChangedHandler)
 
   def setPlaceholder(placeholder: String): Unit = placeholderSection.setText(placeholder)
 
@@ -24,5 +34,9 @@ class PrototypeUriParameterPropertiesBox extends VBox {
 
   def setOnParameterQueryChanged(parameterQueryChangedHandler: String => Unit): Unit = querySection.setOnTextChanged(parameterQueryChangedHandler)
 
-  def setOnRemoveParameterButtonClicked(callback: () => Unit): Unit = removeButton.setOnAction(_ => callback())
+  def setOnRemoveParameterButtonClicked(callback: () => Unit): Unit = titleAndRemoveSection.setButtonCallback(callback)
+
+  private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-vbox")
+  }
 }

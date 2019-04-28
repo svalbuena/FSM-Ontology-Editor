@@ -54,6 +54,8 @@ object GuardController {
         println("Guard name changed to -> " + newName)
 
         guard.shape.setGuardName(newName)
+
+        guard.parent.propertiesBox.setGuardPropertiesBoxTitle(guard.propertiesBox, guard.name)
     }
   }
 

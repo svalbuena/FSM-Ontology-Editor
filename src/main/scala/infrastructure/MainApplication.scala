@@ -2,7 +2,7 @@ package infrastructure
 
 import infrastructure.controller.MainController
 import infrastructure.drawingpane.DrawingPane
-import infrastructure.propertybox.PropertiesBox
+import infrastructure.propertybox.PropertiesBoxBar
 import infrastructure.toolbar.MainToolBar
 import infrastructure.toolbox.ToolBox
 import infrastructure.viewbar.ViewBar
@@ -32,7 +32,7 @@ class MainApplication extends Application {
 
     //Creating the main Scene
     val scene = new Scene(borderPane, SceneDimension.getWidth, SceneDimension.getHeight)
-    scene.getStylesheets.add("infrastructure/css/drawingpane.css")
+    scene.getStylesheets.add("infrastructure/css/main.css")
 
     //Adding the ToolBar
     val mainToolBar = new MainToolBar
@@ -52,8 +52,8 @@ class MainApplication extends Application {
     toolBox.prefHeightProperty().bind(scene.heightProperty().subtract(mainToolBar.heightProperty()).subtract(viewBar.heightProperty()))
     borderPane.setLeft(toolBox)
 
-    //Adding the PropertiesBox
-    val propertiesBox = new PropertiesBox
+    //Adding the PropertiesBoxBar
+    val propertiesBox = new PropertiesBoxBar
     propertiesBox.setPrefWidth(PropertiesBoxDimension.getWidth)
     propertiesBox.prefHeightProperty().bind(scene.heightProperty().subtract(mainToolBar.heightProperty()).subtract(viewBar.heightProperty()))
     borderPane.setRight(propertiesBox)

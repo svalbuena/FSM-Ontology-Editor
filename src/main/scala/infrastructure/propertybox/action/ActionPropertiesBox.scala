@@ -6,34 +6,43 @@ import infrastructure.element.action.UriType.UriType
 import infrastructure.element.action.{MethodType, UriType}
 import infrastructure.propertybox.body.BodyPropertiesBox
 import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox
-import infrastructure.propertybox.{ComboBoxSection, LabelTextFieldSection}
-import javafx.scene.control.Button
+import infrastructure.propertybox.{ComboBoxSection, LabelButtonSection, LabelTextFieldSection}
+import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.VBox
 
 class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prototypeUriPropertiesBox: PrototypeUriPropertiesBox) extends VBox() {
-  private val removeButton = new Button()
-  removeButton.setText("Remove")
+  private val titleAndRemoveSection = new LabelButtonSection
+  titleAndRemoveSection.setLabelText("Action")
+  titleAndRemoveSection.setButtonText("Remove")
 
   private val nameSection = new LabelTextFieldSection()
 
   private val methodTypeSection = new ComboBoxSection[MethodType]
-  methodTypeSection.setLabelText("Request method type:")
+  methodTypeSection.setLabelText("Method type:")
   methodTypeSection.setItems(List(MethodType.GET, MethodType.POST))
 
   private val uriTypeSection = new ComboBoxSection[UriType]
-  uriTypeSection.setLabelText("Select the URI type:")
+  uriTypeSection.setLabelText("URI type:")
   uriTypeSection.setItems(List(UriType.ABSOLUTE, UriType.PROTOTYPE))
 
   private val absoluteUriSection = new LabelTextFieldSection
   absoluteUriSection.setLabelText("Absolute URI:")
 
+  private val prototypeUriTitle = new Label()
+  prototypeUriTitle.setText("Prototype URI")
+
+  private val bodyTitle = new Label()
+  bodyTitle.setText("Body")
+
   private val timeoutSection = new LabelTextFieldSection
   timeoutSection.setLabelText("Timeout (ms):")
 
-  getChildren.addAll(removeButton, nameSection, methodTypeSection, uriTypeSection, absoluteUriSection, prototypeUriPropertiesBox, timeoutSection, bodyPropertiesBox)
+  getChildren.addAll(titleAndRemoveSection, nameSection, methodTypeSection, timeoutSection, uriTypeSection, absoluteUriSection, prototypeUriTitle, prototypeUriPropertiesBox, bodyTitle, bodyPropertiesBox)
+
+  setStyle()
 
 
-  def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = removeButton.setOnMouseClicked(_ => callback())
+  def setOnRemoveActionButtonClicked(callback: () => Unit): Unit = titleAndRemoveSection.setButtonCallback(callback)
 
   def setActionType(actionType: ActionType): Unit = {
     val typeText = actionType match {
@@ -74,4 +83,10 @@ class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prot
   def setTimeout(timeout: String): Unit = timeoutSection.setText(timeout)
 
   def setOnTimeoutChanged(timeoutChangedHandler: String => Unit): Unit = timeoutSection.setOnTextChanged(timeoutChangedHandler)
+
+  private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-vbox")
+    prototypeUriTitle.getStyleClass.add("properties-h3")
+    bodyTitle.getStyleClass.add("properties-h3")
+  }
 }

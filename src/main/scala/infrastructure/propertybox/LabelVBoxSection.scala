@@ -1,14 +1,15 @@
 package infrastructure.propertybox
 
+import javafx.geometry.Insets
 import javafx.scene.control.{Button, TitledPane}
 import javafx.scene.layout.{Pane, VBox}
 
 import scala.collection.mutable
 
-class LabelVBoxSection[T <: Pane] extends VBox {
+class LabelVBoxSection[T <: Pane](titledPaneStyleClass: String) extends VBox {
   private val titledPaneList: mutable.ListBuffer[TitledPane] = mutable.ListBuffer()
 
-  private val labelButtonSection = new LabelButtonsSection
+  private val labelButtonSection = new LabelButtonSection
   private val vBox = new VBox()
 
   getChildren.addAll(labelButtonSection, vBox)
@@ -27,6 +28,7 @@ class LabelVBoxSection[T <: Pane] extends VBox {
     titledPane.setText(title)
     titledPane.setContent(pane)
     titledPane.setExpanded(false)
+    titledPane.getStyleClass.add(titledPaneStyleClass)
 
     titledPaneList += titledPane
     vBox.getChildren.add(titledPane)
@@ -52,6 +54,9 @@ class LabelVBoxSection[T <: Pane] extends VBox {
   }
 
   private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-hbox")
 
+    /*val vBoxInsets = new Insets(2)
+    vBox.setPadding(vBoxInsets)*/
   }
 }

@@ -9,7 +9,7 @@ import infrastructure.element.ghostnode.GhostNode
 import infrastructure.element.start.Start
 import infrastructure.element.state.State
 import infrastructure.element.transition.Transition
-import infrastructure.propertybox.PropertiesBox
+import infrastructure.propertybox.PropertiesBoxBar
 import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import javafx.event.EventHandler
@@ -18,7 +18,7 @@ import javafx.scene.Node
 import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.Pane
 
-class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox) {
+class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar) {
   private val mousePosition = new MousePosition()
 
   private var tempTransitionOption: Option[Transition] = None

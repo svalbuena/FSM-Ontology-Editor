@@ -1,12 +1,13 @@
 package infrastructure.propertybox.condition
 
-import infrastructure.propertybox.{LabelTextAreaSection, LabelTextFieldSection}
+import infrastructure.propertybox.{LabelButtonSection, LabelTextAreaSection, LabelTextFieldSection}
 import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 class ConditionPropertiesBox extends VBox {
-  private val removeConditionButton = new Button()
-  removeConditionButton.setText("Remove")
+  private val titleAndRemoveSection = new LabelButtonSection
+  titleAndRemoveSection.setLabelText("Condition")
+  titleAndRemoveSection.setButtonText("Remove")
 
   private val conditionNameSection = new LabelTextFieldSection
   conditionNameSection.setLabelText("Name:")
@@ -14,7 +15,9 @@ class ConditionPropertiesBox extends VBox {
   private val conditionQuerySection = new LabelTextAreaSection
   conditionQuerySection.setLabelText("Query:")
 
-  getChildren.addAll(removeConditionButton, conditionNameSection, conditionQuerySection)
+  getChildren.addAll(titleAndRemoveSection, conditionNameSection, conditionQuerySection)
+
+  setStyle()
 
 
   def setConditionName(name: String): Unit = conditionNameSection.setText(name)
@@ -25,5 +28,9 @@ class ConditionPropertiesBox extends VBox {
 
   def setOnConditionQueryChanged(conditionQueryChangedHandler: String => Unit): Unit = conditionQuerySection.setOnTextChanged(conditionQueryChangedHandler)
 
-  def setOnRemoveConditionButtonClicked(callback: () => Unit): Unit = removeConditionButton.setOnAction(_ => callback())
+  def setOnRemoveConditionButtonClicked(callback: () => Unit): Unit = titleAndRemoveSection.setButtonCallback(callback)
+
+  private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-vbox")
+  }
 }

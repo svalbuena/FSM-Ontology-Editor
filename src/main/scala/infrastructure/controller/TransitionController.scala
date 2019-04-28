@@ -29,10 +29,11 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            drawingPaneController.propertiesBox.setContent(propertiesBox)
+            drawingPaneController.propertiesBox.setOtherPropertiesBoxContent(propertiesBox)
 
           case _: DeleteMouseSelector =>
             TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
+            drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(propertiesBox)
 
           case _ =>
 
@@ -163,7 +164,7 @@ object TransitionController {
 
       eraseTransition(transition, drawingPaneController)
 
-      drawingPaneController.propertiesBox.removeContentIfEqual(transition.propertiesBox)
+      drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(transition.propertiesBox)
     }
 
     success

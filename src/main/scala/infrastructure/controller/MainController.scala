@@ -4,12 +4,12 @@ import infrastructure.DomainToInfrastructureConverter
 import infrastructure.drawingpane.DrawingPane
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.filechooser.FsmFileChooser
-import infrastructure.propertybox.PropertiesBox
+import infrastructure.propertybox.PropertiesBoxBar
 import infrastructure.toolbar.item.FileMenu
 import infrastructure.toolbox.ToolBox
 import javafx.stage.Stage
 
-class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBox, fileMenu: FileMenu) {
+class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, fileMenu: FileMenu) {
 
   //Create the DrawingPaneController
   private val drawingPaneController = new DrawingPaneController(drawingPane, toolBox, propertiesBox)

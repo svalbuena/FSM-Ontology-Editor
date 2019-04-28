@@ -130,6 +130,7 @@ object Environment {
       val fsm = selectedFsmOption.get
 
       for (guard <- fsm.transitions.flatMap(_.guards)) {
+        println(s"Searching for $guardName, found ${guard.name}")
         if (guard.name.equals(guardName)) return Right(guard)
       }
 

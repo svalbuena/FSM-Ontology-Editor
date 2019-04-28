@@ -12,7 +12,7 @@ class AddGuardToTransitionHandler {
         val guard = new Guard
         transition.addGuard(guard) match {
           case Left(error) => Left(error)
-          case Right(_) => Right(transition.name)
+          case Right(_) => Right(guard.name)
         }
     }
   }

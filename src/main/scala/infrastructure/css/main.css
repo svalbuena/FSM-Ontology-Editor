@@ -1,0 +1,84 @@
+.state {
+    -fx-background-color: white;
+    -fx-background-insets: 1px;
+    -fx-background-radius: 15px;
+
+    -fx-border-color: black;
+    -fx-border-width: 5px;
+    -fx-border-radius: 15px;
+}
+
+.title-area {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+}
+
+.actions-area {
+    -fx-background-color: white;
+    -fx-background-radius: 10px;
+
+    -fx-border-color: black;
+    -fx-border-width: 5px 0px 0px 0px;
+}
+
+.button {
+    -fx-graphic-text-gap: 0;
+ }
+
+.bordered-titled-title {
+    -fx-background-color: white;
+    -fx-translate-y: -16;
+}
+
+.bordered-titled-border {
+    -fx-content-display: top;
+    -fx-border-insets: 20 15 15 15;
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+
+.bordered-titled-content {
+    -fx-padding: 26 10 10 10;
+}
+
+.properties-box-vbox {
+    -fx-spacing: 1mm;
+    -fx-padding: 1mm;
+}
+
+.properties-box-hbox {
+    -fx-spacing: 1mm;
+}
+
+.properties-h2 {
+    -fx-font-size: 12.5;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+.properties-h3 {
+    -fx-font-weight: bold;
+    -fx-underline: true;
+}
+
+.titled-pane > .title {
+    -fx-font-weight: bold;
+}
+
+.properties-titled-pane > .title {
+    -fx-font-size: 13.4;
+}
+
+.properties-content-titled-pane > .title {
+    -fx-font-size: 13.1;
+}
+
+.state-action-titled-pane > .title, .transition-guard-titled-pane > .title {
+    -fx-font-size: 12.9;
+}
+
+.guard-action-titled-pane > .title, .guard-condition-titled-pane > .title {
+    -fx-font-size: 12.6;
+}
+

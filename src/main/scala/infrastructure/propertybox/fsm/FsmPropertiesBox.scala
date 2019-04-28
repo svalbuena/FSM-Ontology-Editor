@@ -5,18 +5,15 @@ import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 
 class FsmPropertiesBox extends VBox {
-  private val propertiesBoxLabel = new Label()
-  propertiesBoxLabel.setText("Finite State Machine")
-
   private val fsmNameSection = new LabelTextFieldSection
   fsmNameSection.setLabelText("Name:")
 
   private val fsmBaseUriSection = new LabelTextFieldSection
   fsmBaseUriSection.setLabelText("Base URI:")
 
-  getChildren.addAll(propertiesBoxLabel, fsmNameSection, fsmBaseUriSection)
+  getChildren.addAll(fsmNameSection, fsmBaseUriSection)
 
-  setConstraints()
+  setStyle()
 
 
   def setFsmName(fsmName: String): Unit = fsmNameSection.setText(fsmName)
@@ -25,8 +22,9 @@ class FsmPropertiesBox extends VBox {
   def setBaseUri(baseUri: String): Unit = fsmBaseUriSection.setText(baseUri)
   def setOnBaseUriChanged(baseUriChangedHandler: String => Unit): Unit = fsmBaseUriSection.setOnTextChanged(baseUriChangedHandler)
 
-  private def setConstraints(): Unit = {
-    propertiesBoxLabel.prefWidthProperty().bind(widthProperty())
+  private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-vbox")
+
     fsmNameSection.prefWidthProperty().bind(widthProperty())
     fsmBaseUriSection.prefWidthProperty().bind(widthProperty())
   }

@@ -38,7 +38,6 @@ object FsmController {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         fsm.baseUri = newBaseUri
-      //TODO: implement ModifyFsmName
     }
   }
 

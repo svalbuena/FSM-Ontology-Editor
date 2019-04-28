@@ -30,6 +30,8 @@ class ComboBoxSection[T] extends HBox {
   }
 
   private def setStyle(): Unit = {
+    getStyleClass.add("properties-box-hbox")
+
     setAlignment(Pos.CENTER_LEFT)
   }
 }

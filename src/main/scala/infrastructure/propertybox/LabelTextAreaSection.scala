@@ -22,6 +22,6 @@ class LabelTextAreaSection extends VBox {
   }
 
   private def setStyle(): Unit = {
-
+    getStyleClass.add("properties-box-hbox")
   }
 }

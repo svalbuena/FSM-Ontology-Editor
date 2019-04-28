@@ -29,7 +29,7 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            drawingPaneController.propertiesBox.setContent(propertiesBox)
+            drawingPaneController.propertiesBox.setOtherPropertiesBoxContent(propertiesBox)
 
           case _: TransitionItem =>
             val point = state.shape.getLocalToParentTransform.transform(event.getX, event.getY)
@@ -37,7 +37,7 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
 
           case _: DeleteMouseSelector =>
             StateController.removeStateFromFsm(state, drawingPaneController)
-            drawingPaneController.propertiesBox.removeContent()
+            drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(state.propertiesBox)
             toolBox.setToolToDefault()
 
           case _ =>
@@ -114,6 +114,8 @@ object StateController {
     new ModifyStateNameHandler().execute(new ModifyStateNameCommand(state.name, newName)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
+        state.name = newName
+
         state.shape.setName(newName)
 
         println("State name changed to -> " + newName)
@@ -146,7 +148,7 @@ object StateController {
 
         eraseState(state, drawingPaneController)
 
-        drawingPaneController.propertiesBox.removeContentIfEqual(state.propertiesBox)
+        drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(state.propertiesBox)
 
         println("Removing a state")
     }

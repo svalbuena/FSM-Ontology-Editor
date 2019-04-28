@@ -7,6 +7,8 @@ abstract class Element(private var _name: String) {
 
   def name_=(newName: String): Either[NameNotUniqueError, String] = {
     if (Environment.isNameUnique(newName)) {
+      Environment.removeName(_name)
+      Environment.addName(newName)
       _name = newName
       Right(name)
     } else {
