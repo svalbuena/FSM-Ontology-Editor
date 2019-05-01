@@ -5,6 +5,12 @@ import domain.Environment
 import domain.action.MethodType
 
 class ModifyActionMethodTypeHandler {
+
+  /**
+    *
+    * @param modifyActionMethodCommand command
+    * @return an exception or the method type
+    */
   def execute(modifyActionMethodCommand: ModifyActionMethodTypeCommand): Either[Exception, domain.action.MethodType.MethodType] = {
     Environment.getAction(modifyActionMethodCommand.actionName) match {
       case Left(error) => Left(error)

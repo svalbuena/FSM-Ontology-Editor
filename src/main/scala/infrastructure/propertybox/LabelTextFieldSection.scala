@@ -4,6 +4,9 @@ import javafx.geometry.Pos
 import javafx.scene.control.{Label, TextField}
 import javafx.scene.layout.{HBox, Region}
 
+/**
+  * Template for a template with a label and a textfield
+  */
 class LabelTextFieldSection extends HBox {
   private val label = new Label()
   private val textField = new TextField()

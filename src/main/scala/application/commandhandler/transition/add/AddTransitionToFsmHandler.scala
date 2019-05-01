@@ -5,6 +5,12 @@ import domain.Environment
 import domain.transition.Transition
 
 class AddTransitionToFsmHandler {
+
+  /**
+    *
+    * @param addTransitionToFsmCommand command
+    * @return an exception or the transition name
+    */
   def execute(addTransitionToFsmCommand: AddTransitionToFsmCommand): Either[Exception, String] = {
     Environment.getSelectedFsm match {
       case Left(error) => Left(error)

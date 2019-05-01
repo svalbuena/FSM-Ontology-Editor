@@ -10,6 +10,15 @@ import infrastructure.toolbox.ToolBox
 import javafx.scene.Scene
 import javafx.stage.Stage
 
+/**
+  * Main controller of the application, coordinates the other elements
+  * @param scene scene of the application
+  * @param stage stage of the application
+  * @param drawingPane drawing pane to use
+  * @param toolBox toolbox of the drawing pane
+  * @param propertiesBox propertiesbox of the drawing pane
+  * @param fileMenu filemenu of the application
+  */
 class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, fileMenu: FileMenu) {
 
   //Create the DrawingPaneController
@@ -40,6 +49,9 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
       }
   }*/
 
+  /**
+    * Creates a new fsm and selects it
+    */
   def newFsm(): Unit = {
     FsmController.addFsm() match {
       case Left(error) => println(error.getMessage)
@@ -53,6 +65,9 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     }
   }
 
+  /**
+    * Loads an fsm and selects it
+    */
   def loadFsm(): Unit = {
     fsmFileChooser.askForFileToOpen() match {
       case Some(filename) =>
@@ -71,6 +86,11 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     }
   }
 
+  /**
+    * Selects an fsm, error if it doesn't exist on the model
+    * @param fsm fsm to be selected
+    * @return exception or nothing if successful
+    */
   def selectFsm(fsm: FiniteStateMachine): Either[Exception, _] = {
     FsmController.selectFsm(fsm.name) match {
       case Left(error) =>
@@ -84,6 +104,9 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     }
   }
 
+  /**
+    * Saves an fsm asking the path
+    */
   def saveAsFsm(): Unit = {
     if (selectedFsmOption.isDefined) {
       fsmFileChooser.askForFileToSave() match {
@@ -97,6 +120,9 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     }
   }
 
+  /**
+    * Saves an fsm with the actual name, if none it calls saveAsFsm()
+    */
   def saveFsm(): Unit = {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get

@@ -4,6 +4,12 @@ import application.command.fsm.remove.RemoveFsmCommand
 import domain.Environment
 
 class RemoveFsmHandler {
+
+  /**
+    *
+    * @param removeFsmCommand command
+    * @return an exception or nothing if successful
+    */
   def execute(removeFsmCommand: RemoveFsmCommand): Either[Exception, _] = {
     Environment.getSelectedFsm match {
       case Left(error) => Left(error)

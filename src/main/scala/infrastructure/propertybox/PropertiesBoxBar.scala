@@ -7,6 +7,9 @@ import javafx.scene.Node
 import javafx.scene.control.{ScrollPane, TitledPane}
 import javafx.scene.layout.{Region, VBox}
 
+/**
+  * PropertiesBoxBar that appears on the application
+  */
 class PropertiesBoxBar extends ScrollPane {
   private val content = new TitledPane()
   content.setText("Properties")

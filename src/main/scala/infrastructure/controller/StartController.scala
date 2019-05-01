@@ -5,6 +5,11 @@ import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
+/**
+  * Controls the visual and behavior aspects of a Start
+  * @param start start to control
+  * @param drawingPaneController controller of the drawing pane
+  */
 class StartController(start: Start, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
   private val propertiesBox = drawingPaneController.propertiesBox
@@ -52,13 +57,28 @@ class StartController(start: Start, drawingPaneController: DrawingPaneController
   }
 }
 
+/**
+  * Operations that can be done with a Start
+  */
 object StartController {
+
+  /**
+    * Creates a start
+    * @param x x position
+    * @param y y position
+    * @param drawingPaneController controller of the drawing pane
+    */
   def addStart(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
     val start = new Start("start", x, y)
 
     drawStart(start, drawingPaneController)
   }
 
+  /**
+    * Removes a start
+    * @param start start to be removed
+    * @param drawingPaneController controller of the drawing pane
+    */
   def removeStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
     var success = true
 
@@ -73,12 +93,22 @@ object StartController {
     }
   }
 
+  /**
+    * Draws a start on the canvas
+    * @param start start to be drawn
+    * @param drawingPaneController controller of the drawing pane
+    */
   def drawStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
     drawingPaneController.drawNode(start.shape, start.x, start.y)
 
     new StartController(start, drawingPaneController)
   }
 
+  /**
+    * Erases a start from the canvas
+    * @param start start to be erased
+    * @param drawingPaneController controller of the drawing pane
+    */
   def eraseStart(start: Start, drawingPaneController: DrawingPaneController): Unit = {
     drawingPaneController.removeNode(start.shape)
   }

@@ -11,7 +11,16 @@ import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
 import infrastructure.element.state.{State, StateType}
 import infrastructure.element.transition.Transition
 
+/**
+  * Converter from an fsm model instance to an fsm infrastructure instance
+  */
 object DomainToInfrastructureConverter {
+
+  /**
+    *
+    * @param domainFsm an fsm model instance
+    * @return an fsm infrastructure instance
+    */
   def convertFsm(domainFsm: domain.fsm.FiniteStateMachine): FiniteStateMachine = {
     val fsmName = domainFsm.name
     val fsmBaseUri = domainFsm.baseUri

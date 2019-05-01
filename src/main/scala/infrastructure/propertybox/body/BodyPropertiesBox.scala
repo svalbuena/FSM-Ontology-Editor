@@ -5,6 +5,9 @@ import infrastructure.element.body.BodyType.BodyType
 import infrastructure.propertybox.{ComboBoxSection, LabelTextAreaSection, LabelTextFieldSection}
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a body
+  */
 class BodyPropertiesBox extends VBox {
   private val nameSection = new LabelTextFieldSection
   nameSection.setLabelText("Name:")

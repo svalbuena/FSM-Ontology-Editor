@@ -3,6 +3,9 @@ package infrastructure.propertybox.fsm
 import infrastructure.propertybox.LabelTextFieldSection
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of an fsm
+  */
 class FsmPropertiesBox extends VBox {
   private val fsmNameSection = new LabelTextFieldSection
   fsmNameSection.setLabelText("Name:")

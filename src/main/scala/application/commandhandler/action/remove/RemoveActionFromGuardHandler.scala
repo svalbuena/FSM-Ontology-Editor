@@ -4,6 +4,12 @@ import application.command.action.remove.RemoveActionFromGuardCommand
 import domain.Environment
 
 class RemoveActionFromGuardHandler {
+
+  /**
+    *
+    * @param removeActionFromGuardCommand command
+    * @return an exception or nothing if successful
+    */
   def execute(removeActionFromGuardCommand: RemoveActionFromGuardCommand): Either[Exception, _] = {
     Environment.getAction(removeActionFromGuardCommand.actionName) match {
       case Left(error) => Left(error)

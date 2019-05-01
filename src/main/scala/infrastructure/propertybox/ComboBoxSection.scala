@@ -4,6 +4,10 @@ import javafx.geometry.Pos
 import javafx.scene.control.{ComboBox, Label}
 import javafx.scene.layout.HBox
 
+/**
+  * Template for a section with a label and a combobox
+  * @tparam T
+  */
 class ComboBoxSection[T] extends HBox {
   private val label = new Label()
   private val comboBox = new ComboBox[T]()

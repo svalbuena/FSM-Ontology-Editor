@@ -14,9 +14,12 @@ import infrastructure.element.body.Body
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
-import infrastructure.element.transition.Transition
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
+/**
+  * Controls the visual and behavior aspects of an Action
+  * @param action action to control
+  */
 class ActionController(action: Action) {
   private val propertiesBox = action.propertiesBox
   private val contextMenu = action.contextMenu
@@ -55,7 +58,16 @@ class ActionController(action: Action) {
   }
 }
 
+/**
+  * Operations that can be done with an action
+  */
 object ActionController {
+
+  /**
+    * Creates an action and adds it to a guard
+    * @param guard guard where the action will be added
+    * @return the created action if there were no errors
+    */
   def addActionToGuard(guard: Guard): Option[Action] = {
     new AddActionToGuardHandler().execute(new AddActionToGuardCommand(guard.name)) match {
       case Left(error) =>
@@ -75,6 +87,13 @@ object ActionController {
     }
   }
 
+  /**
+    * Creates an action and adds it to a state
+    * @param actionType action type of the new action
+    * @param state state where the action will be added
+    * @param drawingPaneController controller of the drawing pane
+    * @return the created action if there were no errors
+    */
   def addActionToState(actionType: ActionType, state: State, drawingPaneController: DrawingPaneController): Option[Action] = {
     new AddActionToStateHandler().execute(new AddActionToStateCommand(actionType, state.name)) match {
       case Left(error) =>
@@ -93,6 +112,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the absolute uri of an action
+    * @param action action to be modified
+    * @param newAbsoluteUri new absolute uri
+    */
   def modifyActionAbsoluteUri(action: Action, newAbsoluteUri: String): Unit = {
     new ModifyActionAbsoluteUriHandler().execute(new ModifyActionAbsoluteUriCommand(action.name, newAbsoluteUri)) match {
       case Left(error) => println(error.getMessage)
@@ -103,6 +127,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the method type of an action
+    * @param action action to be modified
+    * @param newMethodType new method type
+    */
   def modifyActionMethodType(action: Action, newMethodType: MethodType): Unit = {
     new ModifyActionMethodTypeHandler().execute(new ModifyActionMethodTypeCommand(action.name, newMethodType match {
       case infrastructure.element.action.MethodType.GET => application.command.action.modify.MethodType.GET
@@ -116,6 +145,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the name of an action
+    * @param action action to be modified
+    * @param newName new name
+    */
   def modifyActionName(action: Action, newName: String): Unit = {
     new ModifyActionNameHandler().execute(new ModifyActionNameCommand(action.name, newName)) match {
       case Left(error) => println(error.getMessage)
@@ -138,6 +172,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the timeout of an action
+    * @param action action to be modified
+    * @param newTimeout new timeout
+    */
   def modifyActionTimeout(action: Action, newTimeout: String): Unit = {
     new ModifyActionTimeoutHandler().execute(new ModifyActionTimeoutCommand(action.name, newTimeout)) match {
       case Left(error) => println(error.getMessage)
@@ -148,6 +187,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the type of an action
+    * @param action action to be modified
+    * @param newActionType new action type
+    */
   def modifyActionType(action: Action, newActionType: ActionType): Unit = {
     new ModifyActionTypeHandler().execute(new ModifyActionTypeCommand(action.name, newActionType match {
       case infrastructure.element.action.ActionType.ENTRY => application.command.action.modify.ActionType.ENTRY
@@ -162,6 +206,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Modifies the uri type of an action
+    * @param action action to be modified
+    * @param newUriType new uri type
+    */
   def modifyActionUriType(action: Action, newUriType: UriType): Unit = {
     new ModifyActionUriTypeHandler().execute(new ModifyActionUriTypeCommand(action.name, newUriType match {
       case infrastructure.element.action.UriType.ABSOLUTE => application.command.action.modify.UriType.ABSOLUTE
@@ -177,6 +226,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Removes an action from a guard
+    * @param action action to be removed
+    * @param guard guard where the action belongs
+    */
   def removeActionFromGuard(action: Action, guard: Guard): Unit = {
     new RemoveActionFromGuardHandler().execute(new RemoveActionFromGuardCommand(action.name, guard.name)) match {
       case Left(error) => println(error.getMessage)
@@ -184,6 +238,11 @@ object ActionController {
     }
   }
 
+  /**
+    * Removes an action from a state
+    * @param action action to be removed
+    * @param state state where the action belongs
+    */
   def removeActionFromState(action: Action, state: State): Unit = {
     new RemoveActionFromStateHandler().execute(new RemoveActionFromStateCommand(action.name, state.name)) match {
       case Left(error) => println(error.getMessage)
@@ -191,6 +250,10 @@ object ActionController {
     }
   }
 
+  /**
+    * Draw an action on the application
+    * @param action action to be drawn
+    */
   def drawAction(action: Action): Unit = {
     action.propertiesBox.setActionType(action.actionType)
     action.propertiesBox.setActionName(action.name)

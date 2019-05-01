@@ -5,6 +5,11 @@ import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 
+/**
+  * Controls the visual and behavior aspects of an End
+  * @param end End to control
+  * @param drawingPaneController controller of the drawing pane
+  */
 class EndController(end: End, drawingPaneController: DrawingPaneController) {
   private val toolBox = drawingPaneController.toolBox
   private val propertiesBox = drawingPaneController.propertiesBox
@@ -52,13 +57,28 @@ class EndController(end: End, drawingPaneController: DrawingPaneController) {
   private def removeEnd(): Unit = EndController.removeEnd(end, drawingPaneController)
 }
 
+/**
+  * Operations that can be done with an End
+  */
 object EndController {
+
+  /**
+    * Creates and End
+    * @param x x coordinate of the End
+    * @param y y coordinate of the End
+    * @param drawingPaneController controller of the drawing pane
+    */
   def addEnd(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
     val end = new End("end", x, y)
 
     drawEnd(end, drawingPaneController)
   }
 
+  /**
+    * Removes an End
+    * @param end end to be removed
+    * @param drawingPaneController controller of the drawing pane
+    */
   def removeEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
     var success = true
 
@@ -73,12 +93,22 @@ object EndController {
     }
   }
 
+  /**
+    * Draws an end on the canvas
+    * @param end end to be drawn
+    * @param drawingPaneController controller of the drawing pane
+    */
   def drawEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
     drawingPaneController.drawNode(end.shape, end.x, end.y)
 
     new EndController(end, drawingPaneController)
   }
 
+  /**
+    * Erases and end from the canvas
+    * @param end end to be erased
+    * @param drawingPaneController controller of the drawing pane
+    */
   def eraseEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
     drawingPaneController.removeNode(end.shape)
   }

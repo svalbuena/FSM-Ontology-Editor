@@ -4,6 +4,9 @@ import infrastructure.propertybox.guard.GuardPropertiesBox
 import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a transition
+  */
 class TransitionPropertiesBox extends VBox {
   private val transitionNameSection = new LabelTextFieldSection
   transitionNameSection.setLabelText("Name:")

@@ -9,8 +9,19 @@ import domain.transition.Transition
 import org.apache.jena.rdf.model.{Model, ModelFactory, Resource}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
+/**
+  * Jena writer functionalities
+  * @param properties properties file with the properties and classes
+  * @param fsmBaseUri base uri to use
+  */
 class JenaWriter(properties: Properties, fsmBaseUri: String) {
-  def writeFsm(fsm: FiniteStateMachine, filename: String): Model = {
+
+  /**
+    * Writes an fsm to a file
+    * @param fsm fsm infrastructure instance
+    * @return the model where the fsm has been stored
+    */
+  def writeFsm(fsm: FiniteStateMachine): Model = {
     val fsmModel = ModelFactory.createDefaultModel()
     fsmModel.setNsPrefix("", fsmBaseUri)
     fsmModel.setNsPrefix("fsm", properties.fsmPrefix)

@@ -8,8 +8,11 @@ import application.commandhandler.condition.modify.{ModifyConditionNameHandler, 
 import application.commandhandler.condition.remove.RemoveConditionFromGuardHandler
 import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
-import infrastructure.element.transition.Transition
 
+/**
+  * Controls the visual and behavior aspects of a condition
+  * @param condition condition to control
+  */
 class ConditionController(condition: Condition) {
   private val propertiesBox = condition.propertiesBox
   private val shape = condition.shape
@@ -26,7 +29,15 @@ class ConditionController(condition: Condition) {
   }
 }
 
+/**
+  * Operations that can be done with a condition
+  */
 object ConditionController {
+
+  /**
+    * Creates a condition and adds it to a guard
+    * @param guard guard where the condition will be added
+    */
   def addConditionToGuard(guard: Guard): Unit = {
     new AddConditionToGuardHandler().execute(new AddConditionToGuardCommand(guard.name)) match {
       case Left(error) => println(error.getMessage)
@@ -41,6 +52,11 @@ object ConditionController {
     }
   }
 
+  /**
+    * Modifies the name of a condition
+    * @param condition condition to be modified
+    * @param newName new name
+    */
   def modifyConditionName(condition: Condition, newName: String): Unit = {
     new ModifyConditionNameHandler().execute(new ModifyConditionNameCommand(condition.name, newName)) match {
       case Left(error) => println(error.getMessage)
@@ -55,6 +71,11 @@ object ConditionController {
     }
   }
 
+  /**
+    * Modifies the query of a condition
+    * @param condition condition to be modified
+    * @param newQuery new query
+    */
   def modifyConditionQuery(condition: Condition, newQuery: String): Unit = {
     new ModifyConditionQueryHandler().execute(new ModifyConditionQueryCommand(condition.name, newQuery)) match {
       case Left(error) => println(error.getMessage)
@@ -65,6 +86,11 @@ object ConditionController {
     }
   }
 
+  /**
+    * Removes a condition from a guard
+    * @param condition condition to be modified
+    * @param guard guard where the condition belongs to
+    */
   def removeConditionFromGuard(condition: Condition, guard: Guard): Unit = {
     new RemoveConditionFromGuardHandler().execute(new RemoveConditionFromGuardCommand(condition.name, guard.name)) match {
       case Left(error) => println(error.getMessage)
@@ -75,6 +101,10 @@ object ConditionController {
     }
   }
 
+  /**
+    * Draws a condition in the application
+    * @param condition condition to be drawn
+    */
   def drawCondition(condition: Condition): Unit = {
     condition.propertiesBox.setConditionName(condition.name)
     condition.propertiesBox.setConditionQuery(condition.query)

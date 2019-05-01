@@ -5,6 +5,12 @@ import domain.Environment
 import domain.action.PrototypeUriParameter
 
 class AddPrototypeUriParameterToPrototypeUriHandler {
+
+  /**
+    *
+    * @param addActionPrototypeUriParameterCommand command
+    * @return an exception or the parameter name
+    */
   def execute(addActionPrototypeUriParameterCommand: AddPrototypeUriParameterToPrototypeUriCommand): Either[Exception, String] = {
     Environment.getPrototypeUri(addActionPrototypeUriParameterCommand.prototypeUriName) match {
       case Left(error) => Left(error)

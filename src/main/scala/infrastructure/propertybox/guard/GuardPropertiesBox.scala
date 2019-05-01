@@ -6,6 +6,9 @@ import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a guard
+  */
 class GuardPropertiesBox extends VBox {
   private val removeGuardButton = new Button()
   removeGuardButton.setText("Remove")

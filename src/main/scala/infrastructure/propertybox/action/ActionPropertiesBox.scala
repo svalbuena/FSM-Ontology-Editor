@@ -10,6 +10,11 @@ import infrastructure.propertybox.{ComboBoxSection, LabelButtonSection, LabelTex
 import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of an Action
+  * @param bodyPropertiesBox the properties box of the action's body
+  * @param prototypeUriPropertiesBox the properties box of the action's uri
+  */
 class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prototypeUriPropertiesBox: PrototypeUriPropertiesBox) extends VBox() {
   private val titleAndRemoveSection = new LabelButtonSection
   titleAndRemoveSection.setLabelText("Action")

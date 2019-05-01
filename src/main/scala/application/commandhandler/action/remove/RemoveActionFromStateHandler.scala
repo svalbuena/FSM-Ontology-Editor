@@ -4,6 +4,12 @@ import application.command.action.remove.RemoveActionFromStateCommand
 import domain.Environment
 
 class RemoveActionFromStateHandler {
+
+  /**
+    *
+    * @param removeActionFromStateCommand command
+    * @return an exception or nothing if successful
+    */
   def execute(removeActionFromStateCommand: RemoveActionFromStateCommand): Either[Exception, _] = {
     Environment.getAction(removeActionFromStateCommand.actionName) match {
       case Left(error) => Left(error)

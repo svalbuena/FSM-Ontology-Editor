@@ -7,6 +7,11 @@ import domain.action.{Action, ActionType}
 
 class AddActionToStateHandler {
 
+  /**
+    *
+    * @param addActionToStateCommand command
+    * @return returns an exception or the name of the action, the name of the body action and the name of the prototype uri action
+    */
   def execute(addActionToStateCommand: AddActionToStateCommand): Either[Exception, (String, String, String)] = {
     Environment.getState(addActionToStateCommand.stateName) match {
       case Left(error) => Left(error)

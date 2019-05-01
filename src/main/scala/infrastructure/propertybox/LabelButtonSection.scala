@@ -4,6 +4,9 @@ import javafx.geometry.Pos
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{HBox, Priority, Region}
 
+/**
+  * Template for a section with a label and a button
+  */
 class LabelButtonSection extends HBox {
   private val label = new Label()
   private val spacingRegion = new Region()

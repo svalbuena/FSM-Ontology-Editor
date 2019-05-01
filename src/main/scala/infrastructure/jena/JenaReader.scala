@@ -15,10 +15,19 @@ import org.apache.jena.rdf.model.impl.PropertyImpl
 import org.apache.jena.rdf.model.{Model, Resource}
 import org.apache.jena.vocabulary.RDF
 
+/**
+  * Jena reader functionalities
+  * @param properties properties file with the properties and classes
+  */
 class JenaReader(properties: Properties) {
 
   implicit def toJenaProperty(p: String): PropertyImpl = new PropertyImpl(p)
 
+  /**
+    * Reads the fsm from a model
+    * @param model model where the data has ben loaded
+    * @return the infrastructure fsm instance
+    */
   def readFsm(model: Model): Either[Exception, FiniteStateMachine] = {
     val fsmIterator = model.listResourcesWithProperty(RDF.`type`, properties.StateMachineClass)
     if (fsmIterator.hasNext) {

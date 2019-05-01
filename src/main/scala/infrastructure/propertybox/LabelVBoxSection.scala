@@ -5,6 +5,11 @@ import javafx.scene.layout.{Pane, VBox}
 
 import scala.collection.mutable
 
+/**
+  * Template for a section with a LabelButtonSection and a vbox that contains titled panes of other panes
+  * @param titledPaneStyleClass styleclass to be added to each titled pane of an added pane
+  * @tparam T type of the panes that will be added to the vbox
+  */
 class LabelVBoxSection[T <: Pane](titledPaneStyleClass: String) extends VBox {
   private val titledPaneList: mutable.ListBuffer[TitledPane] = mutable.ListBuffer()
 

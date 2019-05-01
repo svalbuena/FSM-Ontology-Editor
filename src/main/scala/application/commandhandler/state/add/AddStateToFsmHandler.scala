@@ -5,6 +5,12 @@ import domain.Environment
 import domain.state.State
 
 class AddStateToFsmHandler {
+
+  /**
+    *
+    * @param addStateCommand command
+    * @return an exception or the state name
+    */
   def execute(addStateCommand: AddStateToFsmCommand): Either[Exception, String] = {
     Environment.getSelectedFsm match {
       case Left(error) => Left(error)

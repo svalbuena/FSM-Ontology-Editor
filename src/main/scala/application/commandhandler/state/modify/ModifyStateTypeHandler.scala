@@ -6,6 +6,12 @@ import domain.Environment
 import domain.state.StateType
 
 class ModifyStateTypeHandler {
+
+  /**
+    *
+    * @param modifyStateTypeCommand command
+    * @return an exception or the state type
+    */
   def execute(modifyStateTypeCommand: ModifyStateTypeCommand): Either[Exception, domain.state.StateType.StateType] = {
     Environment.getState(modifyStateTypeCommand.stateName) match {
       case Left(error) => Left(error)

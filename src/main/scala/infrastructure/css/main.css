@@ -97,6 +97,7 @@
 .toolbar {
     -fx-padding: 0.3mm;
 }
+
 .toolbar, .viewbar {
     -fx-background-color: #b3bfc6;
 }

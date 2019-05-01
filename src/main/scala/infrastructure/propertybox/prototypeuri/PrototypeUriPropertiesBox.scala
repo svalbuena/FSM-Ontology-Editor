@@ -4,6 +4,9 @@ import infrastructure.propertybox.prototypeuriparameter.PrototypeUriParameterPro
 import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a prototype uri
+  */
 class PrototypeUriPropertiesBox extends VBox {
   private val nameSection = new LabelTextFieldSection
   nameSection.setLabelText("Name:")

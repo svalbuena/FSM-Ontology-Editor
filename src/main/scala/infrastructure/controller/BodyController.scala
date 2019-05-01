@@ -5,6 +5,10 @@ import application.commandhandler.body.modify.{ModifyBodyContentHandler, ModifyB
 import infrastructure.element.body.Body
 import infrastructure.element.body.BodyType.BodyType
 
+/**
+  * Controls the visual and behavior aspects of a body
+  * @param body body to control
+  */
 class BodyController(body: Body) {
   private val propertiesBox = body.propertiesBox
 
@@ -13,7 +17,16 @@ class BodyController(body: Body) {
   propertiesBox.setOnBodyTypeChanged(newBodyType => BodyController.modifyBodyType(body, newBodyType))
 }
 
+/**
+  * Operations that can be done with a body
+  */
 object BodyController {
+
+  /**
+    * Modifies the content of a body
+    * @param body body to be modified
+    * @param newContent new content
+    */
   def modifyBodyContent(body: Body, newContent: String): Unit = {
     new ModifyBodyContentHandler().execute(new ModifyBodyContentCommand(body.name, newContent)) match {
       case Left(error) => println(error.getMessage)
@@ -24,6 +37,11 @@ object BodyController {
     }
   }
 
+  /**
+    * Modifies the name of a body
+    * @param body body to be modified
+    * @param newName new name
+    */
   def modifyBodyName(body: Body, newName: String): Unit = {
     new ModifyBodyNameHandler().execute(new ModifyBodyNameCommand(body.name, newName)) match {
       case Left(error) => println(error.getMessage)
@@ -34,6 +52,11 @@ object BodyController {
     }
   }
 
+  /**
+    * Modifies the type of a body
+    * @param body body to be modified
+    * @param newBodyType new body type
+    */
   def modifyBodyType(body: Body, newBodyType: BodyType): Unit = {
     new ModifyBodyTypeHandler().execute(new ModifyBodyTypeCommand(body.name, newBodyType match {
       case infrastructure.element.body.BodyType.RDF => application.command.body.modify.BodyType.RDF
@@ -48,6 +71,10 @@ object BodyController {
     }
   }
 
+  /**
+    * Draws a body in the application
+    * @param body body to be drawn
+    */
   def drawBody(body: Body): Unit = {
     body.propertiesBox.setBodyName(body.name)
     body.propertiesBox.setBodyType(body.bodyType)

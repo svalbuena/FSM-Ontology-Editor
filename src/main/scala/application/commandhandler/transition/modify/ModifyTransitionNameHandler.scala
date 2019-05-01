@@ -4,6 +4,12 @@ import application.command.transition.modify.ModifyTransitionNameCommand
 import domain.Environment
 
 class ModifyTransitionNameHandler {
+
+  /**
+    *
+    * @param modifyTransitionNameCommand command
+    * @return an exception or the transition name
+    */
   def execute(modifyTransitionNameCommand: ModifyTransitionNameCommand): Either[Exception, String] = {
     Environment.getTransition(modifyTransitionNameCommand.transitionName) match {
       case Left(error) => Left(error)

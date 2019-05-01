@@ -7,13 +7,16 @@ import domain.fsm.FiniteStateMachine
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}
 
+/**
+  * Jena implementation of the FsmRepository
+  */
 class JenaFsmRepository extends FsmRepository {
 
   override def saveFsm(fsm: FiniteStateMachine, properties: Properties, filename: String): Either[Exception, _] = {
     val FsmBaseUri = "file:///D:/projects/ontologies/siot/demo_siot.ttl#"
 
     val jenaWriter = new JenaWriter(properties, FsmBaseUri)
-    val fsmModel = jenaWriter.writeFsm(fsm, filename)
+    val fsmModel = jenaWriter.writeFsm(fsm)
 
     val outputStream = new FileOutputStream(filename)
 

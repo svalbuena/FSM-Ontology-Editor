@@ -4,6 +4,10 @@ import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, Norma
 import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.{FlowPane, VBox}
 
+/**
+  * Section that contains the selectors
+  * @param toggleGroup toggle group where the selectors buttons are associated
+  */
 class SelectorsSection(toggleGroup: ToggleGroup) extends VBox {
   val normalMouseSelector = new NormalMouseSelector
   val deleteMouseSelector = new DeleteMouseSelector

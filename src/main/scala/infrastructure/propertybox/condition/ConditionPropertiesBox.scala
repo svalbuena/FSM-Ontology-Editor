@@ -3,6 +3,9 @@ package infrastructure.propertybox.condition
 import infrastructure.propertybox.{LabelButtonSection, LabelTextAreaSection, LabelTextFieldSection}
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a condition
+  */
 class ConditionPropertiesBox extends VBox {
   private val titleAndRemoveSection = new LabelButtonSection
   titleAndRemoveSection.setLabelText("Condition")

@@ -5,6 +5,9 @@ import infrastructure.propertybox.action.ActionPropertiesBox
 import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.layout.VBox
 
+/**
+  * Properties box of a state
+  */
 class StatePropertiesBox extends VBox {
   private val nameSection = new LabelTextFieldSection()
   nameSection.setLabelText("Name:")

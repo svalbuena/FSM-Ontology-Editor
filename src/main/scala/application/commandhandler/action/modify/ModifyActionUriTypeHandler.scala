@@ -5,6 +5,12 @@ import domain.Environment
 import domain.action.UriType
 
 class ModifyActionUriTypeHandler {
+
+  /**
+    *
+    * @param modifyActionUriTypeCommand command
+    * @return an exception or the action uri type
+    */
   def execute(modifyActionUriTypeCommand: ModifyActionUriTypeCommand): Either[Exception, domain.action.UriType.UriType] = {
     Environment.getAction(modifyActionUriTypeCommand.actionName) match {
       case Left(error) => Left(error)

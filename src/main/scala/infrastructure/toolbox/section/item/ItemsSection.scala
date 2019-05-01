@@ -4,6 +4,10 @@ import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, T
 import javafx.scene.control.ToggleGroup
 import javafx.scene.layout.VBox
 
+/**
+  * Section of the items  * @param toggleGroup toggle group where the items buttons are associated
+  *
+  */
 class ItemsSection(toggleGroup: ToggleGroup) extends VBox {
   val endItem = new EndItem
   val startItem = new StartItem

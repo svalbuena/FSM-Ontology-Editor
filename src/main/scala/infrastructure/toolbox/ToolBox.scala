@@ -5,6 +5,9 @@ import infrastructure.toolbox.section.selector.SelectorsSection
 import javafx.scene.control.{TitledPane, Toggle, ToggleGroup}
 import javafx.scene.layout.VBox
 
+/**
+  * ToolBox, it contains the tools that the user can use
+  */
 class ToolBox extends TitledPane {
   setText("ToolBox")
 

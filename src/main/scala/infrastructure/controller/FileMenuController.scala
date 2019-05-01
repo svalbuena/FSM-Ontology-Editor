@@ -2,6 +2,11 @@ package infrastructure.controller
 
 import infrastructure.toolbar.item.FileMenu
 
+/**
+  * Controls the buttons of the file menu
+  * @param fileMenu file menu to control
+  * @param mainController main controller of the application
+  */
 class FileMenuController(fileMenu: FileMenu, mainController: MainController) {
   fileMenu.newMenuItem.setOnAction(_ => onNewButtonClicked())
   fileMenu.openMenuItem.setOnAction(_ => onOpenButtonClicked())

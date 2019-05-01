@@ -5,6 +5,12 @@ import domain.Environment
 import domain.guard.Guard
 
 class AddGuardToTransitionHandler {
+
+  /**
+    *
+    * @param addGuardToTransitionCommand command
+    * @return an exception or the guard name
+    */
   def execute(addGuardToTransitionCommand: AddGuardToTransitionCommand): Either[Exception, String] = {
     Environment.getTransition(addGuardToTransitionCommand.transitionName) match {
       case Left(error) => Left(error)
