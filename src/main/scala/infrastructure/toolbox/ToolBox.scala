@@ -2,34 +2,53 @@ package infrastructure.toolbox
 
 import infrastructure.toolbox.section.item.ItemsSection
 import infrastructure.toolbox.section.selector.SelectorsSection
-import javafx.scene.control.{Label, Toggle, ToggleGroup}
+import javafx.scene.control.{TitledPane, Toggle, ToggleGroup}
 import javafx.scene.layout.VBox
 
-class ToolBox extends VBox {
-  setStyle("-fx-background-color: #b3c6b3")
-
-  val toolBoxTitle = new Label()
-  toolBoxTitle.setText("ToolBox")
+class ToolBox extends TitledPane {
+  setText("ToolBox")
 
   val toggleGroup = new ToggleGroup()
 
   val selectorsSection = new SelectorsSection(toggleGroup)
+  val selectorsTitledPane = new TitledPane()
+  selectorsTitledPane.setContent(selectorsSection)
+  selectorsTitledPane.setText("Selectors")
 
-  val sectionList = List(selectorsSection, new ItemsSection(toggleGroup))
+  val itemsSection = new ItemsSection(toggleGroup)
+  val itemsTitledPane = new TitledPane()
+  itemsTitledPane.setContent(itemsSection)
+  itemsTitledPane.setText("Items")
 
-  getChildren.add(toolBoxTitle)
+  val content = new VBox()
+  content.getChildren.addAll(selectorsTitledPane, itemsTitledPane)
 
-  sectionList.foreach(section => {
-    getChildren.add(section)
-  })
+  setContent(content)
 
   setToolToDefault()
+
+  setStyle()
+
 
   def getSelectedTool: Toggle = {
     toggleGroup.getSelectedToggle
   }
 
   def setToolToDefault(): Unit = {
-    selectorsSection.setMouseToDefault
+    selectorsSection.setMouseToDefault()
+  }
+
+  private def setStyle(): Unit = {
+    setCollapsible(false)
+
+    getStyleClass.add("toolbox-titled-pane")
+
+    content.getStyleClass.add("toolbox-vbox")
+
+    selectorsTitledPane.getStyleClass.add("selectors-titled-pane")
+    selectorsTitledPane.setCollapsible(false)
+
+    itemsTitledPane.getStyleClass.add("items-titled-pane")
+    itemsTitledPane.setCollapsible(false)
   }
 }

@@ -151,7 +151,7 @@ object DomainToInfrastructureConverter {
     val guard = new Guard(name = guardName, parent = parent)
 
     for (domainAction <- domainGuard.actions) {
-     val action = getAction(domainAction, guard)
+      val action = getAction(domainAction, guard)
       guard.addAction(action)
     }
 

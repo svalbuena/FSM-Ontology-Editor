@@ -70,7 +70,7 @@ object TransitionController {
     }
   }
 
-  def addStateToEndTransition(state: State, end: End,  fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
+  def addStateToEndTransition(state: State, end: End, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
     val (newInfStateType, newAppStateType) = state.stateType match {
       case infrastructure.element.state.StateType.INITIAL => (StateType.INITIAL_FINAL, application.command.state.modify.StateType.INITIAL_FINAL)
       case _ => (StateType.FINAL, application.command.state.modify.StateType.FINAL)

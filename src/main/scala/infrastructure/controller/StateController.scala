@@ -84,7 +84,7 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
 }
 
 object StateController {
-  def addStateToFsm(x: Double, y: Double, fsm: FiniteStateMachine,drawingPaneController: DrawingPaneController): Option[State] = {
+  def addStateToFsm(x: Double, y: Double, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Option[State] = {
     new AddStateToFsmHandler().execute(new AddStateToFsmCommand(x, y)) match {
       case Left(error) =>
         println(error.getMessage)

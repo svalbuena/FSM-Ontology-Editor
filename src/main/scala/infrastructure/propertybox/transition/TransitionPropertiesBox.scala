@@ -1,8 +1,7 @@
 package infrastructure.propertybox.transition
 
-import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import infrastructure.propertybox.guard.GuardPropertiesBox
-import javafx.scene.control.Label
+import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.layout.VBox
 
 class TransitionPropertiesBox extends VBox {

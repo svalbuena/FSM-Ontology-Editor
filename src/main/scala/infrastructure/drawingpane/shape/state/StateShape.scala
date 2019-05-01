@@ -6,8 +6,8 @@ import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.layout.{Pane, VBox}
 
 class StateShape extends Pane {
-  private val ActionHeight = 25.0
-  private val Width = 250.0
+  private val ActionHeight = 20.0
+  private val Width = 160.0
   private val Height = ActionHeight * 4
 
   private val TitleAreaHeightRatio = 0.20

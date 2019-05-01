@@ -1,7 +1,7 @@
 package infrastructure.propertybox
 
 import javafx.geometry.Pos
-import javafx.scene.control.{Button, Label, Skin}
+import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{HBox, Priority, Region}
 
 class LabelButtonSection extends HBox {

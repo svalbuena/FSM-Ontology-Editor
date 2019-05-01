@@ -1,7 +1,6 @@
 package infrastructure.propertybox.condition
 
 import infrastructure.propertybox.{LabelButtonSection, LabelTextAreaSection, LabelTextFieldSection}
-import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 class ConditionPropertiesBox extends VBox {

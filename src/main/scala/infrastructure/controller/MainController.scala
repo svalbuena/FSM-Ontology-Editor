@@ -7,12 +7,13 @@ import infrastructure.filechooser.FsmFileChooser
 import infrastructure.propertybox.PropertiesBoxBar
 import infrastructure.toolbar.item.FileMenu
 import infrastructure.toolbox.ToolBox
+import javafx.scene.Scene
 import javafx.stage.Stage
 
-class MainController(stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, fileMenu: FileMenu) {
+class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, fileMenu: FileMenu) {
 
   //Create the DrawingPaneController
-  private val drawingPaneController = new DrawingPaneController(drawingPane, toolBox, propertiesBox)
+  private val drawingPaneController = new DrawingPaneController(drawingPane, toolBox, propertiesBox, scene)
   //Create the FileMenuController
   private val fileMenuController = new FileMenuController(fileMenu, this)
 

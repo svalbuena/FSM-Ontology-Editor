@@ -9,6 +9,7 @@ import infrastructure.viewbar.ViewBar
 import javafx.application.Application
 import javafx.geometry.Dimension2D
 import javafx.scene.Scene
+import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
 import javafx.stage.Stage
 
@@ -19,14 +20,14 @@ class MainApplication extends Application {
   val ToolBarDimension = new Dimension2D(0, 15)
   val ViewBarDimension = new Dimension2D(0, 15)
 
-  val ToolBoxDimension = new Dimension2D(200, 0)
-  val PropertiesBoxDimension = new Dimension2D(250, 0)
+  val ToolBoxDimension = new Dimension2D(125, 0)
+  val PropertiesBoxDimension = new Dimension2D(275, 0)
 
   val CanvasDimension = new Dimension2D(4000, 3000)
 
 
   override def start(stage: Stage): Unit = {
-    stage.setTitle("This is the title")
+    stage.setTitle("OntoFSM")
 
     val borderPane = new BorderPane()
 
@@ -64,7 +65,9 @@ class MainApplication extends Application {
     drawingPane.prefHeightProperty().bind(scene.heightProperty().subtract(mainToolBar.heightProperty().subtract(viewBar.heightProperty())))
     borderPane.setCenter(drawingPane)
 
-    val mainController = new MainController(stage, drawingPane, toolBox, propertiesBox, mainToolBar.fileMenu)
+    val mainController = new MainController(scene, stage, drawingPane, toolBox, propertiesBox, mainToolBar.fileMenu)
+
+    stage.getIcons.add(new Image("file:src/main/resources/owl.png"))
 
     stage.setScene(scene)
     stage.show()

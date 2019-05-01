@@ -3,24 +3,24 @@ package infrastructure.propertybox
 import infrastructure.propertybox.fsm.FsmPropertiesBox
 import infrastructure.propertybox.state.StatePropertiesBox
 import infrastructure.propertybox.transition.TransitionPropertiesBox
-import javafx.geometry.Insets
 import javafx.scene.Node
-import javafx.scene.control.{Label, ScrollPane, TitledPane}
-import javafx.scene.layout.{Pane, Region, VBox}
+import javafx.scene.control.{ScrollPane, TitledPane}
+import javafx.scene.layout.{Region, VBox}
 
-class PropertiesBoxBar extends TitledPane {
-  setText("Properties")
+class PropertiesBoxBar extends ScrollPane {
+  private val content = new TitledPane()
+  content.setText("Properties")
+
+  private val subContent = new VBox()
 
   private val fsmPropertiesBoxWrapper = new TitledPane()
   private val otherPropertiesBoxWrapper = new TitledPane()
 
-  private val propertiesPane = new VBox()
-  propertiesPane.getChildren.addAll(fsmPropertiesBoxWrapper, otherPropertiesBoxWrapper)
+  subContent.getChildren.addAll(fsmPropertiesBoxWrapper, otherPropertiesBoxWrapper)
 
-  private val scrollPane = new ScrollPane()
-  scrollPane.setContent(propertiesPane)
+  content.setContent(subContent)
 
-  setContent(scrollPane)
+  setContent(content)
 
   removeFsmPropertiesBox()
   removeOtherPropertiesBoxContent()
@@ -75,22 +75,23 @@ class PropertiesBoxBar extends TitledPane {
   }
 
   private def setStyle(): Unit = {
-    fsmPropertiesBoxWrapper.prefWidthProperty().bind(propertiesPane.widthProperty())
+    content.prefHeightProperty().bind(heightProperty())
+
+    fsmPropertiesBoxWrapper.prefWidthProperty().bind(subContent.widthProperty())
     //fsmPropertiesBoxWrapper.setCollapsible(false)
     fsmPropertiesBoxWrapper.getStyleClass.add("properties-content-titled-pane")
 
-    otherPropertiesBoxWrapper.prefWidthProperty().bind(propertiesPane.widthProperty())
+    otherPropertiesBoxWrapper.prefWidthProperty().bind(subContent.widthProperty())
     otherPropertiesBoxWrapper.setCollapsible(false)
     otherPropertiesBoxWrapper.getStyleClass.add("properties-content-titled-pane")
 
-    propertiesPane.setFillWidth(true)
-    scrollPane.setFitToWidth(true)
+    content.getStyleClass.add("properties-titled-pane")
 
-    val insets = new Insets(2)
-    scrollPane.setPadding(insets)
+    subContent.getStyleClass.add("properties-subcontent")
 
-    setCollapsible(false)
-    setStyle("-fx-background-color: #b3c6b3")
-    getStyleClass.add("properties-titled-pane")
+    getStyleClass.add("properties-scrollpane")
+    setFitToWidth(true)
+
+    content.setCollapsible(false)
   }
 }

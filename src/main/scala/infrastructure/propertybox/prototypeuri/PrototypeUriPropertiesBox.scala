@@ -1,8 +1,7 @@
 package infrastructure.propertybox.prototypeuri
 
-import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import infrastructure.propertybox.prototypeuriparameter.PrototypeUriParameterPropertiesBox
-import javafx.scene.control.Button
+import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.layout.VBox
 
 class PrototypeUriPropertiesBox extends VBox {

@@ -1,5 +1,4 @@
 import infrastructure.MainApplication
-import infrastructure.jena.{JenaFsmRepository, Properties}
 import javafx.application.Application
 
 object Main {

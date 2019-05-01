@@ -1,7 +1,6 @@
 package infrastructure.propertybox.fsm
 
 import infrastructure.propertybox.LabelTextFieldSection
-import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 
 class FsmPropertiesBox extends VBox {
@@ -17,9 +16,11 @@ class FsmPropertiesBox extends VBox {
 
 
   def setFsmName(fsmName: String): Unit = fsmNameSection.setText(fsmName)
+
   def setOnFsmNameChanged(fsmNameChangedHandler: String => Unit): Unit = fsmNameSection.setOnTextChanged(fsmNameChangedHandler)
 
   def setBaseUri(baseUri: String): Unit = fsmBaseUriSection.setText(baseUri)
+
   def setOnBaseUriChanged(baseUriChangedHandler: String => Unit): Unit = fsmBaseUriSection.setOnTextChanged(baseUriChangedHandler)
 
   private def setStyle(): Unit = {

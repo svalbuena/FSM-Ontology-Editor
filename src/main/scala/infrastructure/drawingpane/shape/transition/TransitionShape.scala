@@ -8,8 +8,6 @@ class TransitionShape extends Group {
   val line = new Arrow()
   val guardGroup = new GuardGroupShape()
 
-  setStyle("-fx-background-color: #b3c6b3")
-
   getChildren.addAll(line, guardGroup)
 
 

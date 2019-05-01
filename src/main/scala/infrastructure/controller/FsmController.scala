@@ -19,9 +19,13 @@ class FsmController(fsm: FiniteStateMachine) {
 
 object FsmController {
   def addFsm(): Either[Exception, (String, String)] = new AddFsmHandler().execute(new AddFsmCommand)
+
   def removeFsm(fsmName: String): Unit = new RemoveFsmHandler().execute(new RemoveFsmCommand(fsmName))
+
   def loadFsm(filename: String): Either[Exception, domain.fsm.FiniteStateMachine] = new LoadFsmHandler().execute(new LoadFsmCommand(filename))
+
   def saveFsm(filename: String): Either[Exception, _] = new SaveFsmHandler().execute(new SaveFsmCommand(filename))
+
   def selectFsm(fsmName: String): Either[Exception, _] = new SelectFsmHandler().execute(new SelectFsmCommand(fsmName))
 
   def modifyFsmName(fsm: FiniteStateMachine, newFsmName: String): Unit = {

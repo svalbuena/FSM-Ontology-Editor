@@ -7,6 +7,8 @@ import javafx.scene.Node
 import javafx.scene.layout.Pane
 
 class Canvas extends Pane {
+  getStyleClass.add("canvas")
+
   /* Connectable Node */
   def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = {
     val newX = node.getTranslateX + deltaX

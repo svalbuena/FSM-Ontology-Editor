@@ -7,7 +7,7 @@ import infrastructure.element.action.{MethodType, UriType}
 import infrastructure.propertybox.body.BodyPropertiesBox
 import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox
 import infrastructure.propertybox.{ComboBoxSection, LabelButtonSection, LabelTextFieldSection}
-import javafx.scene.control.{Button, Label}
+import javafx.scene.control.Label
 import javafx.scene.layout.VBox
 
 class ActionPropertiesBox(private val bodyPropertiesBox: BodyPropertiesBox, prototypeUriPropertiesBox: PrototypeUriPropertiesBox) extends VBox() {

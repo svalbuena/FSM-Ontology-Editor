@@ -1,7 +1,6 @@
 package infrastructure.propertybox
 
-import javafx.geometry.Insets
-import javafx.scene.control.{Button, TitledPane}
+import javafx.scene.control.TitledPane
 import javafx.scene.layout.{Pane, VBox}
 
 import scala.collection.mutable

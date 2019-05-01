@@ -1,7 +1,7 @@
 package infrastructure.filechooser
 
-import javafx.stage.{FileChooser, Stage}
 import javafx.stage.FileChooser.ExtensionFilter
+import javafx.stage.{FileChooser, Stage}
 
 class FsmFileChooser(stage: Stage) {
   private val fileChooser = new FileChooser

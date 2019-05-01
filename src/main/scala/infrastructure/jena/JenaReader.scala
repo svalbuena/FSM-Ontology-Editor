@@ -3,13 +3,13 @@ package infrastructure.jena
 import domain.action.ActionType.ActionType
 import domain.action.BodyType.BodyType
 import domain.action.MethodType.MethodType
-import domain.action.{Action, ActionType, Body, BodyType, MethodType, PrototypeUri, PrototypeUriParameter, UriType}
 import domain.action.UriType.UriType
+import domain.action._
 import domain.condition.Condition
 import domain.fsm.FiniteStateMachine
 import domain.guard.Guard
-import domain.state.{State, StateType}
 import domain.state.StateType.StateType
+import domain.state.{State, StateType}
 import domain.transition.Transition
 import org.apache.jena.rdf.model.impl.PropertyImpl
 import org.apache.jena.rdf.model.{Model, Resource}

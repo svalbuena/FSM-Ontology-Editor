@@ -16,7 +16,9 @@ class FiniteStateMachine(name: String,
   var transitions: List[Transition] = List()
 
   def isFilenameDefined: Boolean = filenameOption.isDefined
+
   def getFilename: String = filenameOption.get
+
   def setFilename(filename: String): Unit = filenameOption = Some(filename)
 
   def addState(state: State): Unit = {

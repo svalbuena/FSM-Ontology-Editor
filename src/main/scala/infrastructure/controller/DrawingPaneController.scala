@@ -14,12 +14,13 @@ import infrastructure.toolbox.ToolBox
 import infrastructure.toolbox.section.item.fsm.{EndItem, StartItem, StateItem, TransitionItem}
 import javafx.event.EventHandler
 import javafx.geometry.Point2D
-import javafx.scene.Node
 import javafx.scene.input.{MouseButton, MouseEvent}
-import javafx.scene.layout.Pane
+import javafx.scene.{Node, Scene}
 
-class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar) {
+class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, scene: Scene) {
   private val mousePosition = new MousePosition()
+  /*private var isCtrlPressed = false
+  private val zoomScale = 1.1*/
 
   private var tempTransitionOption: Option[Transition] = None
   private var ghostNodeOption: Option[GhostNode] = None
@@ -27,8 +28,13 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   private var fsmOption: Option[FiniteStateMachine] = None
 
   private val canvas: Canvas = drawingPane.canvas
-  canvas.setOnMouseClicked(drawingPaneMouseClickedListener)
-  canvas.setOnMouseMoved(drawingPaneMouseMovedListener)
+  canvas.setOnMouseClicked(canvasMouseClickedListener)
+  canvas.setOnMouseMoved(canvasMouseMovedListener)
+
+  /*scene.setOnKeyPressed(canvasKeyPressedListener)
+  scene.setOnKeyReleased(canvasKeyReleasedListener)
+  canvas.setOnMouseExited(canvasMouseExitedListener)
+  canvas.setOnScroll(canvasScrollListener)*/
 
 
   def setFsm(fsm: FiniteStateMachine): Unit = {
@@ -39,7 +45,47 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     FsmController.drawFiniteStateMachine(fsm, this)
   }
 
-  private def drawingPaneMouseClickedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
+  /*private def canvasMouseExitedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
+    if (fsmOption.isDefined) {
+      isCtrlPressed = false
+    }
+  }
+
+  private def canvasKeyPressedListener: EventHandler[KeyEvent] = (event: KeyEvent) => {
+    if (fsmOption.isDefined) {
+      if (event.getCode == KeyCode.CONTROL) {
+        isCtrlPressed = true
+      }
+    }
+  }
+
+  private def canvasKeyReleasedListener: EventHandler[KeyEvent] = (event: KeyEvent) => {
+    if (fsmOption.isDefined) {
+      if (event.getCode == KeyCode.CONTROL) {
+        isCtrlPressed = false
+      }
+    }
+  }
+
+  private def canvasScrollListener: EventHandler[ScrollEvent] = (event: ScrollEvent) => {
+    if (fsmOption.isDefined) {
+      if (isCtrlPressed) {
+        event.consume()
+
+        val deltaY = event.getDeltaY
+        val scaleFactor = {
+          if (deltaY == 0) 1
+          else if (deltaY > 0) zoomScale
+          else 1 / zoomScale
+        }
+
+        canvas.setScaleX(canvas.getScaleX * scaleFactor)
+        canvas.setScaleY(canvas.getScaleY * scaleFactor)
+      }
+    }
+  }*/
+
+  private def canvasMouseClickedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
     if (fsmOption.isDefined) {
       updateMousePosition(event)
 
@@ -67,7 +113,7 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     }
   }
 
-  private def drawingPaneMouseMovedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
+  private def canvasMouseMovedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
     toolBox.getSelectedTool match {
       case _: TransitionItem =>
         if (isTemporalTransitionDefined) {
@@ -109,10 +155,14 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     (event.getSceneX - mousePosition.x, event.getSceneY - mousePosition.y)
   }
 
-  def removeNode(node: Node): Unit =  canvas.getChildren.remove(node)
+  def removeNode(node: Node): Unit = canvas.getChildren.remove(node)
+
   def drawNode(node: Node, x: Double, y: Double): Unit = canvas.drawNode(node, x, y)
+
   def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = canvas.moveNode(node, deltaX, deltaY)
+
   def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.moveTransition(transition, source, destination)
+
   def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
 
   private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined

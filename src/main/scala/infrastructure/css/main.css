@@ -23,7 +23,7 @@
 
 .button {
     -fx-graphic-text-gap: 0;
- }
+}
 
 .bordered-titled-title {
     -fx-background-color: white;
@@ -66,11 +66,11 @@
     -fx-font-weight: bold;
 }
 
-.properties-titled-pane > .title {
+.properties-titled-pane > .title, .toolbox-titled-pane > .title {
     -fx-font-size: 13.4;
 }
 
-.properties-content-titled-pane > .title {
+.properties-content-titled-pane > .title, .selectors-titled-pane > .title, .items-titled-pane > .title {
     -fx-font-size: 13.1;
 }
 
@@ -81,4 +81,29 @@
 .guard-action-titled-pane > .title, .guard-condition-titled-pane > .title {
     -fx-font-size: 12.6;
 }
+
+.toolbox-vbox {
+    -fx-spacing: 5mm;
+}
+
+.toolbox-vbox, .properties-subcontent {
+    -fx-background-color: #dddddd;
+}
+
+.properties-subcontent {
+    -fx-padding: 0mm;
+}
+
+.toolbar {
+    -fx-padding: 0.3mm;
+}
+.toolbar, .viewbar {
+    -fx-background-color: #b3bfc6;
+}
+
+.canvas {
+    -fx-background-color: #fcfcfc;
+}
+
+
 
