@@ -33,8 +33,7 @@ class Transition(name: String,
     propertiesBox.addTransitionGuard(guard.propertiesBox, guard.name)
     shape.addTransitionGuard(guard.shape)
 
-    //TODO: fix this
-    //canvas.updateTransitionGuardGroupPosition(transition.shape)
+    shape
   }
 
   def removeGuard(guard: Guard): Unit = {

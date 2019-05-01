@@ -82,6 +82,8 @@ object GuardController {
       ConditionController.drawCondition(condition)
     }
 
+      guard.parent.shape.updateGuardGroupPosition()
+
     new GuardController(guard)
   }
 }

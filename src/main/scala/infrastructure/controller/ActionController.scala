@@ -14,6 +14,7 @@ import infrastructure.element.body.Body
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
+import infrastructure.element.transition.Transition
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
 class ActionController(action: Action) {
@@ -203,6 +204,11 @@ object ActionController {
 
     BodyController.drawBody(action.body)
     PrototypeUriController.drawPrototypeUri(action.prototypeUri)
+
+    action.parent match {
+      case guard: Guard => guard.parent.shape.updateGuardGroupPosition()
+      case _ =>
+    }
 
     new ActionController(action)
   }

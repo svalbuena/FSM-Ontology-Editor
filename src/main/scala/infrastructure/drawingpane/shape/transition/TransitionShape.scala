@@ -7,6 +7,7 @@ import javafx.scene.Group
 class TransitionShape extends Group {
   val line = new Arrow()
   val guardGroup = new GuardGroupShape()
+  var endCenter = new Point2D(0.0, 0.0)
 
   getChildren.addAll(line, guardGroup)
 
@@ -16,8 +17,15 @@ class TransitionShape extends Group {
   def removeTransitionGuard(guardPane: GuardPane): Unit = guardGroup.removeGuard(guardPane)
 
   def setPosition(srcCenter: Point2D, end: Point2D, endCenter: Point2D): Unit = {
+    this.endCenter = endCenter
     line.setStart(srcCenter)
     line.setEnd(end)
+
+    updateGuardGroupPosition()
+  }
+
+  def updateGuardGroupPosition(): Unit = {
+    val srcCenter = line.getStart
 
     val midX = srcCenter.getX + ((endCenter.getX - srcCenter.getX) / 2) - guardGroup.getWidth / 2
     val midY = srcCenter.getY + ((endCenter.getY - srcCenter.getY) / 2) - guardGroup.getHeight

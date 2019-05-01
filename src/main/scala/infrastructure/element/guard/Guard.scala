@@ -23,9 +23,6 @@ class Guard(name: String,
 
     propertiesBox.addAction(action.propertiesBox, action.name)
     shape.addAction(action.shape)
-
-    //TODO: fix this
-    //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
   }
 
   def removeAction(action: Action): Unit = {

@@ -33,7 +33,6 @@ object FsmController {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         fsm.name = newFsmName
-      //TODO: implement ModifyFsmName
     }
   }
 

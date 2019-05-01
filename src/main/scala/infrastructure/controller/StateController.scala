@@ -7,9 +7,12 @@ import application.commandhandler.state.add.AddStateToFsmHandler
 import application.commandhandler.state.modify.{ModifyStateCoordinatesHandler, ModifyStateNameHandler, ModifyStateTypeHandler}
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
 import infrastructure.element.action.ActionType
+import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
+import infrastructure.element.start.Start
 import infrastructure.element.state.StateType.StateType
 import infrastructure.element.state.{State, StateType}
+import infrastructure.element.transition.Transition
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
@@ -165,6 +168,26 @@ object StateController {
     }
 
     new StateController(state, drawingPaneController)
+
+    if (state.stateType == StateType.INITIAL || state.stateType == StateType.INITIAL_FINAL) {
+      val start = new Start("start", state.x, state.y)
+      StartController.drawStart(start, drawingPaneController)
+
+      val transition = new Transition("startToStateTransition", start, state, isEditable = false, state.parent)
+      start.outTransitions = transition :: start.outTransitions
+      state.inTransitions = transition :: state.inTransitions
+      TransitionController.drawTransition(transition, drawingPaneController)
+    }
+
+    if (state.stateType == StateType.FINAL || state.stateType == StateType.INITIAL_FINAL) {
+      val end = new End("start", state.x, state.y)
+      EndController.drawEnd(end, drawingPaneController)
+
+      val transition = new Transition("stateToEndTransition", state, end, isEditable = false, state.parent)
+      state.outTransitions = transition :: state.outTransitions
+      end.inTransitions = transition :: end.inTransitions
+      TransitionController.drawTransition(transition, drawingPaneController)
+    }
   }
 
   def eraseState(state: State, drawingPaneController: DrawingPaneController): Unit = {

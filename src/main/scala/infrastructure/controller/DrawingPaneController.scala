@@ -165,6 +165,8 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
 
   def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
 
+  def updateTransitionPosition(transitionShape: TransitionShape, src: Node, dst: Node): Unit = canvas.updateTransitionPosition(transitionShape, src, dst)
+
   private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
 
   private def drawTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {

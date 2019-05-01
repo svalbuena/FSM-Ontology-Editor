@@ -8,6 +8,7 @@ import application.commandhandler.condition.modify.{ModifyConditionNameHandler, 
 import application.commandhandler.condition.remove.RemoveConditionFromGuardHandler
 import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
+import infrastructure.element.transition.Transition
 
 class ConditionController(condition: Condition) {
   private val propertiesBox = condition.propertiesBox
@@ -79,6 +80,8 @@ object ConditionController {
     condition.propertiesBox.setConditionQuery(condition.query)
 
     condition.shape.setConditionName(condition.name)
+
+    condition.parent.parent.shape.updateGuardGroupPosition()
 
     new ConditionController(condition)
   }
