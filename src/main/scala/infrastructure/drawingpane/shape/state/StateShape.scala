@@ -5,6 +5,9 @@ import infrastructure.drawingpane.shape.state.section.{ActionsSection, NameSecti
 import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.layout.{Pane, VBox}
 
+/**
+  * Visual shape of a state
+  */
 class StateShape extends Pane {
   private val ActionHeight = 20.0
   private val Width = 200.0

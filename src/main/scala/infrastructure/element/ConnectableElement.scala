@@ -2,6 +2,10 @@ package infrastructure.element
 
 import infrastructure.element.transition.Transition
 
+/**
+  * Connectable element, for elements that can be connected with transitions
+  * @param name name of the connectable element
+  */
 abstract class ConnectableElement(name: String) extends Element(name) {
   var inTransitions: List[Transition] = List[Transition]()
   var outTransitions: List[Transition] = List[Transition]()

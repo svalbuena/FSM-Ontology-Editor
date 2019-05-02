@@ -20,5 +20,5 @@ libraryDependencies ++= Seq (
   "org.apache.jena" % "apache-jena-libs" % "3.10.0" pomOnly()
 )
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-feature")
+//scalacOptions := Seq("-unchecked", "-deprecation", "-feature")
 

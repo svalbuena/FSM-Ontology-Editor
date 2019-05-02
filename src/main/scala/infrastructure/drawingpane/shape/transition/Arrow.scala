@@ -6,6 +6,9 @@ import javafx.scene.Group
 import javafx.scene.paint.Color
 import javafx.scene.shape.{Line, Polygon}
 
+/**
+  * Arrow of a transition
+  */
 class Arrow extends Group {
   private val line = new Line()
   private val edge = new Polygon()

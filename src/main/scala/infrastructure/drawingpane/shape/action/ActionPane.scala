@@ -5,6 +5,9 @@ import infrastructure.element.action.ActionType.ActionType
 import javafx.scene.control.Label
 import javafx.scene.layout.HBox
 
+/**
+  * Pane of an action visual element
+  */
 class ActionPane extends HBox {
   private val ActionHeight = 10.0
 
@@ -16,6 +19,10 @@ class ActionPane extends HBox {
 
   getChildren.addAll(actionTypeLabel, actionTextLabel)
 
+  /**
+    * Sets the action type of the visual element
+    * @param actionType type of the action
+    */
   def setActionType(actionType: ActionType): Unit = {
     val actionTypeText = actionType match {
       case ActionType.ENTRY => "entry/"

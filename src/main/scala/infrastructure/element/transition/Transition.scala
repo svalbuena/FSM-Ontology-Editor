@@ -11,6 +11,14 @@ import infrastructure.element.{ConnectableElement, Element}
 import infrastructure.propertybox.transition.TransitionPropertiesBox
 import javafx.scene.layout.Pane
 
+/**
+  * Transition data
+  * @param name name of the transition
+  * @param source source of the transition
+  * @param destination destination of the transition
+  * @param isEditable if the transition can be edited, to add guards, etc
+  * @param parent the parent of the transitions
+  */
 class Transition(name: String,
                  val source: ConnectableElement,
                  val destination: ConnectableElement,
@@ -32,8 +40,6 @@ class Transition(name: String,
 
     propertiesBox.addTransitionGuard(guard.propertiesBox, guard.name)
     shape.addTransitionGuard(guard.shape)
-
-    shape
   }
 
   def removeGuard(guard: Guard): Unit = {

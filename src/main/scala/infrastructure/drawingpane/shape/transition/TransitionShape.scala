@@ -4,6 +4,9 @@ import infrastructure.drawingpane.shape.guard.{GuardGroupShape, GuardPane}
 import javafx.geometry.Point2D
 import javafx.scene.Group
 
+/**
+  * Visual shape of a transition
+  */
 class TransitionShape extends Group {
   val line = new Arrow()
   val guardGroup = new GuardGroupShape()

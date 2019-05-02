@@ -5,6 +5,9 @@ import infrastructure.drawingpane.shape.condition.ConditionPane
 import javafx.scene.control.Label
 import javafx.scene.layout.{HBox, VBox}
 
+/**
+  * Guard pane
+  */
 class GuardPane extends VBox {
   private val guardNameLabel = new Label()
 

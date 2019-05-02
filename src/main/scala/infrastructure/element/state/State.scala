@@ -8,6 +8,14 @@ import infrastructure.element.state.StateType.StateType
 import infrastructure.menu.contextmenu.state.StateContextMenu
 import infrastructure.propertybox.state.StatePropertiesBox
 
+/**
+  * State data
+  * @param name name of the state
+  * @param x x coordinate of the state
+  * @param y y coordinate of the state
+  * @param stateType type of the state
+  * @param parent parent of the state
+  */
 class State(name: String,
             var x: Double,
             var y: Double,

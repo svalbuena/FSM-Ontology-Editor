@@ -4,6 +4,9 @@ import javafx.geometry.{Insets, Pos}
 import javafx.scene.control.Label
 import javafx.scene.layout.StackPane
 
+/**
+  * Name section of a state
+  */
 class NameSection extends StackPane {
   val Padding = 10.0
 

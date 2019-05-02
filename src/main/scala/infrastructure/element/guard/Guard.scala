@@ -7,6 +7,11 @@ import infrastructure.element.condition.Condition
 import infrastructure.element.transition.Transition
 import infrastructure.propertybox.guard.GuardPropertiesBox
 
+/**
+  * Guard data
+  * @param name name of the guard
+  * @param parent parent of the guard
+  */
 class Guard(name: String,
             val parent: Transition
            ) extends Element(name) {

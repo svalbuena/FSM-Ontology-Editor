@@ -5,6 +5,9 @@ import infrastructure.element.action.ActionType.ActionType
 import javafx.geometry.Insets
 import javafx.scene.layout.{Pane, VBox}
 
+/**
+  * Section of guards of a state
+  */
 class ActionsSection extends VBox {
   private val Padding = 10.0
 

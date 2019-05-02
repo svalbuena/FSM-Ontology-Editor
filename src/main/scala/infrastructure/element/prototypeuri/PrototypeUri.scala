@@ -4,6 +4,11 @@ import infrastructure.element.Element
 import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
 import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox
 
+/**
+  * Prototype uri data
+  * @param name name of the prototype uri
+  * @param structure structure of the prototype uri
+  */
 class PrototypeUri(name: String,
                    var structure: String = ""
                   ) extends Element(name) {

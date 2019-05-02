@@ -15,6 +15,8 @@ import org.apache.jena.rdf.model.impl.PropertyImpl
 import org.apache.jena.rdf.model.{Model, Resource}
 import org.apache.jena.vocabulary.RDF
 
+import scala.language.implicitConversions
+
 /**
   * Jena reader functionalities
   * @param properties properties file with the properties and classes

@@ -5,6 +5,11 @@ import infrastructure.element.state.State
 import infrastructure.element.transition.Transition
 import infrastructure.propertybox.fsm.FsmPropertiesBox
 
+/**
+  * Finite State Machine data
+  * @param name name of the fsm
+  * @param baseUri base uri of the fsm
+  */
 class FiniteStateMachine(name: String,
                          var baseUri: String,
                         ) extends Element(name) {

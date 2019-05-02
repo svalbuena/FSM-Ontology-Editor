@@ -6,10 +6,20 @@ import javafx.geometry.Point2D
 import javafx.scene.Node
 import javafx.scene.layout.Pane
 
+/**
+  * Canvas where the elements are drawn
+  */
 class Canvas extends Pane {
   getStyleClass.add("canvas")
 
   /* Connectable Node */
+  /**
+    * Moves a node of the canvas, it checks
+    * @param node node to be moved
+    * @param deltaX deltaX of the movement
+    * @param deltaY deltaY of the movement
+    * @return returns the new point if it has been moved, returns the actual point otherwise
+    */
   def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = {
     val newX = node.getTranslateX + deltaX
     val newY = node.getTranslateY + deltaY
@@ -17,12 +27,19 @@ class Canvas extends Pane {
     if (getLayoutBounds.contains(newX, newY, node.getLayoutBounds.getWidth, node.getLayoutBounds.getHeight)) {
       node.setTranslateX(newX)
       node.setTranslateY(newY)
-      true
-    }
 
-    new Point2D(newX, newY)
+      new Point2D(newX, newY)
+    } else {
+      new Point2D(node.getTranslateX, node.getTranslateY)
+    }
   }
 
+  /**
+    * Draws a node on the canvas
+    * @param node node to be drawn
+    * @param x x coordinate of the node
+    * @param y y corodinate of the node
+    */
   def drawNode(node: Node, x: Double, y: Double): Unit = {
     node.setTranslateX(x)
     node.setTranslateY(y)
@@ -31,16 +48,34 @@ class Canvas extends Pane {
   }
 
   /* Transtion */
+  /**
+    * Moves a transition on the canvas according to the source and destination nodes position
+    * @param transition transition to me moved
+    * @param source source node shape
+    * @param destination destination node shape
+    */
   def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = {
     updateTransitionPosition(transition, source, destination)
     transition.toBack()
   }
 
+  /**
+    * Draws a transition on the canvas
+    * @param transition transition to be drawn
+    * @param source source node shape
+    * @param destination destination node shape
+    */
   def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = {
     getChildren.add(transition)
     moveTransition(transition, source, destination)
   }
 
+  /**
+    * Updates a transition position
+    * @param transitionShape transition shape
+    * @param src src shape
+    * @param dst dst shape
+    */
   def updateTransitionPosition(transitionShape: TransitionShape, src: Node, dst: Node): Unit = {
     layout()
 
@@ -73,6 +108,12 @@ class Canvas extends Pane {
     transitionShape.setPosition(srcCenter, end, dstCenter)
   }
 
+  /**
+    * Converts a canvas degree to the degree perceived on the screen
+    * @param start start point
+    * @param end end point
+    * @return the degree value between 0 and 360
+    */
   private def getHumanDegrees(start: Point2D, end: Point2D): Double = {
     val (aX, aY) = (start.getX - end.getX, start.getY - end.getY)
 

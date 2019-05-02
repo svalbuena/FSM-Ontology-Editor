@@ -34,7 +34,9 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
       case MouseButton.PRIMARY =>
         toolBox.getSelectedTool match {
           case _: NormalMouseSelector =>
-            drawingPaneController.propertiesBox.setOtherPropertiesBoxContent(propertiesBox)
+            if (transition.isEditable) {
+              drawingPaneController.propertiesBox.setOtherPropertiesBoxContent(propertiesBox)
+            }
 
           case _: DeleteMouseSelector =>
             TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
