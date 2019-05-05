@@ -114,7 +114,7 @@ class JenaReader(properties: Properties) {
     val conditionName = conditionRes.getLocalName
 
     val content = {
-      if (hasResourceProperty(conditionRes, properties.hasContent)) getResourceProperty(conditionRes, properties.hasContent).getString
+      if (hasResourceProperty(conditionRes, properties.hasQuery)) getResourceProperty(conditionRes, properties.hasQuery).getString
       else ""
     }
 
@@ -249,7 +249,7 @@ class JenaReader(properties: Properties) {
     }
 
     val content = {
-      if (hasResourceProperty(bodyRes, properties.hasBodyContent)) getResourceProperty(bodyRes, properties.hasBodyContent).getString
+      if (hasResourceProperty(bodyRes, properties.hasContent)) getResourceProperty(bodyRes, properties.hasContent).getString
       else ""
     }
 

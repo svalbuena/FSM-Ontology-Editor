@@ -130,7 +130,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     }
     bodyRes.addProperty(JenaHelper.toJenaProperty(properties.hasBodyType), JenaHelper.toJenaResource(bodyTypeResource))
 
-    bodyRes.addLiteral(JenaHelper.toJenaProperty(properties.hasBodyContent), body.content)
+    bodyRes.addLiteral(JenaHelper.toJenaProperty(properties.hasContent), body.content)
 
     bodyRes
   }
@@ -201,7 +201,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val conditionRes = fsmModel.createResource(fsmBaseUri + condition.name)
     conditionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.ConditionClass))
 
-    conditionRes.addLiteral(JenaHelper.toJenaProperty(properties.hasContent), condition.query)
+    conditionRes.addLiteral(JenaHelper.toJenaProperty(properties.hasQuery), condition.query)
 
     conditionRes
   }

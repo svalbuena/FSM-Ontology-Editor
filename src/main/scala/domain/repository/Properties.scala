@@ -8,7 +8,6 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val hasBody: String = fsmPrefix + "hasBody"
   val hasPrototypeUri: String = fsmPrefix + "hasPrototypeURI"
   val hasBodyType: String = fsmPrefix + "hasBodyType"
-  val hasBodyContent: String = fsmPrefix + "hasContent"
   val hasTimeoutInMs: String = fsmPrefix + "hasTimeoutInMs"
   val hasParameter: String = fsmPrefix + "hasParameter"
   val hasStructure: String = fsmPrefix + "hasStructure"
@@ -20,6 +19,7 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val hasGuardCondition: String = fsmPrefix + "hasGuardCondition"
   val hasGuardAction: String = fsmPrefix + "hasGuardAction"
   val hasContent: String = fsmPrefix + "hasContent"
+
   val rdfBodyType: String = fsmPrefix + "rdf"
   val sparqlBodyType: String = fsmPrefix + "executableSparql"
   val otherBodyType: String = fsmPrefix + "other"
@@ -49,7 +49,7 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
 
 
   val lowerCorner: String = geometryPrefix + "lowerCorner"
-  val coordinateX: String = geometryPrefix + "coordinateX"
-  val coordinateY: String = geometryPrefix + "coordinateY"
+  val coordinateX: String = geometryPrefix + "coordX"
+  val coordinateY: String = geometryPrefix + "coordY"
   val PointClass: String = geometryPrefix + "Point"
 }
