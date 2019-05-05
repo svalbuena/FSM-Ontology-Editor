@@ -5,7 +5,7 @@ import javafx.geometry.Point2D
 import scala.math.{pow, sqrt}
 
 /**
-  * Contains some math functions for elements positioning on the canvas
+  * contains some math functions for elements positioning on the canvas
   */
 object Equation {
 

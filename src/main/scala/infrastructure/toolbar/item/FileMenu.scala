@@ -3,7 +3,7 @@ package infrastructure.toolbar.item
 import javafx.scene.control.{MenuButton, MenuItem}
 
 /**
-  * Contains the buttons that provide the fsm files managing
+  * contains the buttons that provide the fsm files managing
   */
 class FileMenu extends MenuButton {
   setText("File")

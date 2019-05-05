@@ -44,12 +44,12 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
 
     for (state <- fsm.states) {
       val stateRes = getStateResource(fsmModel, state)
-      fsmRes.addProperty(JenaHelper.toJenaProperty(properties.Contains), stateRes)
+      fsmRes.addProperty(JenaHelper.toJenaProperty(properties.contains), stateRes)
     }
 
     for (transition <- fsm.transitions) {
       val transitionRes = getTransitionResource(fsmModel, transition)
-      fsmRes.addProperty(JenaHelper.toJenaProperty(properties.Contains), transitionRes)
+      fsmRes.addProperty(JenaHelper.toJenaProperty(properties.contains), transitionRes)
     }
 
     fsmModel
@@ -59,9 +59,9 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val stateRes = fsmModel.createResource(fsmBaseUri + state.name)
 
     val pointRes = fsmModel.createResource(fsmBaseUri + state.name + "Point")
-    pointRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.pointClass))
-    pointRes.addLiteral(JenaHelper.toJenaProperty(properties.coordX), state.x)
-    pointRes.addLiteral(JenaHelper.toJenaProperty(properties.coordY), state.y)
+    pointRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.PointClass))
+    pointRes.addLiteral(JenaHelper.toJenaProperty(properties.coordinateX), state.x)
+    pointRes.addLiteral(JenaHelper.toJenaProperty(properties.coordinateY), state.y)
 
     stateRes.addProperty(JenaHelper.toJenaProperty(properties.lowerCorner), pointRes)
 
@@ -82,8 +82,8 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
       val actionRes = getActionResource(fsmModel, action)
 
       action.actionType match {
-        case domain.action.ActionType.ENTRY => stateRes.addProperty(JenaHelper.toJenaProperty(properties.HasEntryAction), actionRes)
-        case domain.action.ActionType.EXIT => stateRes.addProperty(JenaHelper.toJenaProperty(properties.HasExitAction), actionRes)
+        case domain.action.ActionType.ENTRY => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasEntryAction), actionRes)
+        case domain.action.ActionType.EXIT => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasExitAction), actionRes)
         case _ =>
       }
     }
@@ -94,26 +94,27 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
   private def getActionResource(fsmModel: Model, action: Action): Resource = {
     val actionRes = fsmModel.createResource(fsmBaseUri + action.name)
     actionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.ActionClass))
+    actionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.RequestClass))
 
     val methodTypeProperty = action.methodType match {
-      case domain.action.MethodType.GET => properties.GetMethod
-      case domain.action.MethodType.POST => properties.PostMethod
+      case domain.action.MethodType.GET => properties.getMethod
+      case domain.action.MethodType.POST => properties.postMethod
     }
-    actionRes.addProperty(JenaHelper.toJenaProperty(properties.HasMethod), JenaHelper.toJenaResource(methodTypeProperty))
+    actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasMethod), JenaHelper.toJenaResource(methodTypeProperty))
 
     action.uriType match {
       case domain.action.UriType.ABSOLUTE =>
         //TODO: mirar absolutURI
-        actionRes.addProperty(JenaHelper.toJenaProperty(properties.HasAbsoluteUri), action.absoluteUri)
+        actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasAbsoluteUri), action.absoluteUri)
       case domain.action.UriType.PROTOTYPE =>
         val prototypeUriRes = getPrototypeUriResource(fsmModel, action.prototypeUri)
-        actionRes.addProperty(JenaHelper.toJenaProperty(properties.HasPrototypeUri), prototypeUriRes)
+        actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasPrototypeUri), prototypeUriRes)
     }
 
-    actionRes.addLiteral(JenaHelper.toJenaProperty(properties.HasTimeoutInMs), action.timeout)
+    actionRes.addLiteral(JenaHelper.toJenaProperty(properties.hasTimeoutInMs), action.timeout)
 
     val bodyRes = getBodyResource(fsmModel, action.body)
-    actionRes.addProperty(JenaHelper.toJenaProperty(properties.HasBody), bodyRes)
+    actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasBody), bodyRes)
 
     actionRes
   }
@@ -123,13 +124,13 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     bodyRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.BodyClass))
 
     val bodyTypeResource = body.bodyType match {
-      case domain.action.BodyType.RDF => properties.RdfBodyType
-      case domain.action.BodyType.JSON => properties.OtherBodyType
-      case domain.action.BodyType.SPARQL => properties.SparqlBodyType
+      case domain.action.BodyType.RDF => properties.rdfBodyType
+      case domain.action.BodyType.JSON => properties.otherBodyType
+      case domain.action.BodyType.SPARQL => properties.sparqlBodyType
     }
-    bodyRes.addProperty(JenaHelper.toJenaProperty(properties.HasBodyType), JenaHelper.toJenaResource(bodyTypeResource))
+    bodyRes.addProperty(JenaHelper.toJenaProperty(properties.hasBodyType), JenaHelper.toJenaResource(bodyTypeResource))
 
-    bodyRes.addLiteral(JenaHelper.toJenaProperty(properties.HasBodyContent), body.content)
+    bodyRes.addLiteral(JenaHelper.toJenaProperty(properties.hasBodyContent), body.content)
 
     bodyRes
   }
@@ -138,12 +139,12 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val prototypeUriRes = fsmModel.createResource(fsmBaseUri + prototypeUri.name)
     prototypeUriRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.PrototypeUriClass))
 
-    prototypeUriRes.addLiteral(JenaHelper.toJenaProperty(properties.HasStructure), prototypeUri.structure)
+    prototypeUriRes.addLiteral(JenaHelper.toJenaProperty(properties.hasStructure), prototypeUri.structure)
 
     for (parameter <- prototypeUri.prototypeUriParameters) {
       val parameterRes = getPrototypeUriParameterResource(fsmModel, parameter)
 
-      prototypeUriRes.addProperty(JenaHelper.toJenaProperty(properties.HasParameter), parameterRes)
+      prototypeUriRes.addProperty(JenaHelper.toJenaProperty(properties.hasParameter), parameterRes)
     }
 
     prototypeUriRes
@@ -153,9 +154,9 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val parameterRes = fsmModel.createResource(fsmBaseUri + parameter.name)
     parameterRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.PrototypeUriParameterClass))
 
-    parameterRes.addLiteral(JenaHelper.toJenaProperty(properties.HasPlaceholder), parameter.placeholder)
+    parameterRes.addLiteral(JenaHelper.toJenaProperty(properties.hasPlaceholder), parameter.placeholder)
 
-    parameterRes.addLiteral(JenaHelper.toJenaProperty(properties.HasQuery), parameter.query)
+    parameterRes.addLiteral(JenaHelper.toJenaProperty(properties.hasQuery), parameter.query)
 
     parameterRes
   }
@@ -164,14 +165,14 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val transitionRes = fsmModel.createResource(fsmBaseUri + transition.name)
     transitionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.TransitionClass))
 
-    transitionRes.addProperty(JenaHelper.toJenaProperty(properties.HasSourceState), fsmModel.getResource(fsmBaseUri + transition.source.name))
+    transitionRes.addProperty(JenaHelper.toJenaProperty(properties.hasSourceState), fsmModel.getResource(fsmBaseUri + transition.source.name))
 
-    transitionRes.addProperty(JenaHelper.toJenaProperty(properties.HasTargetState), fsmModel.getResource(fsmBaseUri + transition.destination.name))
+    transitionRes.addProperty(JenaHelper.toJenaProperty(properties.hasTargetState), fsmModel.getResource(fsmBaseUri + transition.destination.name))
 
     for (guard <- transition.guards) {
       val guardRes = getGuardResource(fsmModel, guard)
 
-      transitionRes.addProperty(JenaHelper.toJenaProperty(properties.HasTransitionGuard), guardRes)
+      transitionRes.addProperty(JenaHelper.toJenaProperty(properties.hasTransitionGuard), guardRes)
     }
 
     transitionRes
@@ -184,13 +185,13 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     for (action <- guard.actions) {
       val actionRes = getActionResource(fsmModel, action)
 
-      guardRes.addProperty(JenaHelper.toJenaProperty(properties.HasGuardAction), actionRes)
+      guardRes.addProperty(JenaHelper.toJenaProperty(properties.hasGuardAction), actionRes)
     }
 
     for (condition <- guard.conditions) {
       val conditionRes = getConditionResource(fsmModel, condition)
 
-      guardRes.addProperty(JenaHelper.toJenaProperty(properties.HasGuardCondition), conditionRes)
+      guardRes.addProperty(JenaHelper.toJenaProperty(properties.hasGuardCondition), conditionRes)
     }
 
     guardRes
@@ -200,7 +201,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     val conditionRes = fsmModel.createResource(fsmBaseUri + condition.name)
     conditionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.ConditionClass))
 
-    conditionRes.addLiteral(JenaHelper.toJenaProperty(properties.HasContent), condition.query)
+    conditionRes.addLiteral(JenaHelper.toJenaProperty(properties.hasContent), condition.query)
 
     conditionRes
   }

@@ -43,7 +43,7 @@ class JenaReader(properties: Properties) {
       //First retrieve the states
       var states: List[State] = List()
 
-      listResourceObjects(fsmRes, properties.Contains).forEachRemaining(resource => {
+      listResourceObjects(fsmRes, properties.contains).forEachRemaining(resource => {
         if (isResourceOfClass(resource, properties.StateClass)) {
           val state = getStateFromResource(resource)
           states = state :: states
@@ -52,14 +52,14 @@ class JenaReader(properties: Properties) {
 
       //Then retrieve the transitions
       var transitions: List[Transition] = List()
-      listResourceObjects(fsmRes, properties.Contains).forEachRemaining(resource => {
+      listResourceObjects(fsmRes, properties.contains).forEachRemaining(resource => {
         if (isResourceOfClass(resource, properties.TransitionClass)) {
           var success = false
 
           val transitionRes = resource
-          if (hasResourceProperty(transitionRes, properties.HasSourceState) && hasResourceProperty(transitionRes, properties.HasTargetState)) {
-            val srcStateOpt = states.find(s => s.name.equals(getResourceProperty(transitionRes, properties.HasSourceState).getResource.getLocalName))
-            val dstStateOpt = states.find(s => s.name.equals(getResourceProperty(transitionRes, properties.HasTargetState).getResource.getLocalName))
+          if (hasResourceProperty(transitionRes, properties.hasSourceState) && hasResourceProperty(transitionRes, properties.hasTargetState)) {
+            val srcStateOpt = states.find(s => s.name.equals(getResourceProperty(transitionRes, properties.hasSourceState).getResource.getLocalName))
+            val dstStateOpt = states.find(s => s.name.equals(getResourceProperty(transitionRes, properties.hasTargetState).getResource.getLocalName))
 
             if (srcStateOpt.isDefined && dstStateOpt.isDefined) {
               val transition = getTransitionFromResource(transitionRes, srcStateOpt.get, dstStateOpt.get)
@@ -84,7 +84,7 @@ class JenaReader(properties: Properties) {
     val transitionName = transitionRes.getLocalName
 
     var guards: List[Guard] = List()
-    listResourceObjects(transitionRes, properties.HasTransitionGuard).forEachRemaining(guardRes => {
+    listResourceObjects(transitionRes, properties.hasTransitionGuard).forEachRemaining(guardRes => {
       val guard = getGuardFromResource(guardRes)
       guards = guard :: guards
     })
@@ -96,13 +96,13 @@ class JenaReader(properties: Properties) {
     val guardName = guardRes.getLocalName
 
     var actions: List[Action] = List()
-    listResourceObjects(guardRes, properties.HasGuardAction).forEachRemaining(actionRes => {
+    listResourceObjects(guardRes, properties.hasGuardAction).forEachRemaining(actionRes => {
       val action = getActionFromResource(actionRes, ActionType.GUARD)
       actions = action :: actions
     })
 
     var conditions: List[Condition] = List()
-    listResourceObjects(guardRes, properties.HasGuardCondition).forEachRemaining(conditionRes => {
+    listResourceObjects(guardRes, properties.hasGuardCondition).forEachRemaining(conditionRes => {
       val condition = getConditionFromResource(conditionRes)
       conditions = condition :: conditions
     })
@@ -114,7 +114,7 @@ class JenaReader(properties: Properties) {
     val conditionName = conditionRes.getLocalName
 
     val content = {
-      if (hasResourceProperty(conditionRes, properties.HasContent)) getResourceProperty(conditionRes, properties.HasContent).getString
+      if (hasResourceProperty(conditionRes, properties.hasContent)) getResourceProperty(conditionRes, properties.hasContent).getString
       else ""
     }
 
@@ -126,19 +126,19 @@ class JenaReader(properties: Properties) {
 
     //paper http://www.eurecom.fr/~troncy/Publications/Troncy-lgd14.pdf
     val (x, y) = {
-      if (hasResourceProperty(stateRes, properties.lowerCorner) && isResourceOfClass(getResourceProperty(stateRes, properties.lowerCorner).getResource, properties.pointClass)) {
+      if (hasResourceProperty(stateRes, properties.lowerCorner) && isResourceOfClass(getResourceProperty(stateRes, properties.lowerCorner).getResource, properties.PointClass)) {
         val lowerCornerRes = getResourceProperty(stateRes, properties.lowerCorner).getResource
         val x = {
-          if (hasResourceProperty(lowerCornerRes, properties.coordX)) {
-            getResourceProperty(lowerCornerRes, properties.coordX).getDouble
+          if (hasResourceProperty(lowerCornerRes, properties.coordinateX)) {
+            getResourceProperty(lowerCornerRes, properties.coordinateX).getDouble
           } else {
             0.0
           }
         }
 
         val y = {
-          if (hasResourceProperty(lowerCornerRes, properties.coordY)) {
-            getResourceProperty(lowerCornerRes, properties.coordY).getDouble
+          if (hasResourceProperty(lowerCornerRes, properties.coordinateY)) {
+            getResourceProperty(lowerCornerRes, properties.coordinateY).getDouble
           } else {
             0.0
           }
@@ -158,10 +158,10 @@ class JenaReader(properties: Properties) {
     }
 
     var actions: List[Action] = List()
-    listResourceObjects(stateRes, properties.HasEntryAction).forEachRemaining(actionRes => {
+    listResourceObjects(stateRes, properties.hasEntryAction).forEachRemaining(actionRes => {
       actions = getActionFromResource(actionRes, ActionType.ENTRY) :: actions
     })
-    listResourceObjects(stateRes, properties.HasExitAction).forEachRemaining(actionRes => {
+    listResourceObjects(stateRes, properties.hasExitAction).forEachRemaining(actionRes => {
       actions = getActionFromResource(actionRes, ActionType.EXIT) :: actions
     })
 
@@ -172,8 +172,8 @@ class JenaReader(properties: Properties) {
     val actionName = actionRes.getLocalName
 
     val methodType: MethodType = {
-      if (hasResourceProperty(actionRes, properties.HasMethod, properties.GetMethod)) MethodType.GET
-      else if (hasResourceProperty(actionRes, properties.HasMethod, properties.PostMethod)) MethodType.POST
+      if (hasResourceProperty(actionRes, properties.hasMethod, properties.getMethod)) MethodType.GET
+      else if (hasResourceProperty(actionRes, properties.hasMethod, properties.postMethod)) MethodType.POST
       else MethodType.GET
     }
 
@@ -181,24 +181,24 @@ class JenaReader(properties: Properties) {
     var absoluteUri: String = ""
     var prototypeUri: PrototypeUri = new PrototypeUri()
 
-    if (hasResourceProperty(actionRes, properties.HasAbsoluteUri)) {
+    if (hasResourceProperty(actionRes, properties.hasAbsoluteUri)) {
       uriType = UriType.ABSOLUTE
       //TODO: mirar si se peude cambiar a getResource
-      absoluteUri = getResourceProperty(actionRes, properties.HasAbsoluteUri).getObject.toString
+      absoluteUri = getResourceProperty(actionRes, properties.hasAbsoluteUri).getObject.toString
 
-    } else if (hasResourceProperty(actionRes, properties.HasPrototypeUri)) {
+    } else if (hasResourceProperty(actionRes, properties.hasPrototypeUri)) {
       uriType = UriType.PROTOTYPE
-      val prototypeUriRes = getResourceProperty(actionRes, properties.HasPrototypeUri).getResource
+      val prototypeUriRes = getResourceProperty(actionRes, properties.hasPrototypeUri).getResource
       prototypeUri = getPrototypeUriFromResource(prototypeUriRes)
     }
 
     val timeout: Int = {
-      if (hasResourceProperty(actionRes, properties.HasTimeoutInMs)) getResourceProperty(actionRes, properties.HasTimeoutInMs).getInt
+      if (hasResourceProperty(actionRes, properties.hasTimeoutInMs)) getResourceProperty(actionRes, properties.hasTimeoutInMs).getInt
       else 1000
     }
 
     val body: Body = {
-      if (hasResourceProperty(actionRes, properties.HasBody)) getBodyFromResource(getResourceProperty(actionRes, properties.HasBody).getResource)
+      if (hasResourceProperty(actionRes, properties.hasBody)) getBodyFromResource(getResourceProperty(actionRes, properties.hasBody).getResource)
       else new Body()
     }
 
@@ -209,13 +209,13 @@ class JenaReader(properties: Properties) {
     val prototypeUriName = prototypeUriRes.getLocalName
 
     val structure: String = {
-      if (hasResourceProperty(prototypeUriRes, properties.HasStructure)) getResourceProperty(prototypeUriRes, properties.HasStructure).getString
+      if (hasResourceProperty(prototypeUriRes, properties.hasStructure)) getResourceProperty(prototypeUriRes, properties.hasStructure).getString
       else ""
     }
 
 
     var parameters: List[PrototypeUriParameter] = List()
-    listResourceObjects(prototypeUriRes, properties.HasParameter).forEachRemaining(parameterRes => {
+    listResourceObjects(prototypeUriRes, properties.hasParameter).forEachRemaining(parameterRes => {
       parameters = getPrototypeUriParameterFromResource(parameterRes) :: parameters
     })
 
@@ -226,12 +226,12 @@ class JenaReader(properties: Properties) {
     val parameterName = parameterRes.getLocalName
 
     val placeholder: String = {
-      if (hasResourceProperty(parameterRes, properties.HasPlaceholder)) getResourceProperty(parameterRes, properties.HasPlaceholder).getString
+      if (hasResourceProperty(parameterRes, properties.hasPlaceholder)) getResourceProperty(parameterRes, properties.hasPlaceholder).getString
       else ""
     }
 
     val query: String = {
-      if (hasResourceProperty(parameterRes, properties.HasQuery)) getResourceProperty(parameterRes, properties.HasQuery).getString
+      if (hasResourceProperty(parameterRes, properties.hasQuery)) getResourceProperty(parameterRes, properties.hasQuery).getString
       else ""
     }
 
@@ -242,14 +242,14 @@ class JenaReader(properties: Properties) {
     val bodyName = bodyRes.getLocalName
 
     val bodyType: BodyType = {
-      if (isResourceOfClass(bodyRes, properties.RdfBodyType)) BodyType.RDF
-      else if (isResourceOfClass(bodyRes, properties.SparqlBodyType)) BodyType.SPARQL
-      else if (isResourceOfClass(bodyRes, properties.OtherBodyType)) BodyType.JSON
+      if (isResourceOfClass(bodyRes, properties.rdfBodyType)) BodyType.RDF
+      else if (isResourceOfClass(bodyRes, properties.sparqlBodyType)) BodyType.SPARQL
+      else if (isResourceOfClass(bodyRes, properties.otherBodyType)) BodyType.JSON
       else BodyType.RDF
     }
 
     val content = {
-      if (hasResourceProperty(bodyRes, properties.HasBodyContent)) getResourceProperty(bodyRes, properties.HasBodyContent).getString
+      if (hasResourceProperty(bodyRes, properties.hasBodyContent)) getResourceProperty(bodyRes, properties.hasBodyContent).getString
       else ""
     }
 

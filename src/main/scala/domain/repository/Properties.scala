@@ -2,25 +2,27 @@ package domain.repository
 
 class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsPrefix: String, val geometryPrefix: String) {
 
-  val Contains: String = fsmPrefix + "contains"
-  val HasEntryAction: String = fsmPrefix + "hasEntryAction"
-  val HasExitAction: String = fsmPrefix + "hasExitAction"
-  val HasBody: String = fsmPrefix + "hasBody"
-  val HasPrototypeUri: String = fsmPrefix + "hasPrototypeURI"
-  val HasBodyType: String = fsmPrefix + "hasBodyType"
-  val HasBodyContent: String = fsmPrefix + "hasContent"
-  val HasTimeoutInMs: String = fsmPrefix + "hasTimeoutInMs"
-  val HasParameter: String = fsmPrefix + "hasParameter"
-  val HasStructure: String = fsmPrefix + "hasStructure"
-  val HasPlaceholder: String = fsmPrefix + "hasPlaceholder"
-  val HasQuery: String = fsmPrefix + "hasQuery"
-  val HasSourceState: String = fsmPrefix + "hasSourceState"
-  val HasTargetState: String = fsmPrefix + "hasTargetState"
-  val HasTransitionGuard: String = fsmPrefix + "hasTransitionGuard"
-  val HasGuardCondition: String = fsmPrefix + "hasGuardCondition"
-  val HasGuardAction: String = fsmPrefix + "hasGuardAction"
-  val HasContent: String = fsmPrefix + "hasContent"
-
+  val contains: String = fsmPrefix + "contains"
+  val hasEntryAction: String = fsmPrefix + "hasEntryAction"
+  val hasExitAction: String = fsmPrefix + "hasExitAction"
+  val hasBody: String = fsmPrefix + "hasBody"
+  val hasPrototypeUri: String = fsmPrefix + "hasPrototypeURI"
+  val hasBodyType: String = fsmPrefix + "hasBodyType"
+  val hasBodyContent: String = fsmPrefix + "hasContent"
+  val hasTimeoutInMs: String = fsmPrefix + "hasTimeoutInMs"
+  val hasParameter: String = fsmPrefix + "hasParameter"
+  val hasStructure: String = fsmPrefix + "hasStructure"
+  val hasPlaceholder: String = fsmPrefix + "hasPlaceholder"
+  val hasQuery: String = fsmPrefix + "hasQuery"
+  val hasSourceState: String = fsmPrefix + "hasSourceState"
+  val hasTargetState: String = fsmPrefix + "hasTargetState"
+  val hasTransitionGuard: String = fsmPrefix + "hasTransitionGuard"
+  val hasGuardCondition: String = fsmPrefix + "hasGuardCondition"
+  val hasGuardAction: String = fsmPrefix + "hasGuardAction"
+  val hasContent: String = fsmPrefix + "hasContent"
+  val rdfBodyType: String = fsmPrefix + "rdf"
+  val sparqlBodyType: String = fsmPrefix + "executableSparql"
+  val otherBodyType: String = fsmPrefix + "other"
 
   val StateMachineClass: String = fsmPrefix + "StateMachine"
   val TransitionClass: String = fsmPrefix + "Transition"
@@ -35,18 +37,19 @@ class Properties(val fsmPrefix: String, val httpPrefix: String, val httpMethodsP
   val ActionClass: String = fsmPrefix + "Action"
   val GuardClass: String = fsmPrefix + "Guard"
 
-  val GetMethod: String = httpMethodsPrefix + "GET"
-  val PostMethod: String = httpMethodsPrefix + "POST"
 
-  val RdfBodyType: String = fsmPrefix + "rdf"
-  val SparqlBodyType: String = fsmPrefix + "executableSparql"
-  val OtherBodyType: String = fsmPrefix + "other"
+  val hasMethod: String = httpPrefix + "mthd"
+  val hasAbsoluteUri: String = httpPrefix + "absoluteURI"
 
-  val HasMethod: String = httpPrefix + "mthd"
-  val HasAbsoluteUri: String = httpPrefix + "absoluteURI"
+  val RequestClass: String = httpPrefix + "Request"
+
+
+  val getMethod: String = httpMethodsPrefix + "GET"
+  val postMethod: String = httpMethodsPrefix + "POST"
+
 
   val lowerCorner: String = geometryPrefix + "lowerCorner"
-  val coordX: String = geometryPrefix + "coordX"
-  val coordY: String = geometryPrefix + "coordY"
-  val pointClass: String = geometryPrefix + "Point"
+  val coordinateX: String = geometryPrefix + "coordinateX"
+  val coordinateY: String = geometryPrefix + "coordinateY"
+  val PointClass: String = geometryPrefix + "Point"
 }
