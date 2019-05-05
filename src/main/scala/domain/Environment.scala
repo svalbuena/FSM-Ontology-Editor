@@ -5,9 +5,10 @@ import domain.condition.Condition
 import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError, NameNotUniqueError}
 import domain.fsm.FiniteStateMachine
 import domain.guard.Guard
+import domain.repository.{FsmRepository, Properties}
 import domain.state.State
 import domain.transition.Transition
-import infrastructure.jena.{JenaFsmRepository, Properties}
+import infrastructure.jena.JenaFsmRepository
 
 /**
   * In-memory representation of all the data that the model needs to maintain

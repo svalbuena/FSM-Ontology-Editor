@@ -1,7 +1,6 @@
-package domain
+package domain.repository
 
 import domain.fsm.FiniteStateMachine
-import infrastructure.jena.Properties
 
 /**
   * Repository for storing and loading an fsm annotated with ontologies from files
