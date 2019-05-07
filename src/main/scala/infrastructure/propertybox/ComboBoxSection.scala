@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox
 
 /**
   * Template for a section with a label and a combobox
+  *
   * @tparam T
   */
 class ComboBoxSection[T] extends HBox {

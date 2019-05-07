@@ -10,11 +10,12 @@ import infrastructure.propertybox.state.StatePropertiesBox
 
 /**
   * State data
-  * @param name name of the state
-  * @param x x coordinate of the state
-  * @param y y coordinate of the state
+  *
+  * @param name      name of the state
+  * @param x         x coordinate of the state
+  * @param y         y coordinate of the state
   * @param stateType type of the state
-  * @param parent parent of the state
+  * @param parent    parent of the state
   */
 class State(name: String,
             var x: Double,
@@ -23,11 +24,10 @@ class State(name: String,
             val parent: FiniteStateMachine
            ) extends ConnectableElement(name) {
 
-  var actions: List[Action] = List()
-
   val shape = new StateShape()
   val propertiesBox = new StatePropertiesBox()
   val contextMenu = new StateContextMenu()
+  var actions: List[Action] = List()
 
   def addAction(action: Action): Unit = {
     actions = action :: actions

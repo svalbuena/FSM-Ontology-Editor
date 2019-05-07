@@ -11,13 +11,12 @@ import domain.{Element, Environment}
   */
 class PrototypeUri(name: String,
                    private var _structure: String = "",
-                   var prototypeUriParameters: List[PrototypeUriParameter] = List()
-                  ) extends Element(name) {
+                   var prototypeUriParameters: List[PrototypeUriParameter] = List(),
+                   environment: Environment
+                  ) extends Element(name, environment) {
 
 
-  def this() = this(Environment.generateUniqueName("prototypeUri"))
-
-  def structure: String = _structure
+  def this(environment: Environment) = this(environment.generateUniqueName("prototypeUri"), environment = environment)
 
   /**
     *
@@ -29,6 +28,8 @@ class PrototypeUri(name: String,
     Right(structure)
   }
 
+  def structure: String = _structure
+
   /**
     * Adds a parameter to the prototype uri, error if the name of the parameter is not unique
     *
@@ -36,9 +37,9 @@ class PrototypeUri(name: String,
     * @return exception or nothing if successful
     */
   def addPrototypeUriParameter(parameter: PrototypeUriParameter): Either[DomainError, _] = {
-    if (Environment.isNameUnique(parameter.name)) {
+    if (environment.isNameUnique(parameter.name)) {
       prototypeUriParameters = parameter :: prototypeUriParameters
-      Environment.addName(parameter.name)
+      environment.addName(parameter.name)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${parameter.name} is not unique"))
@@ -54,7 +55,7 @@ class PrototypeUri(name: String,
   def removePrototypeUriParameter(parameter: PrototypeUriParameter): Either[DomainError, _] = {
     if (prototypeUriParameters.contains(parameter)) {
       prototypeUriParameters = prototypeUriParameters.filterNot(p => p == parameter)
-      Environment.removeName(parameter.name)
+      environment.removeName(parameter.name)
       Right(())
     } else {
       Left(new ElementNotFoundError("PrototypeUriParameter not found"))

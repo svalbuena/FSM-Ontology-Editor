@@ -12,12 +12,11 @@ import domain.{Element, Environment}
   */
 class Body(name: String,
            private var _bodyType: BodyType = BodyType.RDF,
-           private var _content: String = ""
-          ) extends Element(name) {
+           private var _content: String = "",
+           environment: Environment
+          ) extends Element(name, environment) {
 
-  def this() = this(Environment.generateUniqueName("body"))
-
-  def bodyType: BodyType = _bodyType
+  def this(environment: Environment) = this(environment.generateUniqueName("body"), environment = environment)
 
   /**
     *
@@ -29,7 +28,7 @@ class Body(name: String,
     Right(bodyType)
   }
 
-  def content: String = _content
+  def bodyType: BodyType = _bodyType
 
   /**
     *
@@ -40,4 +39,6 @@ class Body(name: String,
     content = newContent
     Right(content)
   }
+
+  def content: String = _content
 }

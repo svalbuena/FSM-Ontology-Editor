@@ -1,6 +1,7 @@
 package application.command.action.add
 
-import infrastructure.element.action.ActionType.ActionType
+import application.command.action.modify.ActionType.ActionType
+
 
 /**
   *

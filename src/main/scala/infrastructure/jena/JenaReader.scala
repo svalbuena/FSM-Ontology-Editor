@@ -12,6 +12,7 @@ import domain.repository.Properties
 import domain.state.StateType.StateType
 import domain.state.{State, StateType}
 import domain.transition.Transition
+import infrastructure.EnvironmentSingleton
 import org.apache.jena.rdf.model._
 import org.apache.jena.util.iterator.ExtendedIterator
 import org.apache.jena.vocabulary.RDF
@@ -24,6 +25,7 @@ import scala.language.implicitConversions
   * @param properties properties file with the properties and classes
   */
 class JenaReader(properties: Properties) {
+  private val environment = EnvironmentSingleton.get()
 
   /**
     * Reads the fsm from a model
@@ -73,7 +75,7 @@ class JenaReader(properties: Properties) {
         }
       })
 
-      val fsm = new FiniteStateMachine(name = fsmName, _baseUri = fsmBaseUri, states = states, transitions = transitions)
+      val fsm = new FiniteStateMachine(name = fsmName, _baseUri = fsmBaseUri, states = states, transitions = transitions, environment = environment)
       Right(fsm)
     } else {
       Left(new Exception("Fsm not found"))
@@ -89,7 +91,7 @@ class JenaReader(properties: Properties) {
       guards = guard :: guards
     })
 
-    new Transition(name = transitionName, source = srcState, destination = dstState, guards = guards)
+    new Transition(name = transitionName, source = srcState, destination = dstState, guards = guards, environment = environment)
   }
 
   private def getGuardFromResource(guardRes: Resource): Guard = {
@@ -107,7 +109,7 @@ class JenaReader(properties: Properties) {
       conditions = condition :: conditions
     })
 
-    new Guard(name = guardName, actions = actions, conditions = conditions)
+    new Guard(name = guardName, actions = actions, conditions = conditions, environment = environment)
   }
 
   private def getConditionFromResource(conditionRes: Resource): Condition = {
@@ -118,7 +120,7 @@ class JenaReader(properties: Properties) {
       else ""
     }
 
-    new Condition(name = conditionName, _query = content)
+    new Condition(name = conditionName, _query = content, environment = environment)
   }
 
   private def getStateFromResource(stateRes: Resource): State = {
@@ -165,7 +167,7 @@ class JenaReader(properties: Properties) {
       actions = getActionFromResource(actionRes, ActionType.EXIT) :: actions
     })
 
-    new State(stateName, x, y, stateType, actions)
+    new State(stateName, x, y, stateType, actions, environment = environment)
   }
 
   private def getActionFromResource(actionRes: Resource, actionType: ActionType): Action = {
@@ -179,12 +181,11 @@ class JenaReader(properties: Properties) {
 
     var uriType: UriType = UriType.ABSOLUTE
     var absoluteUri: String = ""
-    var prototypeUri: PrototypeUri = new PrototypeUri()
+    var prototypeUri: PrototypeUri = new PrototypeUri(environment = environment)
 
     if (hasResourceProperty(actionRes, properties.hasAbsoluteUri)) {
       uriType = UriType.ABSOLUTE
-      //TODO: mirar si se peude cambiar a getResource
-      absoluteUri = getResourceProperty(actionRes, properties.hasAbsoluteUri).getObject.toString
+      absoluteUri = getResourceProperty(actionRes, properties.hasAbsoluteUri).getResource.toString
 
     } else if (hasResourceProperty(actionRes, properties.hasPrototypeUri)) {
       uriType = UriType.PROTOTYPE
@@ -199,10 +200,10 @@ class JenaReader(properties: Properties) {
 
     val body: Body = {
       if (hasResourceProperty(actionRes, properties.hasBody)) getBodyFromResource(getResourceProperty(actionRes, properties.hasBody).getResource)
-      else new Body()
+      else new Body(environment = environment)
     }
 
-    new Action(actionName, actionType, methodType, body, absoluteUri, uriType, prototypeUri, timeout)
+    new Action(actionName, actionType, methodType, body, absoluteUri, uriType, prototypeUri, timeout, environment = environment)
   }
 
   private def getPrototypeUriFromResource(prototypeUriRes: Resource): PrototypeUri = {
@@ -219,7 +220,7 @@ class JenaReader(properties: Properties) {
       parameters = getPrototypeUriParameterFromResource(parameterRes) :: parameters
     })
 
-    new PrototypeUri(name = prototypeUriName, _structure = structure, prototypeUriParameters = parameters)
+    new PrototypeUri(name = prototypeUriName, _structure = structure, prototypeUriParameters = parameters, environment = environment)
   }
 
   private def getPrototypeUriParameterFromResource(parameterRes: Resource): PrototypeUriParameter = {
@@ -235,7 +236,7 @@ class JenaReader(properties: Properties) {
       else ""
     }
 
-    new PrototypeUriParameter(name = parameterName, _placeholder = placeholder, _query = query)
+    new PrototypeUriParameter(name = parameterName, _placeholder = placeholder, _query = query, environment = environment)
   }
 
   private def getBodyFromResource(bodyRes: Resource): Body = {
@@ -253,7 +254,7 @@ class JenaReader(properties: Properties) {
       else ""
     }
 
-    new Body(bodyName, bodyType, content)
+    new Body(bodyName, bodyType, content, environment = environment)
   }
 
   private def hasResourceProperty(resource: Resource, property: String): Boolean = {

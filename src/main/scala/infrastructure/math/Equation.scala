@@ -11,8 +11,9 @@ object Equation {
 
   /**
     * Calculates the intersection between a line and a circle
-    * @param lineM slope of the line
-    * @param lineN offset of the line
+    *
+    * @param lineM        slope of the line
+    * @param lineN        offset of the line
     * @param circleCenter center of the circle
     * @param circleRadius radius of the circle
     * @return the two points where the intersections occur
@@ -42,7 +43,34 @@ object Equation {
   }
 
   /**
+    * Calculates the y of a line equation
+    *
+    * @param m slope
+    * @param n offset
+    * @param x x value
+    * @return y value
+    */
+  def lineEquation(m: Double, n: Double)(x: Double): Double = m * x + n
+
+  /**
+    * Calculates the y of a circle equation
+    *
+    * @param center center
+    * @param radius radius
+    * @param x      x value
+    * @return y value
+    */
+  def circleEquation(center: Point2D, radius: Double)(x: Double): (Double, Double) = {
+    val a = 1
+    val b = -2 * center.getY
+    val c = pow(x, 2) - 2 * center.getX * x + pow(center.getX, 2) + pow(center.getY, 2) - pow(radius, 2)
+
+    solveQuadraticEquation(a, b, c)
+  }
+
+  /**
     * Solves a quadratic equation
+    *
     * @param a a parameter
     * @param b b parameter
     * @param c c parameter
@@ -62,36 +90,15 @@ object Equation {
     (x1, x2)
   }
 
-  /**
-    * Calculates the y of a line equation
-    * @param m slope
-    * @param n offset
-    * @param x x value
-    * @return y value
-    */
-  def lineEquation(m: Double, n: Double)(x: Double): Double = m * x + n
-
-  /**
-    * Calculates the y of a circle equation
-    * @param center center
-    * @param radius radius
-    * @param x x value
-    * @return y value
-    */
-  def circleEquation(center: Point2D, radius: Double)(x: Double): (Double, Double) = {
-    val a = 1
-    val b = -2 * center.getY
-    val c = pow(x, 2) - 2 * center.getX * x + pow(center.getX, 2) + pow(center.getY, 2) - pow(radius, 2)
-
-    solveQuadraticEquation(a, b, c)
-  }
+  private def isDoubleInfinity(double: Double): Boolean = double == Double.NegativeInfinity || double == Double.PositiveInfinity
 
   /**
     * Calculates the intersection between two lines
+    *
     * @param start1 start point of line 1
-    * @param end1 end point of line 1
+    * @param end1   end point of line 1
     * @param start2 start point of line 2
-    * @param end2 end point of line 2
+    * @param end2   end point of line 2
     * @return point where the intersection occurs
     */
   def lineAndLineIntersection(start1: Point2D, end1: Point2D, start2: Point2D, end2: Point2D): Point2D = {
@@ -115,8 +122,9 @@ object Equation {
 
   /**
     * Calculates the normal line equation parameters
+    *
     * @param start start point of the line
-    * @param end end point of the line
+    * @param end   end point of the line
     * @return slope and offset of the normal line equation
     */
   def getLineEquationParameters(start: Point2D, end: Point2D): (Double, Double) = {
@@ -130,8 +138,9 @@ object Equation {
 
   /**
     * Returns the parameters of a normal line equation perpendicular to another line
-    * @param m reference line slope
-    * @param n reference line offset
+    *
+    * @param m     reference line slope
+    * @param n     reference line offset
     * @param point point where the perpendicular line intersects the reference line
     * @return perpendicular line slope and offset
     */
@@ -144,9 +153,10 @@ object Equation {
 
   /**
     * Tells if a point is between another two points
+    *
     * @param point points that is checked
     * @param start starting point
-    * @param end end point
+    * @param end   end point
     * @return true if the point is between start and end, false otherwise
     */
   def isPointBetweenPoints(point: Point2D, start: Point2D, end: Point2D): Boolean = {
@@ -155,15 +165,14 @@ object Equation {
 
   /**
     * Tells if a double value is between two other doubles
+    *
     * @param double double that is checked
-    * @param start lowest double
-    * @param end highest double
+    * @param start  lowest double
+    * @param end    highest double
     * @return true if the value is between start and end, false otherwise
     */
   def isDoubleBetweenDoubles(double: Double, start: Double, end: Double): Boolean = {
     if (end >= start) double >= start && double <= end
     else double >= end && double <= start
   }
-
-  private def isDoubleInfinity(double: Double): Boolean = double == Double.NegativeInfinity || double == Double.PositiveInfinity
 }

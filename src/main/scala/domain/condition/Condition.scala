@@ -9,12 +9,11 @@ import domain.{Element, Environment}
   * @param _query query of the condition
   */
 class Condition(name: String,
-                private var _query: String = ""
-               ) extends Element(name) {
+                private var _query: String = "",
+                environment: Environment
+               ) extends Element(name, environment) {
 
-  def this() = this(Environment.generateUniqueName("condition"))
-
-  def query: String = _query
+  def this(environment: Environment) = this(environment.generateUniqueName("condition"), environment = environment)
 
   /**
     *
@@ -25,4 +24,6 @@ class Condition(name: String,
     _query = newQuery
     Right(query)
   }
+
+  def query: String = _query
 }

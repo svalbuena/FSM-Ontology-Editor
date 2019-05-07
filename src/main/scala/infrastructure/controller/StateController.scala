@@ -6,6 +6,7 @@ import application.command.state.remove.RemoveStateFromFsmCommand
 import application.commandhandler.state.add.AddStateToFsmHandler
 import application.commandhandler.state.modify.{ModifyStateCoordinatesHandler, ModifyStateNameHandler, ModifyStateTypeHandler}
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
+import infrastructure.EnvironmentSingleton
 import infrastructure.element.action.ActionType
 import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
@@ -20,7 +21,8 @@ import javafx.scene.input.MouseButton
 
 /**
   * Controls the visual and behavior aspects of a State
-  * @param state state to control
+  *
+  * @param state                 state to control
   * @param drawingPaneController controller of the drawing pane
   */
 class StateController(state: State, drawingPaneController: DrawingPaneController) {
@@ -95,17 +97,19 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
   * Operations that can be done with a State
   */
 object StateController {
+  private val environment = EnvironmentSingleton.get()
 
   /**
     * Creates a state and adds it to an fsm
-    * @param x x position
-    * @param y y position
-    * @param fsm fsm where the state will be added
+    *
+    * @param x                     x position
+    * @param y                     y position
+    * @param fsm                   fsm where the state will be added
     * @param drawingPaneController controller of the drawing pane
     * @return the state if its creation was successful
     */
   def addStateToFsm(x: Double, y: Double, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Option[State] = {
-    new AddStateToFsmHandler().execute(new AddStateToFsmCommand(x, y)) match {
+    new AddStateToFsmHandler(environment).execute(new AddStateToFsmCommand(x, y)) match {
       case Left(error) =>
         println(error.getMessage)
         None
@@ -122,82 +126,9 @@ object StateController {
   }
 
   /**
-    * Modifies the coordinates of a state
-    * @param state state to be modified
-    * @param newX new x
-    * @param newY new y
-    */
-  def modifyStateCoordinates(state: State, newX: Double, newY: Double): Unit = {
-    new ModifyStateCoordinatesHandler().execute(new ModifyStateCoordinatesCommand(state.name, newX, newY)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        state.x = newX
-        state.y = newY
-    }
-  }
-
-  /**
-    * Modifies the name of a state
-    * @param state state to be modified
-    * @param newName new name
-    */
-  def modifyStateName(state: State, newName: String): Unit = {
-    new ModifyStateNameHandler().execute(new ModifyStateNameCommand(state.name, newName)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        state.name = newName
-
-        state.shape.setName(newName)
-
-        println("State name changed to -> " + newName)
-    }
-  }
-
-  /**
-    * Modifies the type of a state
-    * @param state state to be modified
-    * @param newStateType new type
-    */
-  def modifyStateType(state: State, newStateType: StateType): Unit = {
-    new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newStateType match {
-      case infrastructure.element.state.StateType.INITIAL => application.command.state.modify.StateType.INITIAL
-      case infrastructure.element.state.StateType.SIMPLE => application.command.state.modify.StateType.SIMPLE
-      case infrastructure.element.state.StateType.FINAL => application.command.state.modify.StateType.FINAL
-    })) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        state.stateType = newStateType
-
-        println("State type changed to -> " + newStateType)
-    }
-  }
-
-  /**
-    * Removes a state from an fsm
-    * @param state state to be removed
-    * @param drawingPaneController controller of the drawing pane
-    */
-  def removeStateFromFsm(state: State, drawingPaneController: DrawingPaneController): Unit = {
-    new RemoveStateFromFsmHandler().execute(new RemoveStateFromFsmCommand(state.name)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        for (transition <- state.inTransitions ::: state.outTransitions) {
-          TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
-        }
-
-        state.parent.removeState(state)
-
-        eraseState(state, drawingPaneController)
-
-        drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(state.propertiesBox)
-
-        println("Removing a state")
-    }
-  }
-
-  /**
     * Draws a state on the canvas
-    * @param state state to be drawn
+    *
+    * @param state                 state to be drawn
     * @param drawingPaneController controller of the drawing pane
     */
   def drawState(state: State, drawingPaneController: DrawingPaneController): Unit = {
@@ -234,8 +165,87 @@ object StateController {
   }
 
   /**
+    * Modifies the coordinates of a state
+    *
+    * @param state state to be modified
+    * @param newX  new x
+    * @param newY  new y
+    */
+  def modifyStateCoordinates(state: State, newX: Double, newY: Double): Unit = {
+    new ModifyStateCoordinatesHandler(environment).execute(new ModifyStateCoordinatesCommand(state.name, newX, newY)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.x = newX
+        state.y = newY
+    }
+  }
+
+  /**
+    * Modifies the name of a state
+    *
+    * @param state   state to be modified
+    * @param newName new name
+    */
+  def modifyStateName(state: State, newName: String): Unit = {
+    new ModifyStateNameHandler(environment).execute(new ModifyStateNameCommand(state.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.name = newName
+
+        state.shape.setName(newName)
+
+        println("State name changed to -> " + newName)
+    }
+  }
+
+  /**
+    * Modifies the type of a state
+    *
+    * @param state        state to be modified
+    * @param newStateType new type
+    */
+  def modifyStateType(state: State, newStateType: StateType): Unit = {
+    new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newStateType match {
+      case infrastructure.element.state.StateType.INITIAL => application.command.state.modify.StateType.INITIAL
+      case infrastructure.element.state.StateType.SIMPLE => application.command.state.modify.StateType.SIMPLE
+      case infrastructure.element.state.StateType.FINAL => application.command.state.modify.StateType.FINAL
+    })) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        state.stateType = newStateType
+
+        println("State type changed to -> " + newStateType)
+    }
+  }
+
+  /**
+    * Removes a state from an fsm
+    *
+    * @param state                 state to be removed
+    * @param drawingPaneController controller of the drawing pane
+    */
+  def removeStateFromFsm(state: State, drawingPaneController: DrawingPaneController): Unit = {
+    new RemoveStateFromFsmHandler(environment).execute(new RemoveStateFromFsmCommand(state.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        for (transition <- state.inTransitions ::: state.outTransitions) {
+          TransitionController.removeTransitionFromFsm(transition, drawingPaneController)
+        }
+
+        state.parent.removeState(state)
+
+        eraseState(state, drawingPaneController)
+
+        drawingPaneController.propertiesBox.removeOtherPropertiesBoxContentIfEqual(state.propertiesBox)
+
+        println("Removing a state")
+    }
+  }
+
+  /**
     * Erases a state from the canvas
-    * @param state state to be erased
+    *
+    * @param state                 state to be erased
     * @param drawingPaneController controller of the drawing pane
     */
   def eraseState(state: State, drawingPaneController: DrawingPaneController): Unit = {

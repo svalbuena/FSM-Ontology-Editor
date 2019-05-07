@@ -21,6 +21,7 @@ class ActionPane extends HBox {
 
   /**
     * Sets the action type of the visual element
+    *
     * @param actionType type of the action
     */
   def setActionType(actionType: ActionType): Unit = {

@@ -11,12 +11,11 @@ import domain.{Element, Environment}
   */
 class PrototypeUriParameter(name: String,
                             private var _placeholder: String = "",
-                            private var _query: String = ""
-                           ) extends Element(name) {
+                            private var _query: String = "",
+                            environment: Environment
+                           ) extends Element(name, environment) {
 
-  def this() = this(Environment.generateUniqueName("prototypeUriParameter"))
-
-  def placeholder: String = _placeholder
+  def this(environment: Environment) = this(environment.generateUniqueName("prototypeUriParameter"), environment = environment)
 
   /**
     *
@@ -28,7 +27,7 @@ class PrototypeUriParameter(name: String,
     Right(placeholder)
   }
 
-  def query: String = _query
+  def placeholder: String = _placeholder
 
   /**
     *
@@ -39,4 +38,6 @@ class PrototypeUriParameter(name: String,
     _query = newQuery
     Right(query)
   }
+
+  def query: String = _query
 }

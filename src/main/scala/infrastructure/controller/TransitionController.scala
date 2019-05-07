@@ -8,6 +8,7 @@ import application.commandhandler.state.modify.ModifyStateTypeHandler
 import application.commandhandler.transition.add.AddTransitionToFsmHandler
 import application.commandhandler.transition.modify.ModifyTransitionNameHandler
 import application.commandhandler.transition.remove.RemoveTransitionFromFsmHandler
+import infrastructure.EnvironmentSingleton
 import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.start.Start
@@ -18,7 +19,8 @@ import javafx.scene.input.MouseButton
 
 /**
   * Controls the visual and behavior aspects of a transition
-  * @param transition transition to control
+  *
+  * @param transition            transition to control
   * @param drawingPaneController controller of the drawing pane
   */
 class TransitionController(transition: Transition, drawingPaneController: DrawingPaneController) {
@@ -61,12 +63,14 @@ class TransitionController(transition: Transition, drawingPaneController: Drawin
   * Operations that can be done with a Transition
   */
 object TransitionController {
+  private val environment = EnvironmentSingleton.get()
 
   /**
     * Creates a transition from a start to a state and adds it to an fsm
-    * @param start source
-    * @param state destination
-    * @param fsm fsm where the transition will be added
+    *
+    * @param start                 source
+    * @param state                 destination
+    * @param fsm                   fsm where the transition will be added
     * @param drawingPaneController controller of the drawing pane
     */
   def addStartToStateTransition(start: Start, state: State, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
@@ -74,7 +78,7 @@ object TransitionController {
       case infrastructure.element.state.StateType.FINAL => (StateType.INITIAL_FINAL, application.command.state.modify.StateType.INITIAL_FINAL)
       case _ => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
     }
-    new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+    new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         val transition = new Transition("startToStateTransition", start, state, parent = fsm)
@@ -90,9 +94,10 @@ object TransitionController {
 
   /**
     * Creates a transition from a state to an end and adds it to an fsm
-    * @param state source
-    * @param end destination
-    * @param fsm fsm where the transition will be added
+    *
+    * @param state                 source
+    * @param end                   destination
+    * @param fsm                   fsm where the transition will be added
     * @param drawingPaneController controller of the drawing pane
     */
   def addStateToEndTransition(state: State, end: End, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {
@@ -101,7 +106,7 @@ object TransitionController {
       case _ => (StateType.FINAL, application.command.state.modify.StateType.FINAL)
     }
 
-    new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+    new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         val transition = new Transition("stateToEndTransition", state, end, parent = fsm)
@@ -117,13 +122,14 @@ object TransitionController {
 
   /**
     * Creates a transition from a state to a state and adds it to an fsm
-    * @param source source
-    * @param destination destination
-    * @param fsm fsm where the transition will be added
+    *
+    * @param source                source
+    * @param destination           destination
+    * @param fsm                   fsm where the transition will be added
     * @param drawingPaneController controller of the drawing pane
     */
   def addStateToStateTransitionToFsm(source: State, destination: State, fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Option[Transition] = {
-    new AddTransitionToFsmHandler().execute(new AddTransitionToFsmCommand(source.name, destination.name)) match {
+    new AddTransitionToFsmHandler(environment).execute(new AddTransitionToFsmCommand(source.name, destination.name)) match {
       case Left(error) =>
         println(error.getMessage)
         None
@@ -142,12 +148,31 @@ object TransitionController {
   }
 
   /**
+    * Draws a transition in the canvas
+    *
+    * @param transition            transition to be drawn
+    * @param drawingPaneController controller of the drawing pane
+    */
+  def drawTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
+
+    transition.propertiesBox.setTransitionName(transition.name)
+
+    for (guard <- transition.guards) {
+      GuardController.drawGuard(guard)
+    }
+
+    new TransitionController(transition, drawingPaneController)
+  }
+
+  /**
     * Modifies the name of a transition
+    *
     * @param transition transition to be modified
-    * @param newName new name
+    * @param newName    new name
     */
   def modifyTransitionName(transition: Transition, newName: String): Unit = {
-    new ModifyTransitionNameHandler().execute(new ModifyTransitionNameCommand(transition.name, newName)) match {
+    new ModifyTransitionNameHandler(environment).execute(new ModifyTransitionNameCommand(transition.name, newName)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         transition.name = newName
@@ -157,7 +182,8 @@ object TransitionController {
 
   /**
     * Removes a transition from an fsm
-    * @param transition transition to be removed
+    *
+    * @param transition            transition to be removed
     * @param drawingPaneController controller of the drawing pane
     * @return true if the transition could be removed successfully, false otherwise
     */
@@ -170,7 +196,7 @@ object TransitionController {
           case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.FINAL, application.command.state.modify.StateType.FINAL)
           case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
         }
-        new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+        new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
           case Left(error) => println(error.getMessage)
           case Right(_) =>
             state.stateType = newInfStateType
@@ -182,7 +208,7 @@ object TransitionController {
           case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
           case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
         }
-        new ModifyStateTypeHandler().execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
+        new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
           case Left(error) => println(error.getMessage)
           case Right(_) =>
             state.stateType = newInfStateType
@@ -190,7 +216,7 @@ object TransitionController {
         }
 
       case (_: State, _: State) =>
-        new RemoveTransitionFromFsmHandler().execute(new RemoveTransitionFromFsmCommand(transition.name)) match {
+        new RemoveTransitionFromFsmHandler(environment).execute(new RemoveTransitionFromFsmCommand(transition.name)) match {
           case Left(error) => println(error.getMessage)
           case Right(_) =>
             success = true
@@ -214,25 +240,9 @@ object TransitionController {
   }
 
   /**
-    * Draws a transition in the canvas
-    * @param transition transition to be drawn
-    * @param drawingPaneController controller of the drawing pane
-    */
-  def drawTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.drawTransition(transition.shape, transition.getSourceShape, transition.getDestinationShape)
-
-    transition.propertiesBox.setTransitionName(transition.name)
-
-    for (guard <- transition.guards) {
-      GuardController.drawGuard(guard)
-    }
-
-    new TransitionController(transition, drawingPaneController)
-  }
-
-  /**
     * Erase a transition from the canvas
-    * @param transition transition to be erased
+    *
+    * @param transition            transition to be erased
     * @param drawingPaneController controller of the drawing pane
     */
   def eraseTransition(transition: Transition, drawingPaneController: DrawingPaneController): Unit = {

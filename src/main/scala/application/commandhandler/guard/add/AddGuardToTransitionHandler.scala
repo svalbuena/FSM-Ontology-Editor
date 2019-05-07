@@ -4,7 +4,7 @@ import application.command.guard.add.AddGuardToTransitionCommand
 import domain.Environment
 import domain.guard.Guard
 
-class AddGuardToTransitionHandler {
+class AddGuardToTransitionHandler(environment: Environment) {
 
   /**
     *
@@ -12,10 +12,10 @@ class AddGuardToTransitionHandler {
     * @return an exception or the guard name
     */
   def execute(addGuardToTransitionCommand: AddGuardToTransitionCommand): Either[Exception, String] = {
-    Environment.getTransition(addGuardToTransitionCommand.transitionName) match {
+    environment.getTransition(addGuardToTransitionCommand.transitionName) match {
       case Left(error) => Left(error)
       case Right(transition) =>
-        val guard = new Guard
+        val guard = new Guard(environment)
         transition.addGuard(guard) match {
           case Left(error) => Left(error)
           case Right(_) => Right(guard.name)

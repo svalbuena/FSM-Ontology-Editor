@@ -17,12 +17,11 @@ class State(name: String,
             x: Double,
             y: Double,
             private var _stateType: StateType = StateType.SIMPLE,
-            var actions: List[Action] = List()
-           ) extends PositionableElement(name, x, y) {
+            var actions: List[Action] = List(),
+            environment: Environment
+           ) extends PositionableElement(name, x, y, environment) {
 
-  def this(x: Double, y: Double) = this(Environment.generateUniqueName("state"), x, y)
-
-  def stateType: StateType = _stateType
+  def this(x: Double, y: Double, environment: Environment) = this(environment.generateUniqueName("state"), x, y, environment = environment)
 
   /**
     * Changes the type of the state, error if there is no fsm selected or if changing to an initial state and the fsm has already an initial state
@@ -31,18 +30,20 @@ class State(name: String,
     * @return exception or the state type
     */
   def stateType_=(newStateType: StateType): Either[DomainError, StateType] = {
-    val fsmOption = Environment.getSelectedFsm match {
+    val fsmOption = environment.getSelectedFsm match {
       case Left(_) => None
       case Right(fsm) => Some(fsm)
     }
 
-    if (fsmOption.isDefined && (newStateType == StateType.INITIAL || newStateType == StateType.INITIAL_FINAL) && fsmOption.get.hasInitialState) {
+    if (fsmOption.isDefined && (newStateType == StateType.INITIAL || newStateType == StateType.INITIAL_FINAL) && !(stateType == StateType.INITIAL && newStateType == StateType.INITIAL_FINAL) && fsmOption.get.hasInitialState) {
       Left(new StartError("A state is already defined as start"))
     } else {
       _stateType = newStateType
       Right(stateType)
     }
   }
+
+  def stateType: StateType = _stateType
 
   /**
     * Adds an action to the state, error if the action name is not unique
@@ -51,9 +52,9 @@ class State(name: String,
     * @return exception or nothing if successful
     */
   def addAction(action: Action): Either[DomainError, _] = {
-    if (Environment.isNameUnique(action.name)) {
+    if (environment.isNameUnique(action.name)) {
       actions = action :: actions
-      (action.name :: action.getChildrenNames).foreach(Environment.addName)
+      (action.name :: action.getChildrenNames).foreach(environment.addName)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${action.name} is not unique"))
@@ -69,7 +70,7 @@ class State(name: String,
   def removeAction(action: Action): Either[DomainError, _] = {
     if (actions.contains(action)) {
       actions = actions.filterNot(a => a == action)
-      (action.name :: action.getChildrenNames).foreach(Environment.removeName)
+      (action.name :: action.getChildrenNames).foreach(environment.removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("Action not found"))

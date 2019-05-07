@@ -4,7 +4,7 @@ import application.command.action.modify.ModifyActionMethodTypeCommand
 import domain.Environment
 import domain.action.MethodType
 
-class ModifyActionMethodTypeHandler {
+class ModifyActionMethodTypeHandler(environment: Environment) {
 
   /**
     *
@@ -12,7 +12,7 @@ class ModifyActionMethodTypeHandler {
     * @return an exception or the method type
     */
   def execute(modifyActionMethodCommand: ModifyActionMethodTypeCommand): Either[Exception, domain.action.MethodType.MethodType] = {
-    Environment.getAction(modifyActionMethodCommand.actionName) match {
+    environment.getAction(modifyActionMethodCommand.actionName) match {
       case Left(error) => Left(error)
       case Right(action) => action.methodType = modifyActionMethodCommand.method match {
         case application.command.action.modify.MethodType.GET => MethodType.GET

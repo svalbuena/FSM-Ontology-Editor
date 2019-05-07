@@ -7,18 +7,17 @@ import infrastructure.propertybox.fsm.FsmPropertiesBox
 
 /**
   * Finite State Machine data
-  * @param name name of the fsm
+  *
+  * @param name    name of the fsm
   * @param baseUri base uri of the fsm
   */
 class FiniteStateMachine(name: String,
                          var baseUri: String,
                         ) extends Element(name) {
-  private var filenameOption: Option[String] = None
-
   val propertiesBox = new FsmPropertiesBox
-
   var states: List[State] = List()
   var transitions: List[Transition] = List()
+  private var filenameOption: Option[String] = None
 
   def isFilenameDefined: Boolean = filenameOption.isDefined
 

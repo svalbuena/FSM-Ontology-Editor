@@ -7,8 +7,9 @@ import infrastructure.propertybox.condition.ConditionPropertiesBox
 
 /**
   * Condition data
-  * @param name name of the condition
-  * @param query query of the condition
+  *
+  * @param name   name of the condition
+  * @param query  query of the condition
   * @param parent parent of the condition
   */
 class Condition(name: String,

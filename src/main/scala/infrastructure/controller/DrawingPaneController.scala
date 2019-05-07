@@ -29,13 +29,10 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   private val mousePosition = new MousePosition()
   /*private var isCtrlPressed = false
   private val zoomScale = 1.1*/
-
+  private val canvas: Canvas = drawingPane.canvas
   private var tempTransitionOption: Option[Transition] = None
   private var ghostNodeOption: Option[GhostNode] = None
-
   private var fsmOption: Option[FiniteStateMachine] = None
-
-  private val canvas: Canvas = drawingPane.canvas
   canvas.setOnMouseClicked(canvasMouseClickedListener)
   canvas.setOnMouseMoved(canvasMouseMovedListener)
 
@@ -43,7 +40,6 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
   scene.setOnKeyReleased(canvasKeyReleasedListener)
   canvas.setOnMouseExited(canvasMouseExitedListener)
   canvas.setOnScroll(canvasScrollListener)*/
-
 
   /**
     * Sets the fsm to use and draw
@@ -73,81 +69,6 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
       drawTemporalTransition(connectableElement, point.getX, point.getY)
     }
   }
-
-  /**
-    * Cancels the current temporal transition
-    */
-  def cancelTransitionCreation(): Unit = {
-    canvas.getChildren.remove(tempTransitionOption.get.shape)
-    canvas.getChildren.remove(ghostNodeOption.get.shape)
-
-    tempTransitionOption = None
-    ghostNodeOption = None
-  }
-
-  /**
-    * Updates the mouse position data
-    *
-    * @param event mouse event where the data is extracted
-    */
-  def updateMousePosition(event: MouseEvent): Unit = {
-    mousePosition.x = event.getSceneX
-    mousePosition.y = event.getSceneY
-  }
-
-  /**
-    * Calculates the delta from the previous mouse position and the new one
-    *
-    * @param event the new mouse event with the current position
-    * @return the deltaX and deltaY
-    */
-  def calculateDeltaFromMouseEvent(event: MouseEvent): (Double, Double) = {
-    (event.getSceneX - mousePosition.x, event.getSceneY - mousePosition.y)
-  }
-
-  /**
-    * Removes a node from the canvas
-    *
-    * @param node node to be removed
-    */
-  def removeNode(node: Node): Unit = canvas.getChildren.remove(node)
-
-  /**
-    * Draws a node on the canvas
-    *
-    * @param node node to be drawn
-    * @param x    x coordinate of the node position
-    * @param y    y coordinate of the node position
-    */
-  def drawNode(node: Node, x: Double, y: Double): Unit = canvas.drawNode(node, x, y)
-
-  /**
-    * Moves a node on the canvas
-    *
-    * @param node   node to be moved
-    * @param deltaX deltaX of the move
-    * @param deltaY deltaY of the move
-    * @return true if the node could me move, false if the node wasn't moved because it would be out of bounds
-    */
-  def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = canvas.moveNode(node, deltaX, deltaY)
-
-  /**
-    * Moves a transition on the canvas
-    *
-    * @param transition  transition shape to be moved
-    * @param source      source shape of the transition
-    * @param destination destination shape of the transition
-    */
-  def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.moveTransition(transition, source, destination)
-
-  /**
-    * Draws a transition on the canvas
-    *
-    * @param transition  transition shape to be drawn
-    * @param source      source shape of the transition
-    * @param destination destination shape of the transition
-    */
-  def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
 
   private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
 
@@ -202,6 +123,99 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     established
   }
 
+  /**
+    * Removes a node from the canvas
+    *
+    * @param node node to be removed
+    */
+  def removeNode(node: Node): Unit = canvas.getChildren.remove(node)
+
+  /**
+    * Draws a node on the canvas
+    *
+    * @param node node to be drawn
+    * @param x    x coordinate of the node position
+    * @param y    y coordinate of the node position
+    */
+  def drawNode(node: Node, x: Double, y: Double): Unit = canvas.drawNode(node, x, y)
+
+  /**
+    * Moves a node on the canvas
+    *
+    * @param node   node to be moved
+    * @param deltaX deltaX of the move
+    * @param deltaY deltaY of the move
+    * @return true if the node could me move, false if the node wasn't moved because it would be out of bounds
+    */
+  def moveNode(node: Node, deltaX: Double, deltaY: Double): Point2D = canvas.moveNode(node, deltaX, deltaY)
+
+  /**
+    * Moves a transition on the canvas
+    *
+    * @param transition  transition shape to be moved
+    * @param source      source shape of the transition
+    * @param destination destination shape of the transition
+    */
+  def moveTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.moveTransition(transition, source, destination)
+
+  /**
+    * Draws a transition on the canvas
+    *
+    * @param transition  transition shape to be drawn
+    * @param source      source shape of the transition
+    * @param destination destination shape of the transition
+    */
+  def drawTransition(transition: TransitionShape, source: Node, destination: Node): Unit = canvas.drawTransition(transition, source, destination)
+
+  private def canvasMouseClickedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
+    if (fsmOption.isDefined) {
+      updateMousePosition(event)
+
+      if (event.getButton == MouseButton.PRIMARY) {
+        toolBox.getSelectedTool match {
+          case _: TransitionItem =>
+            if (tempTransitionOption.isDefined) {
+              cancelTransitionCreation()
+              toolBox.setToolToDefault()
+            }
+          case _: StateItem =>
+            StateController.addStateToFsm(event.getX, event.getY, fsmOption.get, this)
+            toolBox.setToolToDefault()
+          case _: StartItem =>
+            StartController.addStart(event.getX, event.getY, this)
+            toolBox.setToolToDefault()
+          case _: EndItem =>
+            EndController.addEnd(event.getX, event.getY, this)
+            toolBox.setToolToDefault()
+          case _ =>
+        }
+      }
+    } else {
+      println("FSM is not selected!")
+    }
+  }
+
+  /**
+    * Cancels the current temporal transition
+    */
+  def cancelTransitionCreation(): Unit = {
+    canvas.getChildren.remove(tempTransitionOption.get.shape)
+    canvas.getChildren.remove(ghostNodeOption.get.shape)
+
+    tempTransitionOption = None
+    ghostNodeOption = None
+  }
+
+  /**
+    * Updates the mouse position data
+    *
+    * @param event mouse event where the data is extracted
+    */
+  def updateMousePosition(event: MouseEvent): Unit = {
+    mousePosition.x = event.getSceneX
+    mousePosition.y = event.getSceneY
+  }
+
   /*private def canvasMouseExitedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
   if (fsmOption.isDefined) {
     isCtrlPressed = false
@@ -242,34 +256,6 @@ private def canvasScrollListener: EventHandler[ScrollEvent] = (event: ScrollEven
   }
 }*/
 
-  private def canvasMouseClickedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
-    if (fsmOption.isDefined) {
-      updateMousePosition(event)
-
-      if (event.getButton == MouseButton.PRIMARY) {
-        toolBox.getSelectedTool match {
-          case _: TransitionItem =>
-            if (tempTransitionOption.isDefined) {
-              cancelTransitionCreation()
-              toolBox.setToolToDefault()
-            }
-          case _: StateItem =>
-            StateController.addStateToFsm(event.getX, event.getY, fsmOption.get, this)
-            toolBox.setToolToDefault()
-          case _: StartItem =>
-            StartController.addStart(event.getX, event.getY, this)
-            toolBox.setToolToDefault()
-          case _: EndItem =>
-            EndController.addEnd(event.getX, event.getY, this)
-            toolBox.setToolToDefault()
-          case _ =>
-        }
-      }
-    } else {
-      println("FSM is not selected!")
-    }
-  }
-
   private def canvasMouseMovedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
     toolBox.getSelectedTool match {
       case _: TransitionItem =>
@@ -283,5 +269,15 @@ private def canvasScrollListener: EventHandler[ScrollEvent] = (event: ScrollEven
     }
 
     updateMousePosition(event)
+  }
+
+  /**
+    * Calculates the delta from the previous mouse position and the new one
+    *
+    * @param event the new mouse event with the current position
+    * @return the deltaX and deltaY
+    */
+  def calculateDeltaFromMouseEvent(event: MouseEvent): (Double, Double) = {
+    (event.getSceneX - mousePosition.x, event.getSceneY - mousePosition.y)
   }
 }

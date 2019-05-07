@@ -12,12 +12,13 @@ import javafx.stage.Stage
 
 /**
   * Main controller of the application, coordinates the other elements
-  * @param scene scene of the application
-  * @param stage stage of the application
-  * @param drawingPane drawing pane to use
-  * @param toolBox toolbox of the drawing pane
+  *
+  * @param scene         scene of the application
+  * @param stage         stage of the application
+  * @param drawingPane   drawing pane to use
+  * @param toolBox       toolbox of the drawing pane
   * @param propertiesBox propertiesbox of the drawing pane
-  * @param fileMenu filemenu of the application
+  * @param fileMenu      filemenu of the application
   */
 class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val toolBox: ToolBox, val propertiesBox: PropertiesBoxBar, fileMenu: FileMenu) {
 
@@ -88,6 +89,7 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
 
   /**
     * Selects an fsm, error if it doesn't exist on the model
+    *
     * @param fsm fsm to be selected
     * @return exception or nothing if successful
     */

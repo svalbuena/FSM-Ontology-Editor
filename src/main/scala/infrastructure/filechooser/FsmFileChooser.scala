@@ -5,6 +5,7 @@ import javafx.stage.{FileChooser, Stage}
 
 /**
   * File chooser to select the fsm file to load and save
+  *
   * @param stage stage of the application
   */
 class FsmFileChooser(stage: Stage) {
@@ -16,6 +17,7 @@ class FsmFileChooser(stage: Stage) {
 
   /**
     * Shows a window to select the fsm file to load
+    *
     * @return the filepath if a file is selected
     */
   def askForFileToOpen(): Option[String] = {
@@ -35,6 +37,7 @@ class FsmFileChooser(stage: Stage) {
 
   /**
     * Shows a window to select the place to store the fsm
+    *
     * @return the filepath if a place is selected
     */
   def askForFileToSave(): Option[String] = {

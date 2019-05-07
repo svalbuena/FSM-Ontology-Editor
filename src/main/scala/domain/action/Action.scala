@@ -23,11 +23,11 @@ class Action(name: String,
              val body: Body, private var _absoluteUri: String = "",
              private var _uriType: UriType = UriType.ABSOLUTE,
              val prototypeUri: PrototypeUri,
-             private var _timeout: Int = 0) extends Element(name) {
+             private var _timeout: Int = 0,
+             environment: Environment
+            ) extends Element(name, environment) {
 
-  def this(actionType: ActionType) = this(name = Environment.generateUniqueName("action"), actionType, prototypeUri = new PrototypeUri(), body = new Body())
-
-  def actionType: ActionType = _actionType
+  def this(actionType: ActionType, environment: Environment) = this(name = environment.generateUniqueName("action"), actionType, prototypeUri = new PrototypeUri(environment), body = new Body(environment), environment = environment)
 
   /**
     * Changes the type of the action, error if swapping between guard and entry or exit or between entry or exit and guard
@@ -43,7 +43,7 @@ class Action(name: String,
     Right(actionType)
   }
 
-  def methodType: MethodType = _methodType
+  def actionType: ActionType = _actionType
 
   /**
     *
@@ -55,7 +55,7 @@ class Action(name: String,
     Right(methodType)
   }
 
-  def uriType: UriType = _uriType
+  def methodType: MethodType = _methodType
 
   /**
     *
@@ -67,7 +67,7 @@ class Action(name: String,
     Right(uriType)
   }
 
-  def absoluteUri: String = _absoluteUri
+  def uriType: UriType = _uriType
 
   /**
     *
@@ -79,7 +79,7 @@ class Action(name: String,
     Right(absoluteUri)
   }
 
-  def timeout: Int = _timeout
+  def absoluteUri: String = _absoluteUri
 
   /**
     * Changes the action timeout, error if the timeout is not a number or it is negative
@@ -100,6 +100,8 @@ class Action(name: String,
       Left(new InvalidTimeoutError("Timeout value must be an integer"))
     }
   }
+
+  def timeout: Int = _timeout
 
   /**
     *

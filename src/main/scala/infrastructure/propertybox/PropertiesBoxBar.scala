@@ -39,6 +39,11 @@ class PropertiesBoxBar extends ScrollPane {
     setFsmPropertiesBoxStyle(fsmPropertiesBox)
   }
 
+  private def setFsmPropertiesBoxStyle(fsmPropertiesBox: FsmPropertiesBox): Unit = {
+    fsmPropertiesBox.prefWidthProperty().bind(widthProperty())
+    setContentStyle(fsmPropertiesBox)
+  }
+
   def removeFsmPropertiesBox(): Unit = {
     fsmPropertiesBoxWrapper.setContent _
     fsmPropertiesBoxWrapper.setVisible(false)
@@ -48,9 +53,16 @@ class PropertiesBoxBar extends ScrollPane {
 
   def setOtherPropertiesBoxContent(transitionPropertiesBox: TransitionPropertiesBox): Unit = setOtherPropertiesBoxContent(transitionPropertiesBox, "Transition")
 
-  def removeOtherPropertiesBoxContent(): Unit = {
-    otherPropertiesBoxWrapper.setContent _
-    otherPropertiesBoxWrapper.setVisible(false)
+  private def setOtherPropertiesBoxContent(region: Region, title: String): Unit = {
+    otherPropertiesBoxWrapper.setText(title)
+    otherPropertiesBoxWrapper.setContent(region)
+    otherPropertiesBoxWrapper.setVisible(true)
+
+    setContentStyle(region)
+  }
+
+  private def setContentStyle(region: Region): Unit = {
+    //region.setPadding(insets)
   }
 
   def removeOtherPropertiesBoxContentIfEqual(node: Node): Unit = {
@@ -60,21 +72,9 @@ class PropertiesBoxBar extends ScrollPane {
     }
   }
 
-  private def setOtherPropertiesBoxContent(region: Region, title: String): Unit = {
-    otherPropertiesBoxWrapper.setText(title)
-    otherPropertiesBoxWrapper.setContent(region)
-    otherPropertiesBoxWrapper.setVisible(true)
-
-    setContentStyle(region)
-  }
-
-  private def setFsmPropertiesBoxStyle(fsmPropertiesBox: FsmPropertiesBox): Unit = {
-    fsmPropertiesBox.prefWidthProperty().bind(widthProperty())
-    setContentStyle(fsmPropertiesBox)
-  }
-
-  private def setContentStyle(region: Region): Unit = {
-    //region.setPadding(insets)
+  def removeOtherPropertiesBoxContent(): Unit = {
+    otherPropertiesBoxWrapper.setContent _
+    otherPropertiesBoxWrapper.setVisible(false)
   }
 
   private def setStyle(): Unit = {

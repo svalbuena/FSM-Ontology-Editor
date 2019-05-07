@@ -4,7 +4,7 @@ import application.command.state.add.AddStateToFsmCommand
 import domain.Environment
 import domain.state.State
 
-class AddStateToFsmHandler {
+class AddStateToFsmHandler(environment: Environment) {
 
   /**
     *
@@ -12,10 +12,10 @@ class AddStateToFsmHandler {
     * @return an exception or the state name
     */
   def execute(addStateCommand: AddStateToFsmCommand): Either[Exception, String] = {
-    Environment.getSelectedFsm match {
+    environment.getSelectedFsm match {
       case Left(error) => Left(error)
       case Right(fsm) =>
-        val state = new State(addStateCommand.x, addStateCommand.y)
+        val state = new State(addStateCommand.x, addStateCommand.y, environment)
         fsm.addState(state) match {
           case Left(error) => Left(error)
           case Right(_) => Right(state.name)

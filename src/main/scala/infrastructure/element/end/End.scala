@@ -5,9 +5,10 @@ import infrastructure.element.ConnectableElement
 
 /**
   * End data
+  *
   * @param name name of the data
-  * @param x x coordinate of the end
-  * @param y y coordinate of the end
+  * @param x    x coordinate of the end
+  * @param y    y coordinate of the end
   */
 class End(name: String,
           var x: Double,

@@ -7,7 +7,8 @@ import javafx.scene.input.MouseButton
 
 /**
   * Controls the visual and behavior aspects of an End
-  * @param end End to control
+  *
+  * @param end                   End to control
   * @param drawingPaneController controller of the drawing pane
   */
 class EndController(end: End, drawingPaneController: DrawingPaneController) {
@@ -64,8 +65,9 @@ object EndController {
 
   /**
     * Creates and End
-    * @param x x coordinate of the End
-    * @param y y coordinate of the End
+    *
+    * @param x                     x coordinate of the End
+    * @param y                     y coordinate of the End
     * @param drawingPaneController controller of the drawing pane
     */
   def addEnd(x: Double, y: Double, drawingPaneController: DrawingPaneController): Unit = {
@@ -75,8 +77,21 @@ object EndController {
   }
 
   /**
+    * Draws an end on the canvas
+    *
+    * @param end                   end to be drawn
+    * @param drawingPaneController controller of the drawing pane
+    */
+  def drawEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
+    drawingPaneController.drawNode(end.shape, end.x, end.y)
+
+    new EndController(end, drawingPaneController)
+  }
+
+  /**
     * Removes an End
-    * @param end end to be removed
+    *
+    * @param end                   end to be removed
     * @param drawingPaneController controller of the drawing pane
     */
   def removeEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
@@ -94,19 +109,9 @@ object EndController {
   }
 
   /**
-    * Draws an end on the canvas
-    * @param end end to be drawn
-    * @param drawingPaneController controller of the drawing pane
-    */
-  def drawEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {
-    drawingPaneController.drawNode(end.shape, end.x, end.y)
-
-    new EndController(end, drawingPaneController)
-  }
-
-  /**
     * Erases and end from the canvas
-    * @param end end to be erased
+    *
+    * @param end                   end to be erased
     * @param drawingPaneController controller of the drawing pane
     */
   def eraseEnd(end: End, drawingPaneController: DrawingPaneController): Unit = {

@@ -13,10 +13,11 @@ import domain.{Element, Environment}
   */
 class Guard(name: String,
             var actions: List[Action] = List(),
-            var conditions: List[Condition] = List()
-           ) extends Element(name) {
+            var conditions: List[Condition] = List(),
+            environment: Environment
+           ) extends Element(name, environment) {
 
-  def this() = this(Environment.generateUniqueName("guard"))
+  def this(environment: Environment) = this(environment.generateUniqueName("guard"), environment = environment)
 
   /**
     * Adds an action to the guard, error if the guard name is not unique
@@ -25,9 +26,9 @@ class Guard(name: String,
     * @return exception or nothing if successful
     */
   def addAction(action: Action): Either[DomainError, _] = {
-    if (Environment.isNameUnique(action.name)) {
+    if (environment.isNameUnique(action.name)) {
       actions = action :: actions
-      (action.name :: action.getChildrenNames).foreach(Environment.addName)
+      (action.name :: action.getChildrenNames).foreach(environment.addName)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${action.name} is not unique"))
@@ -43,7 +44,7 @@ class Guard(name: String,
   def removeAction(action: Action): Either[DomainError, _] = {
     if (actions.contains(action)) {
       actions = actions.filterNot(a => a == action)
-      (action.name :: action.getChildrenNames).foreach(Environment.removeName)
+      (action.name :: action.getChildrenNames).foreach(environment.removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("Action not found"))
@@ -57,9 +58,9 @@ class Guard(name: String,
     * @return exception or nothing if successful
     */
   def addCondition(condition: Condition): Either[DomainError, _] = {
-    if (Environment.isNameUnique(condition.name)) {
+    if (environment.isNameUnique(condition.name)) {
       conditions = condition :: conditions
-      Environment.addName(condition.name)
+      environment.addName(condition.name)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${condition.name} is not unique"))
@@ -75,7 +76,7 @@ class Guard(name: String,
   def removeCondition(condition: Condition): Either[DomainError, _] = {
     if (conditions.contains(condition)) {
       conditions = conditions.filterNot(c => c == condition)
-      Environment.removeName(condition.name)
+      environment.removeName(condition.name)
       Right(())
     } else {
       Left(new ElementNotFoundError("Condition not found"))

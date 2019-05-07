@@ -6,11 +6,13 @@ import application.command.guard.remove.RemoveGuardFromTransitionCommand
 import application.commandhandler.guard.add.AddGuardToTransitionHandler
 import application.commandhandler.guard.modify.ModifyGuardNameHandler
 import application.commandhandler.guard.remove.RemoveGuardFromTransitionHandler
+import infrastructure.EnvironmentSingleton
 import infrastructure.element.guard.Guard
 import infrastructure.element.transition.Transition
 
 /**
   * Controls the visual and behavior aspects of a guard
+  *
   * @param guard guard to control
   */
 class GuardController(guard: Guard) {
@@ -39,13 +41,15 @@ class GuardController(guard: Guard) {
   * Operations that can be done with a Guard
   */
 object GuardController {
+  private val environment = EnvironmentSingleton.get()
 
   /**
     * Creates a guard and adds it to a transition
+    *
     * @param transition transiton where the guard will be added
     */
   def addGuardToTransition(transition: Transition): Unit = {
-    new AddGuardToTransitionHandler().execute(new AddGuardToTransitionCommand(transition.name)) match {
+    new AddGuardToTransitionHandler(environment).execute(new AddGuardToTransitionCommand(transition.name)) match {
       case Left(error) => println(error.getMessage)
       case Right(guardName) =>
         val guard = new Guard(guardName, parent = transition)
@@ -59,40 +63,8 @@ object GuardController {
   }
 
   /**
-    * Modifies the name of a guard
-    * @param guard guard to be modified
-    * @param newName new name
-    */
-  def modifyGuardName(guard: Guard, newName: String): Unit = {
-    new ModifyGuardNameHandler().execute(new ModifyGuardNameCommand(guard.name, newName)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        guard.name = newName
-        println("Guard name changed to -> " + newName)
-
-        guard.shape.setGuardName(newName)
-
-        guard.parent.propertiesBox.setGuardPropertiesBoxTitle(guard.propertiesBox, guard.name)
-    }
-  }
-
-  /**
-    * Removes a guard from a transition
-    * @param guard guard to be removed
-    * @param transition transition where the guard belongs to
-    */
-  def removeGuardFromTransition(guard: Guard, transition: Transition): Unit = {
-    new RemoveGuardFromTransitionHandler().execute(new RemoveGuardFromTransitionCommand(guard.name, transition.name)) match {
-      case Left(error) => println(error.getMessage)
-      case Right(_) =>
-        transition.removeGuard(guard)
-
-        println("Removing a guard from a transition")
-    }
-  }
-
-  /**
     * Draws a guard on the canvas
+    *
     * @param guard guard to be drawn
     */
   def drawGuard(guard: Guard): Unit = {
@@ -111,5 +83,40 @@ object GuardController {
     guard.parent.shape.updateGuardGroupPosition()
 
     new GuardController(guard)
+  }
+
+  /**
+    * Modifies the name of a guard
+    *
+    * @param guard   guard to be modified
+    * @param newName new name
+    */
+  def modifyGuardName(guard: Guard, newName: String): Unit = {
+    new ModifyGuardNameHandler(environment).execute(new ModifyGuardNameCommand(guard.name, newName)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        guard.name = newName
+        println("Guard name changed to -> " + newName)
+
+        guard.shape.setGuardName(newName)
+
+        guard.parent.propertiesBox.setGuardPropertiesBoxTitle(guard.propertiesBox, guard.name)
+    }
+  }
+
+  /**
+    * Removes a guard from a transition
+    *
+    * @param guard      guard to be removed
+    * @param transition transition where the guard belongs to
+    */
+  def removeGuardFromTransition(guard: Guard, transition: Transition): Unit = {
+    new RemoveGuardFromTransitionHandler(environment).execute(new RemoveGuardFromTransitionCommand(guard.name, transition.name)) match {
+      case Left(error) => println(error.getMessage)
+      case Right(_) =>
+        transition.removeGuard(guard)
+
+        println("Removing a guard from a transition")
+    }
   }
 }

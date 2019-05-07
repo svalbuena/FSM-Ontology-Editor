@@ -9,6 +9,7 @@ package domain
   */
 abstract class PositionableElement(name: String,
                                    var x: Double,
-                                   var y: Double
-                                  ) extends Element(name) {
+                                   var y: Double,
+                                   environment: Environment
+                                  ) extends Element(name, environment) {
 }

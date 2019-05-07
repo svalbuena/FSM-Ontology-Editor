@@ -4,7 +4,7 @@ import application.command.body.modify.ModifyBodyTypeCommand
 import domain.Environment
 import domain.action.BodyType
 
-class ModifyBodyTypeHandler {
+class ModifyBodyTypeHandler(environment: Environment) {
 
   /**
     *
@@ -12,7 +12,7 @@ class ModifyBodyTypeHandler {
     * @return an exception or the body type
     */
   def execute(modifyBodyTypeCommand: ModifyBodyTypeCommand): Either[Exception, domain.action.BodyType.BodyType] = {
-    Environment.getBody(modifyBodyTypeCommand.bodyName) match {
+    environment.getBody(modifyBodyTypeCommand.bodyName) match {
       case Left(error) => Left(error)
       case Right(body) => body.bodyType = modifyBodyTypeCommand.bodyType match {
         case application.command.body.modify.BodyType.RDF => BodyType.RDF

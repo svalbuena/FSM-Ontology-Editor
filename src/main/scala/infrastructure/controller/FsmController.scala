@@ -8,10 +8,12 @@ import application.commandhandler.fsm.add.{AddFsmHandler, LoadFsmHandler}
 import application.commandhandler.fsm.modify.{ModifyFsmBaseUriHandler, ModifyFsmNameHandler, SelectFsmHandler}
 import application.commandhandler.fsm.remove.RemoveFsmHandler
 import application.commandhandler.fsm.save.SaveFsmHandler
+import infrastructure.EnvironmentSingleton
 import infrastructure.element.fsm.FiniteStateMachine
 
 /**
   * Controls the visual and behavior aspects of an fsm
+  *
   * @param fsm fsm to control
   */
 class FsmController(fsm: FiniteStateMachine) {
@@ -25,46 +27,54 @@ class FsmController(fsm: FiniteStateMachine) {
   * Operations that can be done with an Fsm
   */
 object FsmController {
+  private val environment = EnvironmentSingleton.get()
+
   /**
     * Adds an fsm to the system
+    *
     * @return an exception or the fsm name and the base uri
     */
-  def addFsm(): Either[Exception, (String, String)] = new AddFsmHandler().execute(new AddFsmCommand)
+  def addFsm(): Either[Exception, (String, String)] = new AddFsmHandler(environment).execute(new AddFsmCommand)
 
   /**
     * Removes an fsm from the system
+    *
     * @param fsmName name of the fsm to be removed
     */
-  def removeFsm(fsmName: String): Unit = new RemoveFsmHandler().execute(new RemoveFsmCommand(fsmName))
+  def removeFsm(fsmName: String): Unit = new RemoveFsmHandler(environment).execute(new RemoveFsmCommand(fsmName))
 
   /**
     * Loads an fsm from a file
+    *
     * @param filename file where the fsm data is stored
     * @return exception or the domain fsm instance
     */
-  def loadFsm(filename: String): Either[Exception, domain.fsm.FiniteStateMachine] = new LoadFsmHandler().execute(new LoadFsmCommand(filename))
+  def loadFsm(filename: String): Either[Exception, domain.fsm.FiniteStateMachine] = new LoadFsmHandler(environment).execute(new LoadFsmCommand(filename))
 
   /**
     * Saves an fsm to a file
+    *
     * @param filename path to the file
     * @return exception or nothing if successful
     */
-  def saveFsm(filename: String): Either[Exception, _] = new SaveFsmHandler().execute(new SaveFsmCommand(filename))
+  def saveFsm(filename: String): Either[Exception, _] = new SaveFsmHandler(environment).execute(new SaveFsmCommand(filename))
 
   /**
     * Selects the fsm to use
+    *
     * @param fsmName name of the fsm to be selected
     * @return exception or nothing if successful
     */
-  def selectFsm(fsmName: String): Either[Exception, _] = new SelectFsmHandler().execute(new SelectFsmCommand(fsmName))
+  def selectFsm(fsmName: String): Either[Exception, _] = new SelectFsmHandler(environment).execute(new SelectFsmCommand(fsmName))
 
   /**
     * Modifies the name of an fsm
-    * @param fsm fsm to be modified
+    *
+    * @param fsm        fsm to be modified
     * @param newFsmName new fsm name
     */
   def modifyFsmName(fsm: FiniteStateMachine, newFsmName: String): Unit = {
-    new ModifyFsmNameHandler().execute(new ModifyFsmNameCommand(newFsmName)) match {
+    new ModifyFsmNameHandler(environment).execute(new ModifyFsmNameCommand(newFsmName)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         fsm.name = newFsmName
@@ -73,11 +83,12 @@ object FsmController {
 
   /**
     * Modifies the base uri of an fsm
-    * @param fsm fsm to be modified
+    *
+    * @param fsm        fsm to be modified
     * @param newBaseUri new base uri
     */
   def modifyBaseUri(fsm: FiniteStateMachine, newBaseUri: String): Unit = {
-    new ModifyFsmBaseUriHandler().execute(new ModifyFsmBaseUriCommand(newBaseUri)) match {
+    new ModifyFsmBaseUriHandler(environment).execute(new ModifyFsmBaseUriCommand(newBaseUri)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         fsm.baseUri = newBaseUri
@@ -86,7 +97,8 @@ object FsmController {
 
   /**
     * Draws an fsm on the canvas
-    * @param fsm fsm to be drawn
+    *
+    * @param fsm                   fsm to be drawn
     * @param drawingPaneController controller of the drawing pane
     */
   def drawFiniteStateMachine(fsm: FiniteStateMachine, drawingPaneController: DrawingPaneController): Unit = {

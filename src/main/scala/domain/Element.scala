@@ -7,9 +7,7 @@ import domain.exception.NameNotUniqueError
   *
   * @param _name name of the element
   */
-abstract class Element(private var _name: String) {
-  def name: String = _name
-
+abstract class Element(private var _name: String, private val environment: Environment) {
   /**
     * Changes the name of an element, error if the name is not unique
     *
@@ -17,13 +15,15 @@ abstract class Element(private var _name: String) {
     * @return exception or the name
     */
   def name_=(newName: String): Either[NameNotUniqueError, String] = {
-    if (Environment.isNameUnique(newName)) {
-      Environment.removeName(_name)
-      Environment.addName(newName)
+    if (environment.isNameUnique(newName)) {
+      environment.removeName(_name)
+      environment.addName(newName)
       _name = newName
       Right(name)
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '$name is not unique"))
     }
   }
+
+  def name: String = _name
 }

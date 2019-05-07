@@ -3,7 +3,7 @@ package application.commandhandler.fsm.save
 import application.command.fsm.save.SaveFsmCommand
 import domain.Environment
 
-class SaveFsmHandler {
+class SaveFsmHandler(environment: Environment) {
 
   /**
     *
@@ -11,6 +11,6 @@ class SaveFsmHandler {
     * @return an exception or nothing if successful
     */
   def execute(saveFsmCommand: SaveFsmCommand): Either[Exception, _] = {
-    Environment.saveFsm(saveFsmCommand.filename)
+    environment.saveFsm(saveFsmCommand.filename)
   }
 }

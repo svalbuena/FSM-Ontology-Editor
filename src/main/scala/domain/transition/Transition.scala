@@ -15,11 +15,12 @@ import domain.{Element, Environment}
 class Transition(name: String,
                  val source: State,
                  val destination: State,
-                 var guards: List[Guard] = List()
-                ) extends Element(name) {
+                 var guards: List[Guard] = List(),
+                 environment: Environment
+                ) extends Element(name, environment) {
 
 
-  def this(source: State, destination: State) = this(Environment.generateUniqueName("transition"), source, destination)
+  def this(source: State, destination: State, environment: Environment) = this(environment.generateUniqueName("transition"), source, destination, environment = environment)
 
   /**
     * Adds a guard to the transition, error if the guard name is not unique
@@ -28,9 +29,9 @@ class Transition(name: String,
     * @return exception or nothing if successful
     */
   def addGuard(guard: Guard): Either[DomainError, _] = {
-    if (Environment.isNameUnique(guard.name)) {
+    if (environment.isNameUnique(guard.name)) {
       guards = guard :: guards
-      (guard.name :: guard.getChildrenNames).foreach(Environment.addName)
+      (guard.name :: guard.getChildrenNames).foreach(environment.addName)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${guard.name} is not unique"))
@@ -46,7 +47,7 @@ class Transition(name: String,
   def removeGuard(guard: Guard): Either[DomainError, _] = {
     if (guards.contains(guard)) {
       guards = guards.filterNot(g => g == guard)
-      (guard.name :: guard.getChildrenNames).foreach(Environment.removeName)
+      (guard.name :: guard.getChildrenNames).foreach(environment.removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("Guard not found"))

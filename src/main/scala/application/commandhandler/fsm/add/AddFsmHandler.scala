@@ -4,7 +4,7 @@ import application.command.fsm.add.AddFsmCommand
 import domain.Environment
 import domain.fsm.FiniteStateMachine
 
-class AddFsmHandler {
+class AddFsmHandler(environment: Environment) {
 
   /**
     *
@@ -12,9 +12,9 @@ class AddFsmHandler {
     * @return an exception or the name of the fsm and the base uri
     */
   def execute(addFsmCommand: AddFsmCommand): Either[Exception, (String, String)] = {
-    val fsm = new FiniteStateMachine
+    val fsm = new FiniteStateMachine(environment)
 
-    Environment.addFsm(fsm) match {
+    environment.addFsm(fsm) match {
       case Left(error) => Left(error)
       case Right(_) => Right(fsm.name, fsm.baseUri)
     }

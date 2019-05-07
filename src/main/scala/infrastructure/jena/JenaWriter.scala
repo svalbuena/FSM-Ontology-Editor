@@ -104,8 +104,7 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
 
     action.uriType match {
       case domain.action.UriType.ABSOLUTE =>
-        //TODO: mirar absolutURI
-        actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasAbsoluteUri), action.absoluteUri)
+        actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasAbsoluteUri), JenaHelper.toJenaResource(action.absoluteUri))
       case domain.action.UriType.PROTOTYPE =>
         val prototypeUriRes = getPrototypeUriResource(fsmModel, action.prototypeUri)
         actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasPrototypeUri), prototypeUriRes)

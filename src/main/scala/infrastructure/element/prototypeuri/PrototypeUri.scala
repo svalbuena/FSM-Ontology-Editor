@@ -6,7 +6,8 @@ import infrastructure.propertybox.prototypeuri.PrototypeUriPropertiesBox
 
 /**
   * Prototype uri data
-  * @param name name of the prototype uri
+  *
+  * @param name      name of the prototype uri
   * @param structure structure of the prototype uri
   */
 class PrototypeUri(name: String,

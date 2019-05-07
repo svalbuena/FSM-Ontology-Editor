@@ -9,19 +9,18 @@ import infrastructure.propertybox.guard.GuardPropertiesBox
 
 /**
   * Guard data
-  * @param name name of the guard
+  *
+  * @param name   name of the guard
   * @param parent parent of the guard
   */
 class Guard(name: String,
             val parent: Transition
            ) extends Element(name) {
 
-  var actions: List[Action] = List()
-  var conditions: List[Condition] = List()
-
   val propertiesBox = new GuardPropertiesBox()
   val shape = new GuardPane()
-
+  var actions: List[Action] = List()
+  var conditions: List[Condition] = List()
 
   def addAction(action: Action): Unit = {
     actions = action :: actions
@@ -42,9 +41,6 @@ class Guard(name: String,
 
     propertiesBox.addCondition(condition.propertiesBox, condition.name)
     shape.addCondition(condition.shape)
-
-    //TODO: fix this
-    //canvas.updateTransitionGuardGroupPosition(guard.getParent.shape)
   }
 
   def removeCondition(condition: Condition): Unit = {

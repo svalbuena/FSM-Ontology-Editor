@@ -3,7 +3,7 @@ package application.commandhandler.prototypeuriparameter.modify
 import application.command.prototypeuriparameter.modify.ModifyPrototypeUriParameterPlaceholderCommand
 import domain.Environment
 
-class ModifyPrototypeUriParameterPlaceholderHandler {
+class ModifyPrototypeUriParameterPlaceholderHandler(environment: Environment) {
 
   /**
     *
@@ -11,7 +11,7 @@ class ModifyPrototypeUriParameterPlaceholderHandler {
     * @return an exception or the placeholder
     */
   def execute(modifyPrototypeUriParameterPlaceholderCommand: ModifyPrototypeUriParameterPlaceholderCommand): Either[Exception, String] = {
-    Environment.getPrototypeUriParameter(modifyPrototypeUriParameterPlaceholderCommand.parameterName) match {
+    environment.getPrototypeUriParameter(modifyPrototypeUriParameterPlaceholderCommand.parameterName) match {
       case Left(error) => Left(error)
       case Right(parameter) => parameter.placeholder = modifyPrototypeUriParameterPlaceholderCommand.placeholder
     }

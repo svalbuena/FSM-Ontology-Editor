@@ -8,22 +8,20 @@ import domain.guard.Guard
 import domain.repository.{FsmRepository, Properties}
 import domain.state.State
 import domain.transition.Transition
-import infrastructure.jena.JenaFsmRepository
 
 /**
   * In-memory representation of all the data that the model needs to maintain
   */
-object Environment {
+class Environment(private val fsmRepository: FsmRepository) {
   private val FsmPrefix = "file:///D:/projects/ontologies/fsm/fsm#"
   private val HttpPrefix = "http://www.w3.org/2011/http#"
   private val HttpMethodsPrefix = "http://www.w3.org/2011/http-methods#"
   private val GeometryPrefix = "http://data.ign.fr/ontologies/geometrie#"
-
+  private val properties = new Properties(FsmPrefix, HttpPrefix, HttpMethodsPrefix, GeometryPrefix)
+  private val idGenerator = new IdGenerator()
   private var selectedFsmOption: Option[FiniteStateMachine] = None
   private var nameList: List[String] = List()
   private var fsmList: List[FiniteStateMachine] = List()
-  private val fsmRepository: FsmRepository = new JenaFsmRepository
-  private val properties = new Properties(FsmPrefix, HttpPrefix, HttpMethodsPrefix, GeometryPrefix)
 
   /**
     * Saves the fsm to a file, error if the fsm is not selected
@@ -62,14 +60,20 @@ object Environment {
     * @return exception or nothing if successful
     */
   def addFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
-    if (Environment.isNameUnique(fsm.name)) {
+    if (isNameUnique(fsm.name)) {
       fsmList = fsm :: fsmList
-      (fsm.name :: fsm.getChildrenNames).foreach(Environment.addName)
+      (fsm.name :: fsm.getChildrenNames).foreach(addName)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${fsm.name} is not unique"))
     }
   }
+
+  def isNameUnique(name: String): Boolean = !isNameRepeated(name)
+
+  def isNameRepeated(name: String): Boolean = nameList.contains(name)
+
+  def addName(name: String): Unit = nameList = name :: nameList
 
   /**
     * Selects the fsm to use, error if the fsm to select doesn't exist
@@ -98,12 +102,14 @@ object Environment {
   def removeFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
     if (fsmList.contains(fsm)) {
       fsmList = fsmList.filterNot(f => f == fsm)
-      (fsm.name :: fsm.getChildrenNames).foreach(Environment.removeName)
+      (fsm.name :: fsm.getChildrenNames).foreach(removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("Fsm not found"))
     }
   }
+
+  def removeName(name: String): Unit = nameList = nameList.filterNot(n => n.equals(name))
 
   /**
     * Generates an unique name for an element
@@ -115,7 +121,7 @@ object Environment {
     var name = ""
 
     do {
-      name = prefix + IdGenerator.getId
+      name = prefix + idGenerator.getId
     } while (nameList.contains(name))
 
     name
@@ -278,12 +284,4 @@ object Environment {
       Left(new ElementNotFoundError("PrototypeUriParameter not found"))
     } else Left(new FsmNotSelectedError)
   }
-
-  def isNameRepeated(name: String): Boolean = nameList.contains(name)
-
-  def isNameUnique(name: String): Boolean = !isNameRepeated(name)
-
-  def addName(name: String): Unit = nameList = name :: nameList
-
-  def removeName(name: String): Unit = nameList = nameList.filterNot(n => n.equals(name))
 }

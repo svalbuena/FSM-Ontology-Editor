@@ -25,6 +25,8 @@ class ActionsSection extends VBox {
     addActionToSection(actionPane, section)
   }
 
+  private def addActionToSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.add(actionPane)
+
   def removeAction(actionPane: ActionPane, actionType: ActionType): Unit = {
     val section = getPaneForActionType(actionType)
 
@@ -37,8 +39,6 @@ class ActionsSection extends VBox {
       case infrastructure.element.action.ActionType.EXIT => exitActionsSection
     }
   }
-
-  private def addActionToSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.add(actionPane)
 
   private def removeActionFromSection(actionPane: ActionPane, section: Pane): Unit = section.getChildren.remove(actionPane)
 

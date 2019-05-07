@@ -14,6 +14,7 @@ class ConditionPane extends Pane {
 
   /**
     * Sets the name on the condition
+    *
     * @param conditionName name of the condition
     */
   def setConditionName(conditionName: String): Unit = conditionNameLabel.setText("[" + conditionName + "]")

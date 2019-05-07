@@ -3,7 +3,7 @@ package application.commandhandler.state.modify
 import application.command.state.modify.ModifyStateCoordinatesCommand
 import domain.Environment
 
-class ModifyStateCoordinatesHandler {
+class ModifyStateCoordinatesHandler(environment: Environment) {
 
   /**
     *
@@ -11,7 +11,7 @@ class ModifyStateCoordinatesHandler {
     * @return an exception or nothing if successful
     */
   def execute(modifyStateCoordinatesCommand: ModifyStateCoordinatesCommand): Either[Exception, _] = {
-    Environment.getState(modifyStateCoordinatesCommand.stateName) match {
+    environment.getState(modifyStateCoordinatesCommand.stateName) match {
       case Left(error) => Left(error)
       case Right(state) =>
         state.x = modifyStateCoordinatesCommand.newX

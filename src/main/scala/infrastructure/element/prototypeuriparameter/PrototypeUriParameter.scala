@@ -6,10 +6,11 @@ import infrastructure.propertybox.prototypeuriparameter.PrototypeUriParameterPro
 
 /**
   * Parameter data
-  * @param name name of the parameter
+  *
+  * @param name        name of the parameter
   * @param placeholder placeholder of the parameter
-  * @param query query of the parameter
-  * @param parent parent of the parameter
+  * @param query       query of the parameter
+  * @param parent      parent of the parameter
   */
 class PrototypeUriParameter(name: String,
                             var placeholder: String = "",

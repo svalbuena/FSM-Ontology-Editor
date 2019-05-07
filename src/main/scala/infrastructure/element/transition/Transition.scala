@@ -13,11 +13,12 @@ import javafx.scene.layout.Pane
 
 /**
   * Transition data
-  * @param name name of the transition
-  * @param source source of the transition
+  *
+  * @param name        name of the transition
+  * @param source      source of the transition
   * @param destination destination of the transition
-  * @param isEditable if the transition can be edited, to add guards, etc
-  * @param parent the parent of the transitions
+  * @param isEditable  if the transition can be edited, to add guards, etc
+  * @param parent      the parent of the transitions
   */
 class Transition(name: String,
                  val source: ConnectableElement,
@@ -26,14 +27,22 @@ class Transition(name: String,
                  val parent: FiniteStateMachine
                 ) extends Element(name) {
 
-  var guards: List[Guard] = List()
   val propertiesBox = new TransitionPropertiesBox()
   val shape = new TransitionShape()
-
+  var guards: List[Guard] = List()
 
   def getSourceShape: Pane = getShape(source)
 
   def getDestinationShape: Pane = getShape(destination)
+
+  private def getShape(connectableElement: ConnectableElement): Pane = {
+    connectableElement match {
+      case state: State => state.shape
+      case start: Start => start.shape
+      case end: End => end.shape
+      case ghostNode: GhostNode => ghostNode.shape
+    }
+  }
 
   def addGuard(guard: Guard): Unit = {
     guards = guard :: guards
@@ -47,14 +56,5 @@ class Transition(name: String,
 
     propertiesBox.removeTransitionGuard(guard.propertiesBox)
     shape.removeTransitionGuard(guard.shape)
-  }
-
-  private def getShape(connectableElement: ConnectableElement): Pane = {
-    connectableElement match {
-      case state: State => state.shape
-      case start: Start => start.shape
-      case end: End => end.shape
-      case ghostNode: GhostNode => ghostNode.shape
-    }
   }
 }

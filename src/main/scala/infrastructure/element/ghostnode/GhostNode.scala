@@ -5,6 +5,7 @@ import infrastructure.element.ConnectableElement
 
 /**
   * Ghost node data
+  *
   * @param name name of the ghost node
   */
 class GhostNode(name: String) extends ConnectableElement(name) {

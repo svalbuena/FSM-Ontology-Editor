@@ -15,10 +15,11 @@ import domain.{Element, Environment}
 class FiniteStateMachine(name: String,
                          var _baseUri: String,
                          var states: List[State] = List(),
-                         var transitions: List[Transition] = List()
-                        ) extends Element(name) {
+                         var transitions: List[Transition] = List(),
+                         environment: Environment
+                        ) extends Element(name, environment) {
 
-  def this() = this(Environment.generateUniqueName("fsm"), "www.example.com/myFsmDemo#")
+  def this(environment: Environment) = this(environment.generateUniqueName("fsm"), "www.example.com/myFsmDemo#", environment = environment)
 
   def baseUri: String = _baseUri
 
@@ -44,19 +45,27 @@ class FiniteStateMachine(name: String,
     * @return exception or nothing if successful
     */
   def addState(state: State): Either[DomainError, _] = {
-    if (Environment.isNameUnique(state.name)) {
+    if (environment.isNameUnique(state.name)) {
       if ((state.stateType == StateType.INITIAL || state.stateType == StateType.INITIAL_FINAL) && hasInitialState) {
         Left(new StartError("An initial state is already defined"))
       } else {
 
         states = state :: states
 
-        (state.name :: state.getChildrenNames).foreach(Environment.addName)
+        (state.name :: state.getChildrenNames).foreach(environment.addName)
         Right(())
       }
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${state.name} is not unique"))
     }
+  }
+
+  /**
+    *
+    * @return true if an initial state exists on the fsm, false otherwise
+    */
+  def hasInitialState: Boolean = {
+    states.map(_.stateType).contains(StateType.INITIAL) || states.map(_.stateType).contains(StateType.INITIAL_FINAL)
   }
 
   /**
@@ -69,7 +78,7 @@ class FiniteStateMachine(name: String,
     if (states.contains(state)) {
       states = states.filterNot(s => s == state)
 
-      (state.name :: state.getChildrenNames).foreach(Environment.removeName)
+      (state.name :: state.getChildrenNames).foreach(environment.removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("State not found"))
@@ -83,9 +92,9 @@ class FiniteStateMachine(name: String,
     * @return exception or nothing if successful
     */
   def addTransition(transition: Transition): Either[DomainError, _] = {
-    if (Environment.isNameUnique(transition.name)) {
+    if (environment.isNameUnique(transition.name)) {
       transitions = transition :: transitions
-      (transition.name :: transition.getChildrenNames).foreach(Environment.addName)
+      (transition.name :: transition.getChildrenNames).foreach(environment.addName)
       Right(())
     } else {
       Left(new NameNotUniqueError(s"Error -> Name '${transition.name} is not unique"))
@@ -101,19 +110,11 @@ class FiniteStateMachine(name: String,
   def removeTransition(transition: Transition): Either[DomainError, _] = {
     if (transitions.contains(transition)) {
       transitions = transitions.filterNot(t => t == transition)
-      (transition.name :: transition.getChildrenNames).foreach(Environment.removeName)
+      (transition.name :: transition.getChildrenNames).foreach(environment.removeName)
       Right(())
     } else {
       Left(new ElementNotFoundError("Transition not found"))
     }
-  }
-
-  /**
-    *
-    * @return true if an initial state exists on the fsm, false otherwise
-    */
-  def hasInitialState: Boolean = {
-    states.map(_.stateType).contains(StateType.INITIAL) || states.map(_.stateType).contains(StateType.INITIAL_FINAL)
   }
 
   /**

@@ -17,12 +17,12 @@ class Arrow extends Group {
 
   def getStart: Point2D = new Point2D(line.getStartX, line.getStartY)
 
-  def getEnd: Point2D = new Point2D(line.getEndX, line.getEndY)
-
   def setStart(start: Point2D): Unit = {
     line.setStartX(start.getX)
     line.setStartY(start.getY)
   }
+
+  def getEnd: Point2D = new Point2D(line.getEndX, line.getEndY)
 
   def setEnd(end: Point2D): Unit = {
     line.setEndX(end.getX)

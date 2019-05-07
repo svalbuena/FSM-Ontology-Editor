@@ -3,7 +3,7 @@ package application.commandhandler.fsm.remove
 import application.command.fsm.remove.RemoveFsmCommand
 import domain.Environment
 
-class RemoveFsmHandler {
+class RemoveFsmHandler(environment: Environment) {
 
   /**
     *
@@ -11,9 +11,9 @@ class RemoveFsmHandler {
     * @return an exception or nothing if successful
     */
   def execute(removeFsmCommand: RemoveFsmCommand): Either[Exception, _] = {
-    Environment.getSelectedFsm match {
+    environment.getSelectedFsm match {
       case Left(error) => Left(error)
-      case Right(fsm) => Environment.removeFsm(fsm)
+      case Right(fsm) => environment.removeFsm(fsm)
     }
   }
 }

@@ -3,7 +3,7 @@ package application.commandhandler.action.remove
 import application.command.action.remove.RemoveActionFromStateCommand
 import domain.Environment
 
-class RemoveActionFromStateHandler {
+class RemoveActionFromStateHandler(environment: Environment) {
 
   /**
     *
@@ -11,10 +11,10 @@ class RemoveActionFromStateHandler {
     * @return an exception or nothing if successful
     */
   def execute(removeActionFromStateCommand: RemoveActionFromStateCommand): Either[Exception, _] = {
-    Environment.getAction(removeActionFromStateCommand.actionName) match {
+    environment.getAction(removeActionFromStateCommand.actionName) match {
       case Left(error) => Left(error)
       case Right(action) =>
-        Environment.getState(removeActionFromStateCommand.stateName) match {
+        environment.getState(removeActionFromStateCommand.stateName) match {
           case Left(error) => Left(error)
           case Right(state) => state.removeAction(action)
         }

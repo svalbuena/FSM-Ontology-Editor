@@ -2,10 +2,12 @@ package infrastructure.controller
 
 import application.command.prototypeuri.modify.{ModifyPrototypeUriNameCommand, ModifyPrototypeUriStructureCommand}
 import application.commandhandler.prototypeuri.modify.{ModifyPrototypeUriNameHandler, ModifyPrototypeUriStructureHandler}
+import infrastructure.EnvironmentSingleton
 import infrastructure.element.prototypeuri.PrototypeUri
 
 /**
   * Controls the visual and behavior aspects of a prototype uri
+  *
   * @param prototypeUri prototype uri to control
   */
 class PrototypeUriController(prototypeUri: PrototypeUri) {
@@ -22,14 +24,16 @@ class PrototypeUriController(prototypeUri: PrototypeUri) {
   * Operations that can be done with a Prototype Uri
   */
 object PrototypeUriController {
+  private val environment = EnvironmentSingleton.get()
 
   /**
     * Modifies a prototype uri name
+    *
     * @param prototypeUri prototype uri to be modified
-    * @param newName new name
+    * @param newName      new name
     */
   def modifyPrototypeUriName(prototypeUri: PrototypeUri, newName: String): Unit = {
-    new ModifyPrototypeUriNameHandler().execute(new ModifyPrototypeUriNameCommand(prototypeUri.name, newName)) match {
+    new ModifyPrototypeUriNameHandler(environment).execute(new ModifyPrototypeUriNameCommand(prototypeUri.name, newName)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         prototypeUri.name = newName
@@ -40,11 +44,12 @@ object PrototypeUriController {
 
   /**
     * Modifies a prototype uri structure
+    *
     * @param prototypeUri prototype uri to be modified
     * @param newStructure new structure
     */
   def modifyPrototypeUriStructure(prototypeUri: PrototypeUri, newStructure: String): Unit = {
-    new ModifyPrototypeUriStructureHandler().execute(new ModifyPrototypeUriStructureCommand(prototypeUri.name, newStructure)) match {
+    new ModifyPrototypeUriStructureHandler(environment).execute(new ModifyPrototypeUriStructureCommand(prototypeUri.name, newStructure)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
         prototypeUri.structure = newStructure
@@ -55,6 +60,7 @@ object PrototypeUriController {
 
   /**
     * Draws a prototype uri to the canvas
+    *
     * @param prototypeUri prototype uri to be drawn
     */
   def drawPrototypeUri(prototypeUri: PrototypeUri): Unit = {
