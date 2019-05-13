@@ -195,7 +195,7 @@ class JenaReader(properties: Properties) {
 
     val timeout: Int = {
       if (hasResourceProperty(actionRes, properties.hasTimeoutInMs)) getResourceProperty(actionRes, properties.hasTimeoutInMs).getInt
-      else 1000
+      else 2000
     }
 
     val body: Body = {
