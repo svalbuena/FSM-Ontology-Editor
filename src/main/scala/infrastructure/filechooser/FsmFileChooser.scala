@@ -21,18 +21,16 @@ class FsmFileChooser(stage: Stage) {
     * @return the filepath if a file is selected
     */
   def askForFileToOpen(): Option[String] = {
-    var filenameOption: Option[String] = None
-
     fileChooser.setTitle("Choose the FSM file to load")
 
     val selectedFile = fileChooser.showOpenDialog(stage)
     if (selectedFile != null) {
       val filename = selectedFile.getAbsolutePath
 
-      filenameOption = Some(filename)
+      Some(filename)
+    } else {
+      None
     }
-
-    filenameOption
   }
 
   /**
@@ -41,17 +39,15 @@ class FsmFileChooser(stage: Stage) {
     * @return the filepath if a place is selected
     */
   def askForFileToSave(): Option[String] = {
-    var filenameOption: Option[String] = None
-
     fileChooser.setTitle("Choose where to save the FSM")
 
     val selectedFile = fileChooser.showSaveDialog(stage)
     if (selectedFile != null) {
       val filename = selectedFile.getAbsolutePath
 
-      filenameOption = Some(filename)
+      Some(filename)
+    } else {
+      None
     }
-
-    filenameOption
   }
 }
