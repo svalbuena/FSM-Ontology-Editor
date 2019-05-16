@@ -70,21 +70,22 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     * Loads an fsm and selects it
     */
   def loadFsm(): Unit = {
-    fsmFileChooser.askForFileToOpen() match {
-      case Some(filename) =>
-        //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
-        println(filename)
-        FsmController.loadFsm(filename) match {
-          case Left(error) => println(error.getMessage)
-          case Right(domainFsm) =>
-            println("Converting")
-            val fsm = DomainToInfrastructureConverter.convertFsm(domainFsm)
+    fsmFileChooser.askForFileToOpen().flatMap(filename => {
+      FsmController.loadFsm(filename) match {
+        case Left(error) =>
+          println(error.getMessage)
+          Some(false)
 
-            fsmList = fsm :: fsmList
-            selectFsm(fsm)
-        }
-      case None =>
-    }
+        case Right(domainFsm) =>
+          println("Converting")
+          val fsm = DomainToInfrastructureConverter.convertFsm(domainFsm)
+
+          fsmList = fsm :: fsmList
+          selectFsm(fsm)
+
+          Some(true)
+      }
+    })
   }
 
   /**
@@ -111,14 +112,14 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     */
   def saveAsFsm(): Unit = {
     if (selectedFsmOption.isDefined) {
-      fsmFileChooser.askForFileToSave() match {
-        case Some(filename) =>
-          //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
-          val fsm = selectedFsmOption.get
-          fsm.setFilename(filename)
-          saveFsm()
-        case None =>
-      }
+      fsmFileChooser.askForFileToSave().flatMap(filename => {
+        //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
+        val fsm = selectedFsmOption.get
+        fsm.setFilename(filename)
+        saveFsm()
+
+        Some(true)
+      })
     }
   }
 

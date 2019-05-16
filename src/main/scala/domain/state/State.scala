@@ -81,5 +81,5 @@ class State(name: String,
     *
     * @return names of the actions of the state and of their children
     */
-  def getChildrenNames: List[String] = actions.flatMap(a => List(a.name) ::: a.getChildrenNames)
+  def getChildrenNames: List[String] = actions.flatMap(a => a.name :: a.getChildrenNames)
 }
