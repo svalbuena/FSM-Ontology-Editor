@@ -150,11 +150,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (action <- fsm.states.flatMap(_.actions) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions))) {
-        if (action.name.equals(actionName)) return Right(action)
-      }
+      val actions = fsm.states.flatMap(_.actions) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions))
+      val actionIndex  = actions.indexWhere(_.name.equals(actionName))
 
-      Left(new ElementNotFoundError("Action not found"))
+      if (actionIndex != -1) Right(actions(actionIndex))
+      else Left(new ElementNotFoundError("Action not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -168,11 +168,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (state <- fsm.states) {
-        if (state.name.equals(stateName)) return Right(state)
-      }
+      val states = fsm.states
+      val stateIndex  = states.indexWhere(_.name.equals(stateName))
 
-      Left(new ElementNotFoundError("State not found"))
+      if (stateIndex != -1) Right(states(stateIndex))
+      else Left(new ElementNotFoundError("State not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -186,11 +186,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (transition <- fsm.transitions) {
-        if (transition.name.equals(transitionName)) return Right(transition)
-      }
+      val transitions = fsm.transitions
+      val transitionIndex  = transitions.indexWhere(_.name.equals(transitionName))
 
-      Left(new ElementNotFoundError("Transition not found"))
+      if (transitionIndex != -1) Right(transitions(transitionIndex))
+      else Left(new ElementNotFoundError("Transition not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -204,12 +204,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (guard <- fsm.transitions.flatMap(_.guards)) {
-        println(s"Searching for $guardName, found ${guard.name}")
-        if (guard.name.equals(guardName)) return Right(guard)
-      }
+      val guards = fsm.transitions.flatMap(_.guards)
+      val guardIndex  = guards.indexWhere(_.name.equals(guardName))
 
-      Left(new ElementNotFoundError("Guard not found"))
+      if (guardIndex != -1) Right(guards(guardIndex))
+      else Left(new ElementNotFoundError("Guard not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -223,11 +222,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (condition <- fsm.transitions.flatMap(_.guards.flatMap(_.conditions))) {
-        if (condition.name.equals(conditionName)) return Right(condition)
-      }
+      val conditions = fsm.transitions.flatMap(_.guards.flatMap(_.conditions))
+      val conditionIndex  = conditions.indexWhere(_.name.equals(conditionName))
 
-      Left(new ElementNotFoundError("Condition not found"))
+      if (conditionIndex != -1) Right(conditions(conditionIndex))
+      else Left(new ElementNotFoundError("Condition not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -241,11 +240,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (body <- fsm.states.flatMap(_.actions.map(_.body)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.body)))) {
-        if (body.name.equals(bodyName)) return Right(body)
-      }
+      val bodies = fsm.states.flatMap(_.actions.map(_.body)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.body)))
+      val bodyIndex  = bodies.indexWhere(body => body.name.equals(bodyName))
 
-      Left(new ElementNotFoundError("Body not found"))
+      if (bodyIndex != -1) Right(bodies(bodyIndex))
+      else Left(new ElementNotFoundError("Body not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -259,11 +258,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (prototypeUri <- fsm.states.flatMap(_.actions.map(_.prototypeUri)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.prototypeUri)))) {
-        if (prototypeUri.name.equals(prototypeUriName)) return Right(prototypeUri)
-      }
+      val prototypes = fsm.states.flatMap(_.actions.map(_.prototypeUri)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.prototypeUri)))
+      val prototypeIndex  = prototypes.indexWhere(prototype => prototype.name.equals(prototypeUriName))
 
-      Left(new ElementNotFoundError("Body not found"))
+      if (prototypeIndex != -1) Right(prototypes(prototypeIndex))
+      else Left(new ElementNotFoundError("PrototypeUri not found"))
     } else Left(new FsmNotSelectedError)
   }
 
@@ -277,11 +276,11 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
-      for (parameter <- fsm.states.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)))) {
-        if (parameter.name.equals(prototypeUriParameterName)) return Right(parameter)
-      }
+      val parameters = fsm.states.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.flatMap(_.prototypeUri.prototypeUriParameters)))
+      val parameterIndex = parameters.indexWhere(parameter => parameter.name.equals(prototypeUriParameterName))
 
-      Left(new ElementNotFoundError("PrototypeUriParameter not found"))
+      if (parameterIndex != -1) Right(parameters(parameterIndex))
+      else Left(new ElementNotFoundError("PrototypeUriParameter not found"))
     } else Left(new FsmNotSelectedError)
   }
 }

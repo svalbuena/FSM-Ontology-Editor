@@ -24,7 +24,7 @@ class Body(name: String,
     * @return exception or the body type
     */
   def bodyType_=(newBodyType: BodyType): Either[DomainError, BodyType] = {
-    bodyType = newBodyType
+    _bodyType = newBodyType
     Right(bodyType)
   }
 
@@ -36,7 +36,7 @@ class Body(name: String,
     * @return exception or the content
     */
   def content_=(newContent: String): Either[DomainError, String] = {
-    content = newContent
+    _content = newContent
     Right(content)
   }
 

@@ -88,7 +88,7 @@ class Action(name: String,
     * @return exception or the timeout
     */
   def timeout_=(newTimeout: String): Either[DomainError, Int] = {
-    if (newTimeout.forall(_.isDigit)) {
+    if (!newTimeout.isEmpty && !newTimeout.isBlank && newTimeout.forall(_.isDigit)) {
       if (newTimeout.toInt < 0) {
         _timeout = newTimeout.toInt
         Right(timeout)
@@ -97,7 +97,7 @@ class Action(name: String,
         Left(new InvalidTimeoutError("Timeout value can't be negative"))
       }
     } else {
-      Left(new InvalidTimeoutError("Timeout value must be an integer"))
+      Left(new InvalidTimeoutError("Timeout value must be an integer equal or bigger than 0"))
     }
   }
 

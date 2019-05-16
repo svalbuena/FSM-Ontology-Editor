@@ -2,7 +2,7 @@ package infrastructure.propertybox.guard
 
 import infrastructure.propertybox.action.ActionPropertiesBox
 import infrastructure.propertybox.condition.ConditionPropertiesBox
-import infrastructure.propertybox.{LabelTextFieldSection, LabelVBoxSection}
+import infrastructure.propertybox.{LabelButtonSection, LabelTextFieldSection, LabelVBoxSection}
 import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
@@ -10,8 +10,9 @@ import javafx.scene.layout.VBox
   * Properties box of a guard
   */
 class GuardPropertiesBox extends VBox {
-  private val removeGuardButton = new Button()
-  removeGuardButton.setText("Remove")
+  private val titleAndRemoveSection = new LabelButtonSection
+  titleAndRemoveSection.setLabelText("Guard")
+  titleAndRemoveSection.setButtonText("Remove")
 
   private val guardNameSection = new LabelTextFieldSection
   guardNameSection.setLabelText("Name:")
@@ -24,7 +25,7 @@ class GuardPropertiesBox extends VBox {
   conditionsSection.setLabelText("Conditions:")
   conditionsSection.setButtonText("Add condition")
 
-  getChildren.addAll(guardNameSection, actionsSection, conditionsSection)
+  getChildren.addAll(titleAndRemoveSection, guardNameSection, actionsSection, conditionsSection)
 
   setStyle()
 
@@ -35,7 +36,7 @@ class GuardPropertiesBox extends VBox {
 
   def setOnAddActionButtonClicked(callback: () => Unit): Unit = actionsSection.setButtonCallback(callback)
 
-  def setOnRemoveGuardButtonClicked(callback: () => Unit): Unit = removeGuardButton.setOnAction(_ => callback())
+  def setOnRemoveGuardButtonClicked(callback: () => Unit): Unit = titleAndRemoveSection.setButtonCallback(callback)
 
   def setOnAddConditionButtonClicked(callback: () => Unit): Unit = conditionsSection.setButtonCallback(callback)
 
