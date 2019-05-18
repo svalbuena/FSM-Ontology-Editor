@@ -3,7 +3,6 @@ package infrastructure.propertybox.guard
 import infrastructure.propertybox.action.ActionPropertiesBox
 import infrastructure.propertybox.condition.ConditionPropertiesBox
 import infrastructure.propertybox.{LabelButtonSection, LabelTextFieldSection, LabelVBoxSection}
-import javafx.scene.control.Button
 import javafx.scene.layout.VBox
 
 /**

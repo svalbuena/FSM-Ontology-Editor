@@ -92,6 +92,33 @@ object ActionController {
   }
 
   /**
+    * Draw an action on the application
+    *
+    * @param action action to be drawn
+    */
+  def drawAction(action: Action): Unit = {
+    action.propertiesBox.setActionType(action.actionType)
+    action.propertiesBox.setActionName(action.name)
+    action.propertiesBox.setMethodType(action.method)
+    action.propertiesBox.setUriType(action.uriType)
+    action.propertiesBox.setTimeout(action.timeout)
+    action.propertiesBox.setAbsoluteUri(action.absoluteUri)
+
+    action.shape.setActionType(action.actionType)
+    action.shape.setActionName(action.name)
+
+    BodyController.drawBody(action.body)
+    PrototypeUriController.drawPrototypeUri(action.prototypeUri)
+
+    action.parent match {
+      case guard: Guard => guard.parent.shape.updateGuardGroupPosition()
+      case _ =>
+    }
+
+    new ActionController(action)
+  }
+
+  /**
     * Creates an action and adds it to a state
     *
     * @param actionType            action type of the new action
@@ -267,32 +294,5 @@ object ActionController {
       case Left(error) => println(error.getMessage)
       case Right(_) => state.removeAction(action)
     }
-  }
-
-  /**
-    * Draw an action on the application
-    *
-    * @param action action to be drawn
-    */
-  def drawAction(action: Action): Unit = {
-    action.propertiesBox.setActionType(action.actionType)
-    action.propertiesBox.setActionName(action.name)
-    action.propertiesBox.setMethodType(action.method)
-    action.propertiesBox.setUriType(action.uriType)
-    action.propertiesBox.setTimeout(action.timeout)
-    action.propertiesBox.setAbsoluteUri(action.absoluteUri)
-
-    action.shape.setActionType(action.actionType)
-    action.shape.setActionName(action.name)
-
-    BodyController.drawBody(action.body)
-    PrototypeUriController.drawPrototypeUri(action.prototypeUri)
-
-    action.parent match {
-      case guard: Guard => guard.parent.shape.updateGuardGroupPosition()
-      case _ =>
-    }
-
-    new ActionController(action)
   }
 }

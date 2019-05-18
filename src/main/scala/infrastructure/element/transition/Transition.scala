@@ -33,8 +33,6 @@ class Transition(name: String,
 
   def getSourceShape: Pane = getShape(source)
 
-  def getDestinationShape: Pane = getShape(destination)
-
   private def getShape(connectableElement: ConnectableElement): Pane = {
     connectableElement match {
       case state: State => state.shape
@@ -43,6 +41,8 @@ class Transition(name: String,
       case ghostNode: GhostNode => ghostNode.shape
     }
   }
+
+  def getDestinationShape: Pane = getShape(destination)
 
   def addGuard(guard: Guard): Unit = {
     guards = guard :: guards

@@ -151,7 +151,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val actions = fsm.states.flatMap(_.actions) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions))
-      val actionIndex  = actions.indexWhere(_.name.equals(actionName))
+      val actionIndex = actions.indexWhere(_.name.equals(actionName))
 
       if (actionIndex != -1) Right(actions(actionIndex))
       else Left(new ElementNotFoundError("Action not found"))
@@ -169,7 +169,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val states = fsm.states
-      val stateIndex  = states.indexWhere(_.name.equals(stateName))
+      val stateIndex = states.indexWhere(_.name.equals(stateName))
 
       if (stateIndex != -1) Right(states(stateIndex))
       else Left(new ElementNotFoundError("State not found"))
@@ -187,7 +187,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val transitions = fsm.transitions
-      val transitionIndex  = transitions.indexWhere(_.name.equals(transitionName))
+      val transitionIndex = transitions.indexWhere(_.name.equals(transitionName))
 
       if (transitionIndex != -1) Right(transitions(transitionIndex))
       else Left(new ElementNotFoundError("Transition not found"))
@@ -207,7 +207,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       println("Searching for -> " + guardName)
 
       val guards = fsm.transitions.flatMap(_.guards)
-      val guardIndex  = guards.indexWhere(_.name.equals(guardName))
+      val guardIndex = guards.indexWhere(_.name.equals(guardName))
 
       if (guardIndex != -1) Right(guards(guardIndex))
       else Left(new ElementNotFoundError("Guard not found"))
@@ -225,7 +225,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val conditions = fsm.transitions.flatMap(_.guards.flatMap(_.conditions))
-      val conditionIndex  = conditions.indexWhere(_.name.equals(conditionName))
+      val conditionIndex = conditions.indexWhere(_.name.equals(conditionName))
 
       if (conditionIndex != -1) Right(conditions(conditionIndex))
       else Left(new ElementNotFoundError("Condition not found"))
@@ -243,7 +243,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val bodies = fsm.states.flatMap(_.actions.map(_.body)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.body)))
-      val bodyIndex  = bodies.indexWhere(body => body.name.equals(bodyName))
+      val bodyIndex = bodies.indexWhere(body => body.name.equals(bodyName))
 
       if (bodyIndex != -1) Right(bodies(bodyIndex))
       else Left(new ElementNotFoundError("Body not found"))
@@ -261,7 +261,7 @@ class Environment(private val fsmRepository: FsmRepository) {
       val fsm = selectedFsmOption.get
 
       val prototypes = fsm.states.flatMap(_.actions.map(_.prototypeUri)) ::: fsm.transitions.flatMap(_.guards.flatMap(_.actions.map(_.prototypeUri)))
-      val prototypeIndex  = prototypes.indexWhere(prototype => prototype.name.equals(prototypeUriName))
+      val prototypeIndex = prototypes.indexWhere(prototype => prototype.name.equals(prototypeUriName))
 
       if (prototypeIndex != -1) Right(prototypes(prototypeIndex))
       else Left(new ElementNotFoundError("PrototypeUri not found"))

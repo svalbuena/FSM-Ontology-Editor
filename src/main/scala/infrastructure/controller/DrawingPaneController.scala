@@ -70,8 +70,6 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     }
   }
 
-  private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
-
   private def drawTemporalTransition(source: ConnectableElement, x: Double, y: Double): Unit = {
     if (fsmOption.isDefined) {
       ghostNodeOption = Some(new GhostNode("ghostElement"))
@@ -206,15 +204,22 @@ class DrawingPaneController(drawingPane: DrawingPane, val toolBox: ToolBox, val 
     ghostNodeOption = None
   }
 
-  /**
-    * Updates the mouse position data
-    *
-    * @param event mouse event where the data is extracted
-    */
-  def updateMousePosition(event: MouseEvent): Unit = {
-    mousePosition.x = event.getSceneX
-    mousePosition.y = event.getSceneY
+  private def canvasMouseMovedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
+    toolBox.getSelectedTool match {
+      case _: TransitionItem =>
+        if (isTemporalTransitionDefined) {
+          val tempTransition = tempTransitionOption.get
+          val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
+          canvas.moveNode(ghostNodeOption.get.shape, deltaX, deltaY)
+          canvas.moveTransition(tempTransition.shape, tempTransition.getSourceShape, tempTransition.getDestinationShape)
+        }
+      case _ =>
+    }
+
+    updateMousePosition(event)
   }
+
+  private def isTemporalTransitionDefined: Boolean = tempTransitionOption.isDefined
 
   /*private def canvasMouseExitedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
   if (fsmOption.isDefined) {
@@ -256,19 +261,14 @@ private def canvasScrollListener: EventHandler[ScrollEvent] = (event: ScrollEven
   }
 }*/
 
-  private def canvasMouseMovedListener: EventHandler[MouseEvent] = (event: MouseEvent) => {
-    toolBox.getSelectedTool match {
-      case _: TransitionItem =>
-        if (isTemporalTransitionDefined) {
-          val tempTransition = tempTransitionOption.get
-          val (deltaX, deltaY) = calculateDeltaFromMouseEvent(event)
-          canvas.moveNode(ghostNodeOption.get.shape, deltaX, deltaY)
-          canvas.moveTransition(tempTransition.shape, tempTransition.getSourceShape, tempTransition.getDestinationShape)
-        }
-      case _ =>
-    }
-
-    updateMousePosition(event)
+  /**
+    * Updates the mouse position data
+    *
+    * @param event mouse event where the data is extracted
+    */
+  def updateMousePosition(event: MouseEvent): Unit = {
+    mousePosition.x = event.getSceneX
+    mousePosition.y = event.getSceneY
   }
 
   /**

@@ -44,6 +44,10 @@ class PropertiesBoxBar extends ScrollPane {
     setContentStyle(fsmPropertiesBox)
   }
 
+  private def setContentStyle(region: Region): Unit = {
+    //region.setPadding(insets)
+  }
+
   def removeFsmPropertiesBox(): Unit = {
     fsmPropertiesBoxWrapper.setContent _
     fsmPropertiesBoxWrapper.setVisible(false)
@@ -59,10 +63,6 @@ class PropertiesBoxBar extends ScrollPane {
     otherPropertiesBoxWrapper.setVisible(true)
 
     setContentStyle(region)
-  }
-
-  private def setContentStyle(region: Region): Unit = {
-    //region.setPadding(insets)
   }
 
   def removeOtherPropertiesBoxContentIfEqual(node: Node): Unit = {
