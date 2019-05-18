@@ -18,6 +18,7 @@ import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
 class PrototypeUriParameterController(prototypeUriParameter: PrototypeUriParameter) {
   private val propertiesBox = prototypeUriParameter.propertiesBox
 
+  propertiesBox.setOnNameChanged(newName => PrototypeUriParameterController.modifyPrototypeUriParameterName(prototypeUriParameter, newName))
   propertiesBox.setOnParameterPlaceholderChanged(newPlaceholder => PrototypeUriParameterController.modifyPrototypeUriParameterPlaceholder(prototypeUriParameter, newPlaceholder))
   propertiesBox.setOnParameterQueryChanged(newQuery => PrototypeUriParameterController.modifyPrototypeUriParameterQuery(prototypeUriParameter, newQuery))
   propertiesBox.setOnRemoveParameterButtonClicked(() => removePrototypeUriParameter())
@@ -59,6 +60,7 @@ object PrototypeUriParameterController {
     * @param prototypeUriParameter prototype uri parameter to be drawn
     */
   def drawPrototypeUriParameter(prototypeUriParameter: PrototypeUriParameter): Unit = {
+    prototypeUriParameter.propertiesBox.setName(prototypeUriParameter.name)
     prototypeUriParameter.propertiesBox.setPlaceholder(prototypeUriParameter.placeholder)
     prototypeUriParameter.propertiesBox.setQuery(prototypeUriParameter.query)
 

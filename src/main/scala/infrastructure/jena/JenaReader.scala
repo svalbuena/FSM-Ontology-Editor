@@ -185,8 +185,7 @@ class JenaReader(properties: Properties) {
 
     if (hasResourceProperty(actionRes, properties.hasAbsoluteUri)) {
       uriType = UriType.ABSOLUTE
-      absoluteUri = getResourceProperty(actionRes, properties.hasAbsoluteUri).getResource.toString
-
+      absoluteUri = getResourceProperty(actionRes, properties.hasAbsoluteUri).getResource.getURI
     } else if (hasResourceProperty(actionRes, properties.hasPrototypeUri)) {
       uriType = UriType.PROTOTYPE
       val prototypeUriRes = getResourceProperty(actionRes, properties.hasPrototypeUri).getResource

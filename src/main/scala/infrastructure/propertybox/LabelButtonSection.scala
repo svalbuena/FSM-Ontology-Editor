@@ -16,8 +16,6 @@ class LabelButtonSection extends HBox {
 
   setStyle()
 
-  println(label.getFont.getSize)
-
 
   def setLabelText(labelText: String): Unit = label.setText(labelText)
 

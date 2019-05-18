@@ -19,7 +19,7 @@ class FiniteStateMachine(name: String,
                          environment: Environment
                         ) extends Element(name, environment) {
 
-  def this(environment: Environment) = this(environment.generateUniqueName("fsm"), "www.example.com/myFsmDemo#", environment = environment)
+  def this(environment: Environment) = this(environment.generateUniqueName("fsm"), "https://www.example.com/myFsmDemo#", environment = environment)
 
   def baseUri: String = _baseUri
 

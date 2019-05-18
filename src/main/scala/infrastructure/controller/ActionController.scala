@@ -78,8 +78,8 @@ object ActionController {
         println(error.getMessage)
         None
       case Right(names) =>
-        val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
-        val action = new Action(actionName, ActionType.GUARD, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = guard)
+        val (actionName, absoluteUri, bodyName, prototypeUriName) = (names._1, names._2, names._3, names._4)
+        val action = new Action(actionName, ActionType.GUARD, absoluteUri = absoluteUri, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = guard)
 
         guard.addAction(action)
 
@@ -89,33 +89,6 @@ object ActionController {
 
         Some(action)
     }
-  }
-
-  /**
-    * Draw an action on the application
-    *
-    * @param action action to be drawn
-    */
-  def drawAction(action: Action): Unit = {
-    action.propertiesBox.setActionType(action.actionType)
-    action.propertiesBox.setActionName(action.name)
-    action.propertiesBox.setMethodType(action.method)
-    action.propertiesBox.setUriType(action.uriType)
-    action.propertiesBox.setTimeout(action.timeout)
-    action.propertiesBox.setAbsoluteUri(action.absoluteUri)
-
-    action.shape.setActionType(action.actionType)
-    action.shape.setActionName(action.name)
-
-    BodyController.drawBody(action.body)
-    PrototypeUriController.drawPrototypeUri(action.prototypeUri)
-
-    action.parent match {
-      case guard: Guard => guard.parent.shape.updateGuardGroupPosition()
-      case _ =>
-    }
-
-    new ActionController(action)
   }
 
   /**
@@ -138,8 +111,8 @@ object ActionController {
         println(error.getMessage)
         None
       case Right(names) =>
-        val (actionName, bodyName, prototypeUriName) = (names._1, names._2, names._3)
-        val action = new Action(actionName, actionType, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = state)
+        val (actionName, absoluteUri, bodyName, prototypeUriName) = (names._1, names._2, names._3, names._4)
+        val action = new Action(actionName, actionType, absoluteUri = absoluteUri, body = new Body(bodyName), prototypeUri = new PrototypeUri(prototypeUriName), parent = state)
 
         state.addAction(action)
 
@@ -294,5 +267,32 @@ object ActionController {
       case Left(error) => println(error.getMessage)
       case Right(_) => state.removeAction(action)
     }
+  }
+
+  /**
+    * Draw an action on the application
+    *
+    * @param action action to be drawn
+    */
+  def drawAction(action: Action): Unit = {
+    action.propertiesBox.setActionType(action.actionType)
+    action.propertiesBox.setActionName(action.name)
+    action.propertiesBox.setMethodType(action.method)
+    action.propertiesBox.setUriType(action.uriType)
+    action.propertiesBox.setTimeout(action.timeout)
+    action.propertiesBox.setAbsoluteUri(action.absoluteUri)
+
+    action.shape.setActionType(action.actionType)
+    action.shape.setActionName(action.name)
+
+    BodyController.drawBody(action.body)
+    PrototypeUriController.drawPrototypeUri(action.prototypeUri)
+
+    action.parent match {
+      case guard: Guard => guard.parent.shape.updateGuardGroupPosition()
+      case _ =>
+    }
+
+    new ActionController(action)
   }
 }

@@ -1,6 +1,6 @@
 package infrastructure.propertybox.prototypeuriparameter
 
-import infrastructure.propertybox.{LabelButtonSection, LabelTextFieldSection}
+import infrastructure.propertybox.{LabelButtonSection, LabelTextAreaSection, LabelTextFieldSection}
 import javafx.scene.layout.VBox
 
 /**
@@ -17,7 +17,7 @@ class PrototypeUriParameterPropertiesBox extends VBox {
   private val placeholderSection = new LabelTextFieldSection
   placeholderSection.setLabelText("Placeholder:")
 
-  private val querySection = new LabelTextFieldSection
+  private val querySection = new LabelTextAreaSection
   querySection.setLabelText("Query:")
 
   getChildren.addAll(titleAndRemoveSection, nameSection, placeholderSection, querySection)

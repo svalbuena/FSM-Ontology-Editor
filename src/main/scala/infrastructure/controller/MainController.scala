@@ -32,23 +32,7 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
   private var selectedFsmOption: Option[FiniteStateMachine] = None
 
   newFsm()
-  //loadFsm("D:\\projects\\ontologies\\siot\\demo_siot.ttl")
 
-  /*newFsm() match {
-    case Left(value) =>
-    case Right(fsm) =>
-      selectFsm(fsm) match {
-        case Left(value) =>
-        case Right(_) =>
-          val state1 = StateController.addStateToFsm(0, 0, fsm, drawingPaneController)
-          val state2 = StateController.addStateToFsm(200, 200, fsm, drawingPaneController)
-
-          val action1 = ActionController.addActionToState(ActionType.ENTRY, state1.get, drawingPaneController)
-          val action2 = ActionController.addActionToState(ActionType.EXIT, state1.get, drawingPaneController)
-
-          val transition1 = TransitionController.addStateToStateTransitionToFsm(state1.get, state2.get, fsm, drawingPaneController)
-      }
-  }*/
 
   /**
     * Creates a new fsm and selects it
@@ -77,7 +61,6 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
           Some(false)
 
         case Right(domainFsm) =>
-          println("Converting")
           val fsm = DomainToInfrastructureConverter.convertFsm(domainFsm)
 
           fsmList = fsm :: fsmList
@@ -102,6 +85,7 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
       case Right(_) =>
         selectedFsmOption = Some(fsm)
         drawingPaneController.setFsm(fsm)
+        propertiesBox.removeOtherPropertiesBoxContent()
         propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
         Right(())
     }
@@ -113,7 +97,6 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
   def saveAsFsm(): Unit = {
     if (selectedFsmOption.isDefined) {
       fsmFileChooser.askForFileToSave().flatMap(filename => {
-        //val filename = "D:\\projects\\ontologies\\siot\\demo_siot.ttl"
         val fsm = selectedFsmOption.get
         fsm.setFilename(filename)
         saveFsm()

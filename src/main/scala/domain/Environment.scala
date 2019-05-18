@@ -204,6 +204,8 @@ class Environment(private val fsmRepository: FsmRepository) {
     if (selectedFsmOption.isDefined) {
       val fsm = selectedFsmOption.get
 
+      println("Searching for -> " + guardName)
+
       val guards = fsm.transitions.flatMap(_.guards)
       val guardIndex  = guards.indexWhere(_.name.equals(guardName))
 

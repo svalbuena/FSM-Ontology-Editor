@@ -20,7 +20,7 @@ import domain.{Element, Environment}
 class Action(name: String,
              private var _actionType: ActionType,
              private var _methodType: MethodType = MethodType.GET,
-             val body: Body, private var _absoluteUri: String = "",
+             val body: Body, private var _absoluteUri: String = "https://www.example.com/endpoint1",
              private var _uriType: UriType = UriType.ABSOLUTE,
              val prototypeUri: PrototypeUri,
              private var _timeout: Int = 0,
@@ -75,8 +75,10 @@ class Action(name: String,
     * @return exception or the new absolute uri
     */
   def absoluteUri_=(newAbsoluteUri: String): Either[DomainError, String] = {
-    _absoluteUri = newAbsoluteUri
-    Right(absoluteUri)
+    if (!newAbsoluteUri.isEmpty && !newAbsoluteUri.isBlank && !newAbsoluteUri.contains(" ")) {
+      _absoluteUri = newAbsoluteUri
+      Right(absoluteUri)
+    } else Left(new DomainError("The absolute uri can't be empty or contain spaces"))
   }
 
   def absoluteUri: String = _absoluteUri

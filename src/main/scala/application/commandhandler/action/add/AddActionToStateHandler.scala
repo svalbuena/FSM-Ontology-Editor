@@ -12,7 +12,7 @@ class AddActionToStateHandler(environment: Environment) {
     * @param addActionToStateCommand command
     * @return returns an exception or the name of the action, the name of the body action and the name of the prototype uri action
     */
-  def execute(addActionToStateCommand: AddActionToStateCommand): Either[Exception, (String, String, String)] = {
+  def execute(addActionToStateCommand: AddActionToStateCommand): Either[Exception, (String, String, String, String)] = {
     environment.getState(addActionToStateCommand.stateName) match {
       case Left(error) => Left(error)
       case Right(state) =>
@@ -26,7 +26,7 @@ class AddActionToStateHandler(environment: Environment) {
         val action = new Action(actionType, environment)
         state.addAction(action) match {
           case Left(error) => Left(error)
-          case Right(_) => Right(action.name, action.body.name, action.prototypeUri.name)
+          case Right(_) => Right(action.name, action.absoluteUri, action.body.name, action.prototypeUri.name)
         }
     }
   }
