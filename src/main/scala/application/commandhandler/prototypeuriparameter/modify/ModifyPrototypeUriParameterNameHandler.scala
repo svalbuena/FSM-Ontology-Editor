@@ -1,7 +1,7 @@
 package application.commandhandler.prototypeuriparameter.modify
 
 import application.command.prototypeuriparameter.modify.ModifyPrototypeUriParameterNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyPrototypeUriParameterNameHandler(environment: Environment) {
 

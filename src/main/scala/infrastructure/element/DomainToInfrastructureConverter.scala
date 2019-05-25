@@ -1,6 +1,5 @@
-package infrastructure
+package infrastructure.element
 
-import infrastructure.element.Element
 import infrastructure.element.action.{Action, ActionType, MethodType, UriType}
 import infrastructure.element.body.{Body, BodyType}
 import infrastructure.element.condition.Condition
@@ -21,7 +20,7 @@ object DomainToInfrastructureConverter {
     * @param domainFsm an fsm model instance
     * @return an fsm infrastructure instance
     */
-  def convertFsm(domainFsm: domain.fsm.FiniteStateMachine): FiniteStateMachine = {
+  def convertFsm(domainFsm: domain.element.fsm.FiniteStateMachine): FiniteStateMachine = {
     val fsmName = domainFsm.name
     val fsmBaseUri = domainFsm.baseUri
 
@@ -47,16 +46,16 @@ object DomainToInfrastructureConverter {
     fsm
   }
 
-  private def getState(domainState: domain.state.State, parent: FiniteStateMachine): State = {
+  private def getState(domainState: domain.element.state.State, parent: FiniteStateMachine): State = {
     val stateName = domainState.name
     val x = domainState.x
     val y = domainState.y
 
     val stateType = domainState.stateType match {
-      case domain.state.StateType.INITIAL => StateType.INITIAL
-      case domain.state.StateType.SIMPLE => StateType.SIMPLE
-      case domain.state.StateType.FINAL => StateType.FINAL
-      case domain.state.StateType.INITIAL_FINAL => StateType.INITIAL_FINAL
+      case domain.element.state.StateType.INITIAL => StateType.INITIAL
+      case domain.element.state.StateType.SIMPLE => StateType.SIMPLE
+      case domain.element.state.StateType.FINAL => StateType.FINAL
+      case domain.element.state.StateType.INITIAL_FINAL => StateType.INITIAL_FINAL
     }
 
     val state = new State(name = stateName, x = x, y = y, stateType = stateType, parent = parent)
@@ -69,23 +68,23 @@ object DomainToInfrastructureConverter {
     state
   }
 
-  private def getAction(domainAction: domain.action.Action, parent: Element): Action = {
+  private def getAction(domainAction: domain.element.action.Action, parent: Element): Action = {
     val actionName = domainAction.name
 
     val actionType = domainAction.actionType match {
-      case domain.action.ActionType.ENTRY => ActionType.ENTRY
-      case domain.action.ActionType.EXIT => ActionType.EXIT
-      case domain.action.ActionType.GUARD => ActionType.GUARD
+      case domain.element.action.ActionType.ENTRY => ActionType.ENTRY
+      case domain.element.action.ActionType.EXIT => ActionType.EXIT
+      case domain.element.action.ActionType.GUARD => ActionType.GUARD
     }
 
     val methodType = domainAction.methodType match {
-      case domain.action.MethodType.GET => MethodType.GET
-      case domain.action.MethodType.POST => MethodType.POST
+      case domain.element.action.MethodType.GET => MethodType.GET
+      case domain.element.action.MethodType.POST => MethodType.POST
     }
 
     val uriType = domainAction.uriType match {
-      case domain.action.UriType.ABSOLUTE => UriType.ABSOLUTE
-      case domain.action.UriType.PROTOTYPE => UriType.PROTOTYPE
+      case domain.element.action.UriType.ABSOLUTE => UriType.ABSOLUTE
+      case domain.element.action.UriType.PROTOTYPE => UriType.PROTOTYPE
     }
 
     val absoluteUri = domainAction.absoluteUri
@@ -99,7 +98,7 @@ object DomainToInfrastructureConverter {
     new Action(name = actionName, actionType = actionType, method = methodType, body = body, uriType = uriType, absoluteUri = absoluteUri, prototypeUri = prototypeUri, timeout = timeout, parent = parent)
   }
 
-  private def getPrototypeUri(domainPrototypeUri: domain.action.PrototypeUri): PrototypeUri = {
+  private def getPrototypeUri(domainPrototypeUri: domain.element.action.PrototypeUri): PrototypeUri = {
     val prototypeUriName = domainPrototypeUri.name
 
     val structure = domainPrototypeUri.structure
@@ -114,7 +113,7 @@ object DomainToInfrastructureConverter {
     prototypeUri
   }
 
-  private def getPrototypeUriParameter(domainParameter: domain.action.PrototypeUriParameter, parent: PrototypeUri): PrototypeUriParameter = {
+  private def getPrototypeUriParameter(domainParameter: domain.element.action.PrototypeUriParameter, parent: PrototypeUri): PrototypeUriParameter = {
     val parameterName = domainParameter.name
 
     val placeholder = domainParameter.placeholder
@@ -124,13 +123,13 @@ object DomainToInfrastructureConverter {
     new PrototypeUriParameter(name = parameterName, placeholder = placeholder, query = query, parent = parent)
   }
 
-  private def getBody(domainBody: domain.action.Body): Body = {
+  private def getBody(domainBody: domain.element.action.Body): Body = {
     val bodyName = domainBody.name
 
     val bodyType = domainBody.bodyType match {
-      case domain.action.BodyType.RDF => BodyType.RDF
-      case domain.action.BodyType.JSON => BodyType.JSON
-      case domain.action.BodyType.SPARQL => BodyType.SPARQL
+      case domain.element.action.BodyType.RDF => BodyType.RDF
+      case domain.element.action.BodyType.JSON => BodyType.JSON
+      case domain.element.action.BodyType.SPARQL => BodyType.SPARQL
     }
 
     val content = domainBody.content
@@ -138,7 +137,7 @@ object DomainToInfrastructureConverter {
     new Body(name = bodyName, bodyType = bodyType, content = content)
   }
 
-  private def getTransition(domainTransition: domain.transition.Transition, srcState: State, dstState: State, parent: FiniteStateMachine): Transition = {
+  private def getTransition(domainTransition: domain.element.transition.Transition, srcState: State, dstState: State, parent: FiniteStateMachine): Transition = {
     val transitionName = domainTransition.name
 
     val transition = new Transition(name = transitionName, source = srcState, destination = dstState, isEditable = true, parent = parent)
@@ -154,7 +153,7 @@ object DomainToInfrastructureConverter {
     transition
   }
 
-  private def getGuard(domainGuard: domain.guard.Guard, parent: Transition): Guard = {
+  private def getGuard(domainGuard: domain.element.guard.Guard, parent: Transition): Guard = {
     val guardName = domainGuard.name
 
     val guard = new Guard(name = guardName, parent = parent)
@@ -172,7 +171,7 @@ object DomainToInfrastructureConverter {
     guard
   }
 
-  private def getCondition(domainCondition: domain.condition.Condition, parent: Guard): Condition = {
+  private def getCondition(domainCondition: domain.element.condition.Condition, parent: Guard): Condition = {
     val conditionName = domainCondition.name
 
     val query = domainCondition.query

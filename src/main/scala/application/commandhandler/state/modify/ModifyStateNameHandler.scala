@@ -1,7 +1,7 @@
 package application.commandhandler.state.modify
 
 import application.command.state.modify.ModifyStateNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyStateNameHandler(environment: Environment) {
 

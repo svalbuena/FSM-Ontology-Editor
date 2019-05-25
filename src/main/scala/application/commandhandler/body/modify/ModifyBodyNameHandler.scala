@@ -1,7 +1,7 @@
 package application.commandhandler.body.modify
 
 import application.command.body.modify.ModifyBodyNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyBodyNameHandler(environment: Environment) {
 

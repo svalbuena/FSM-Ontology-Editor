@@ -1,8 +1,8 @@
 package application.commandhandler.fsm.add
 
 import application.command.fsm.add.LoadFsmCommand
-import domain.Environment
-import domain.fsm.FiniteStateMachine
+import domain.element.fsm.FiniteStateMachine
+import domain.environment.Environment
 
 class LoadFsmHandler(environment: Environment) {
 

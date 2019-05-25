@@ -1,7 +1,7 @@
 package application.commandhandler.action.modify
 
 import application.command.action.modify.ModifyActionNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyActionNameHandler(environment: Environment) {
   /**

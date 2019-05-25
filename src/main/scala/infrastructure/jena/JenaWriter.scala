@@ -1,12 +1,12 @@
 package infrastructure.jena
 
-import domain.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
-import domain.condition.Condition
-import domain.fsm.FiniteStateMachine
-import domain.guard.Guard
+import domain.element.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
+import domain.element.condition.Condition
+import domain.element.fsm.FiniteStateMachine
+import domain.element.guard.Guard
 import domain.repository.Properties
-import domain.state.State
-import domain.transition.Transition
+import domain.element.state.State
+import domain.element.transition.Transition
 import org.apache.jena.rdf.model.{Model, ModelFactory, Resource}
 import org.apache.jena.vocabulary.{RDF, RDFS}
 
@@ -66,13 +66,13 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     stateRes.addProperty(JenaHelper.toJenaProperty(properties.lowerCorner), pointRes)
 
     state.stateType match {
-      case domain.state.StateType.INITIAL =>
+      case domain.element.state.StateType.INITIAL =>
         stateRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.InitialStateClass))
-      case domain.state.StateType.SIMPLE =>
+      case domain.element.state.StateType.SIMPLE =>
         stateRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.SimpleStateClass))
-      case domain.state.StateType.FINAL =>
+      case domain.element.state.StateType.FINAL =>
         stateRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.FinalStateClass))
-      case domain.state.StateType.INITIAL_FINAL =>
+      case domain.element.state.StateType.INITIAL_FINAL =>
         stateRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.InitialStateClass))
         stateRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.FinalStateClass))
     }
@@ -82,8 +82,8 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
       val actionRes = getActionResource(fsmModel, action)
 
       action.actionType match {
-        case domain.action.ActionType.ENTRY => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasEntryAction), actionRes)
-        case domain.action.ActionType.EXIT => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasExitAction), actionRes)
+        case domain.element.action.ActionType.ENTRY => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasEntryAction), actionRes)
+        case domain.element.action.ActionType.EXIT => stateRes.addProperty(JenaHelper.toJenaProperty(properties.hasExitAction), actionRes)
         case _ =>
       }
     }
@@ -97,15 +97,15 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     actionRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.RequestClass))
 
     val methodTypeProperty = action.methodType match {
-      case domain.action.MethodType.GET => properties.getMethod
-      case domain.action.MethodType.POST => properties.postMethod
+      case domain.element.action.MethodType.GET => properties.getMethod
+      case domain.element.action.MethodType.POST => properties.postMethod
     }
     actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasMethod), JenaHelper.toJenaResource(methodTypeProperty))
 
     action.uriType match {
-      case domain.action.UriType.ABSOLUTE =>
+      case domain.element.action.UriType.ABSOLUTE =>
         actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasAbsoluteUri), JenaHelper.toJenaResource(action.absoluteUri))
-      case domain.action.UriType.PROTOTYPE =>
+      case domain.element.action.UriType.PROTOTYPE =>
         val prototypeUriRes = getPrototypeUriResource(fsmModel, action.prototypeUri)
         actionRes.addProperty(JenaHelper.toJenaProperty(properties.hasPrototypeUri), prototypeUriRes)
     }
@@ -123,9 +123,9 @@ class JenaWriter(properties: Properties, fsmBaseUri: String) {
     bodyRes.addProperty(RDF.`type`, JenaHelper.toJenaClass(properties.BodyClass))
 
     val bodyTypeResource = body.bodyType match {
-      case domain.action.BodyType.RDF => properties.rdfBodyType
-      case domain.action.BodyType.JSON => properties.otherBodyType
-      case domain.action.BodyType.SPARQL => properties.sparqlBodyType
+      case domain.element.action.BodyType.RDF => properties.rdfBodyType
+      case domain.element.action.BodyType.JSON => properties.otherBodyType
+      case domain.element.action.BodyType.SPARQL => properties.sparqlBodyType
     }
     bodyRes.addProperty(JenaHelper.toJenaProperty(properties.hasBodyType), JenaHelper.toJenaResource(bodyTypeResource))
 

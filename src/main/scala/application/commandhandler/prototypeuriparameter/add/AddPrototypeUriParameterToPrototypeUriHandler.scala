@@ -1,8 +1,8 @@
 package application.commandhandler.prototypeuriparameter.add
 
 import application.command.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriCommand
-import domain.Environment
-import domain.action.PrototypeUriParameter
+import domain.element.action.PrototypeUriParameter
+import domain.environment.Environment
 
 class AddPrototypeUriParameterToPrototypeUriHandler(environment: Environment) {
 

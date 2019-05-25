@@ -1,7 +1,7 @@
 package application.commandhandler.fsm.save
 
 import application.command.fsm.save.SaveFsmCommand
-import domain.Environment
+import domain.environment.Environment
 
 class SaveFsmHandler(environment: Environment) {
 

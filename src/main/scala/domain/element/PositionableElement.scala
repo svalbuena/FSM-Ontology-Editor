@@ -1,4 +1,6 @@
-package domain
+package domain.element
+
+import domain.environment.Environment
 
 /**
   * An element that has a position on screen

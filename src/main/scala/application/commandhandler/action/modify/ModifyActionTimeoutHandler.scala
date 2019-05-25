@@ -1,7 +1,7 @@
 package application.commandhandler.action.modify
 
 import application.command.action.modify.ModifyActionTimeoutCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyActionTimeoutHandler(environment: Environment) {
   /**

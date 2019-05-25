@@ -49,7 +49,7 @@ object FsmController {
     * @param filename file where the fsm data is stored
     * @return exception or the domain fsm instance
     */
-  def loadFsm(filename: String): Either[Exception, domain.fsm.FiniteStateMachine] = new LoadFsmHandler(environment).execute(new LoadFsmCommand(filename))
+  def loadFsm(filename: String): Either[Exception, domain.element.fsm.FiniteStateMachine] = new LoadFsmHandler(environment).execute(new LoadFsmCommand(filename))
 
   /**
     * Saves an fsm to a file

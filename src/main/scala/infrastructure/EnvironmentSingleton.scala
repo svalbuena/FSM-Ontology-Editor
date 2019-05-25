@@ -1,6 +1,6 @@
 package infrastructure
 
-import domain.Environment
+import domain.environment.Environment
 import infrastructure.jena.JenaFsmRepository
 
 object EnvironmentSingleton {

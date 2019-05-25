@@ -1,7 +1,7 @@
 package application.commandhandler.guard.remove
 
 import application.command.guard.remove.RemoveGuardFromTransitionCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemoveGuardFromTransitionHandler(environment: Environment) {
 

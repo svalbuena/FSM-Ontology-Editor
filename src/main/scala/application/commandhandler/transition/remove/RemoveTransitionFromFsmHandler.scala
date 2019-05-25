@@ -1,7 +1,7 @@
 package application.commandhandler.transition.remove
 
 import application.command.transition.remove.RemoveTransitionFromFsmCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemoveTransitionFromFsmHandler(environment: Environment) {
 

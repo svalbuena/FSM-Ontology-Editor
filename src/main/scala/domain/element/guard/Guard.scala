@@ -1,9 +1,10 @@
-package domain.guard
+package domain.element.guard
 
-import domain.action.Action
-import domain.condition.Condition
+import domain.element.action.Action
+import domain.element.condition.Condition
 import domain.exception.{DomainError, ElementNotFoundError, NameNotUniqueError}
-import domain.{Element, Environment}
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

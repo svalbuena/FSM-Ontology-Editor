@@ -1,8 +1,9 @@
-package domain.action
+package domain.element.action
 
-import domain.action.BodyType.BodyType
+import domain.element.action.BodyType.BodyType
 import domain.exception.DomainError
-import domain.{Element, Environment}
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

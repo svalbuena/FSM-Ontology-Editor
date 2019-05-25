@@ -1,7 +1,7 @@
 package application.commandhandler.condition.modify
 
 import application.command.condition.modify.ModifyConditionQueryCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyConditionQueryHandler(environment: Environment) {
 

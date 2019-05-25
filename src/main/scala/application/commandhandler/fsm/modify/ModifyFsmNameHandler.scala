@@ -1,7 +1,7 @@
 package application.commandhandler.fsm.modify
 
 import application.command.fsm.modify.ModifyFsmNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyFsmNameHandler(environment: Environment) {
 

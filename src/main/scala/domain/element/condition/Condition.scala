@@ -1,7 +1,8 @@
-package domain.condition
+package domain.element.condition
 
 import domain.exception.DomainError
-import domain.{Element, Environment}
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

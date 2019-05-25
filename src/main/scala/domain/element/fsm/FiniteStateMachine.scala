@@ -1,9 +1,10 @@
-package domain.fsm
+package domain.element.fsm
 
 import domain.exception.{DomainError, ElementNotFoundError, NameNotUniqueError, StartError}
-import domain.state.{State, StateType}
-import domain.transition.Transition
-import domain.{Element, Environment}
+import domain.element.state.{State, StateType}
+import domain.element.transition.Transition
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

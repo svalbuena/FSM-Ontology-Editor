@@ -1,7 +1,7 @@
 package application.commandhandler.action.remove
 
 import application.command.action.remove.RemoveActionFromGuardCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemoveActionFromGuardHandler(environment: Environment) {
 

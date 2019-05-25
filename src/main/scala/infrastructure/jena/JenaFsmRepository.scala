@@ -2,7 +2,7 @@ package infrastructure.jena
 
 import java.io.FileOutputStream
 
-import domain.fsm.FiniteStateMachine
+import domain.element.fsm.FiniteStateMachine
 import domain.repository.{FsmRepository, Properties}
 import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.{RDFDataMgr, RDFLanguages}

@@ -1,5 +1,6 @@
-package domain
+package domain.element
 
+import domain.environment.Environment
 import domain.exception.{DomainError, NameNotUniqueError}
 
 

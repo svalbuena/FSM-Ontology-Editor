@@ -1,17 +1,17 @@
 package infrastructure.jena
 
-import domain.action.ActionType.ActionType
-import domain.action.BodyType.BodyType
-import domain.action.MethodType.MethodType
-import domain.action.UriType.UriType
-import domain.action._
-import domain.condition.Condition
-import domain.fsm.FiniteStateMachine
-import domain.guard.Guard
+import domain.element.action.ActionType.ActionType
+import domain.element.action.BodyType.BodyType
+import domain.element.action.MethodType.MethodType
+import domain.element.action.UriType.UriType
+import domain.element.action._
+import domain.element.condition.Condition
+import domain.element.fsm.FiniteStateMachine
+import domain.element.guard.Guard
 import domain.repository.Properties
-import domain.state.StateType.StateType
-import domain.state.{State, StateType}
-import domain.transition.Transition
+import domain.element.state.StateType.StateType
+import domain.element.state.{State, StateType}
+import domain.element.transition.Transition
 import infrastructure.EnvironmentSingleton
 import org.apache.jena.rdf.model._
 import org.apache.jena.util.iterator.ExtendedIterator

@@ -1,8 +1,8 @@
 package application.commandhandler.action.add
 
 import application.command.action.add.AddActionToGuardCommand
-import domain.Environment
-import domain.action.{Action, ActionType}
+import domain.element.action.{Action, ActionType}
+import domain.environment.Environment
 
 class AddActionToGuardHandler(environment: Environment) {
 

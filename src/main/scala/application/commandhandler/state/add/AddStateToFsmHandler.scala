@@ -1,8 +1,8 @@
 package application.commandhandler.state.add
 
 import application.command.state.add.AddStateToFsmCommand
-import domain.Environment
-import domain.state.State
+import domain.element.state.State
+import domain.environment.Environment
 
 class AddStateToFsmHandler(environment: Environment) {
 

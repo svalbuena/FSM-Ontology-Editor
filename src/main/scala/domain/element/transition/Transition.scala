@@ -1,9 +1,10 @@
-package domain.transition
+package domain.element.transition
 
 import domain.exception.{DomainError, ElementNotFoundError, NameNotUniqueError}
-import domain.guard.Guard
-import domain.state.State
-import domain.{Element, Environment}
+import domain.element.guard.Guard
+import domain.element.state.State
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

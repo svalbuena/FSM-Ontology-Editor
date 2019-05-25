@@ -1,7 +1,7 @@
 package application.commandhandler.condition.modify
 
 import application.command.condition.modify.ModifyConditionNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyConditionNameHandler(environment: Environment) {
 

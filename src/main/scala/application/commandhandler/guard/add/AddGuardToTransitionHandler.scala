@@ -1,8 +1,8 @@
 package application.commandhandler.guard.add
 
 import application.command.guard.add.AddGuardToTransitionCommand
-import domain.Environment
-import domain.guard.Guard
+import domain.element.guard.Guard
+import domain.environment.Environment
 
 class AddGuardToTransitionHandler(environment: Environment) {
 

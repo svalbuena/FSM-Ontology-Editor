@@ -1,7 +1,7 @@
 package application.commandhandler.state.modify
 
 import application.command.state.modify.ModifyStateCoordinatesCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyStateCoordinatesHandler(environment: Environment) {
 

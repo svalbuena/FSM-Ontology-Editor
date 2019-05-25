@@ -1,7 +1,7 @@
 package application.commandhandler.transition.modify
 
 import application.command.transition.modify.ModifyTransitionNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyTransitionNameHandler(environment: Environment) {
 

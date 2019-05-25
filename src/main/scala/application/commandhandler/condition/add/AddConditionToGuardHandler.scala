@@ -1,8 +1,8 @@
 package application.commandhandler.condition.add
 
 import application.command.condition.add.AddConditionToGuardCommand
-import domain.Environment
-import domain.condition.Condition
+import domain.element.condition.Condition
+import domain.environment.Environment
 
 class AddConditionToGuardHandler(environment: Environment) {
 

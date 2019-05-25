@@ -1,10 +1,11 @@
-package domain.action
+package domain.element.action
 
-import domain.action.ActionType.ActionType
-import domain.action.MethodType.MethodType
-import domain.action.UriType.UriType
+import domain.element.action.ActionType.ActionType
+import domain.element.action.MethodType.MethodType
+import domain.element.action.UriType.UriType
 import domain.exception.{ActionTypeError, DomainError, InvalidTimeoutError}
-import domain.{Element, Environment}
+import domain.element.Element
+import domain.environment.Environment
 
 /**
   *

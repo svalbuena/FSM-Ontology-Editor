@@ -1,4 +1,4 @@
-package domain.action
+package domain.element.action
 
 /**
   * Enumeration of the body's types

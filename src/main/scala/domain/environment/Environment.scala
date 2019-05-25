@@ -1,13 +1,14 @@
-package domain
+package domain.environment
 
-import domain.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
-import domain.condition.Condition
+import domain.element.action.{Action, Body, PrototypeUri, PrototypeUriParameter}
+import domain.element.condition.Condition
+import domain.element.fsm.FiniteStateMachine
+import domain.element.guard.Guard
+import domain.element.state.State
+import domain.element.transition.Transition
 import domain.exception.{DomainError, ElementNotFoundError, FsmNotSelectedError, NameNotUniqueError}
-import domain.fsm.FiniteStateMachine
-import domain.guard.Guard
+import domain.id.IdGenerator
 import domain.repository.{FsmRepository, Properties}
-import domain.state.State
-import domain.transition.Transition
 
 /**
   * In-memory representation of all the data that the model needs to maintain

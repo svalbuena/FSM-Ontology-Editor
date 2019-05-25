@@ -1,8 +1,8 @@
 package application.commandhandler.transition.add
 
 import application.command.transition.add.AddTransitionToFsmCommand
-import domain.Environment
-import domain.transition.Transition
+import domain.element.transition.Transition
+import domain.environment.Environment
 
 class AddTransitionToFsmHandler(environment: Environment) {
 

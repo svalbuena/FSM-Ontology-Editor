@@ -1,7 +1,7 @@
 package application.commandhandler.body.modify
 
 import application.command.body.modify.ModifyBodyContentCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyBodyContentHandler(environment: Environment) {
 

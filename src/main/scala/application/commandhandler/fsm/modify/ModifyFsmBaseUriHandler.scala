@@ -1,7 +1,7 @@
 package application.commandhandler.fsm.modify
 
 import application.command.fsm.modify.ModifyFsmBaseUriCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyFsmBaseUriHandler(environment: Environment) {
 

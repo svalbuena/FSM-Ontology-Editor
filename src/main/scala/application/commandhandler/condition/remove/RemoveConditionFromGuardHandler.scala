@@ -1,7 +1,7 @@
 package application.commandhandler.condition.remove
 
 import application.command.condition.remove.RemoveConditionFromGuardCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemoveConditionFromGuardHandler(environment: Environment) {
 

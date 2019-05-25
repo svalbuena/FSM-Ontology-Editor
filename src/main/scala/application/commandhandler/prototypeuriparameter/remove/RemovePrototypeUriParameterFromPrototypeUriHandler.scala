@@ -1,7 +1,7 @@
 package application.commandhandler.prototypeuriparameter.remove
 
 import application.command.prototypeuriparameter.remove.RemovePrototypeUriParameterFromPrototypeUriCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemovePrototypeUriParameterFromPrototypeUriHandler(environment: Environment) {
 

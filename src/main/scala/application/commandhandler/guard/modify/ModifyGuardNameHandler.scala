@@ -1,7 +1,7 @@
 package application.commandhandler.guard.modify
 
 import application.command.guard.modify.ModifyGuardNameCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyGuardNameHandler(environment: Environment) {
 

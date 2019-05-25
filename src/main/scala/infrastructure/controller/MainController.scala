@@ -1,7 +1,7 @@
 package infrastructure.controller
 
-import infrastructure.DomainToInfrastructureConverter
 import infrastructure.drawingpane.DrawingPane
+import infrastructure.element.DomainToInfrastructureConverter
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.filechooser.FsmFileChooser
 import infrastructure.propertybox.PropertiesBoxBar

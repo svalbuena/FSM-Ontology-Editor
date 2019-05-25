@@ -1,7 +1,7 @@
 package application.commandhandler.fsm.remove
 
 import application.command.fsm.remove.RemoveFsmCommand
-import domain.Environment
+import domain.environment.Environment
 
 class RemoveFsmHandler(environment: Environment) {
 

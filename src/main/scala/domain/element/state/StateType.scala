@@ -1,4 +1,4 @@
-package domain.state
+package domain.element.state
 
 /**
   * Enumeration of the state's types

@@ -1,6 +1,6 @@
 package domain.repository
 
-import domain.fsm.FiniteStateMachine
+import domain.element.fsm.FiniteStateMachine
 
 /**
   * Repository for storing and loading an fsm annotated with ontologies from files

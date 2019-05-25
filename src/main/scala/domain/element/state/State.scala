@@ -1,9 +1,10 @@
-package domain.state
+package domain.element.state
 
-import domain.action.Action
+import domain.element.action.Action
 import domain.exception.{DomainError, ElementNotFoundError, NameNotUniqueError, StartError}
-import domain.state.StateType.StateType
-import domain.{Environment, PositionableElement}
+import domain.element.state.StateType.StateType
+import domain.element.PositionableElement
+import domain.environment.Environment
 
 /**
   *

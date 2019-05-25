@@ -1,7 +1,7 @@
 package application.commandhandler.action.modify
 
 import application.command.action.modify.ModifyActionAbsoluteUriCommand
-import domain.Environment
+import domain.environment.Environment
 
 class ModifyActionAbsoluteUriHandler(environment: Environment) {
 

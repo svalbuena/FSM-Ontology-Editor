@@ -2,8 +2,8 @@ package application.commandhandler.state.modify
 
 import application.command.state.modify
 import application.command.state.modify.ModifyStateTypeCommand
-import domain.Environment
-import domain.state.StateType
+import domain.element.state.StateType
+import domain.environment.Environment
 
 class ModifyStateTypeHandler(environment: Environment) {
 
@@ -12,7 +12,7 @@ class ModifyStateTypeHandler(environment: Environment) {
     * @param modifyStateTypeCommand command
     * @return an exception or the state type
     */
-  def execute(modifyStateTypeCommand: ModifyStateTypeCommand): Either[Exception, domain.state.StateType.StateType] = {
+  def execute(modifyStateTypeCommand: ModifyStateTypeCommand): Either[Exception, domain.element.state.StateType.StateType] = {
     environment.getState(modifyStateTypeCommand.stateName) match {
       case Left(error) => Left(error)
       case Right(state) => state.stateType = modifyStateTypeCommand.stateType match {
