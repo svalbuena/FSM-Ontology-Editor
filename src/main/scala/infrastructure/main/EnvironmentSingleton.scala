@@ -1,4 +1,4 @@
-package infrastructure
+package infrastructure.main
 
 import domain.environment.Environment
 import infrastructure.jena.JenaFsmRepository

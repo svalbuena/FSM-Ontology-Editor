@@ -12,7 +12,7 @@ import domain.repository.Properties
 import domain.element.state.StateType.StateType
 import domain.element.state.{State, StateType}
 import domain.element.transition.Transition
-import infrastructure.EnvironmentSingleton
+import infrastructure.main.EnvironmentSingleton
 import org.apache.jena.rdf.model._
 import org.apache.jena.util.iterator.ExtendedIterator
 import org.apache.jena.vocabulary.RDF

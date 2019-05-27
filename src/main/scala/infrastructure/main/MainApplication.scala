@@ -1,4 +1,4 @@
-package infrastructure
+package infrastructure.main
 
 import infrastructure.controller.MainController
 import infrastructure.drawingpane.DrawingPane

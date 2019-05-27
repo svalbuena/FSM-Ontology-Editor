@@ -6,7 +6,6 @@ import application.command.state.remove.RemoveStateFromFsmCommand
 import application.commandhandler.state.add.AddStateToFsmHandler
 import application.commandhandler.state.modify.{ModifyStateCoordinatesHandler, ModifyStateNameHandler, ModifyStateTypeHandler}
 import application.commandhandler.state.remove.RemoveStateFromFsmHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.action.ActionType
 import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
@@ -14,6 +13,7 @@ import infrastructure.element.start.Start
 import infrastructure.element.state.StateType.StateType
 import infrastructure.element.state.{State, StateType}
 import infrastructure.element.transition.Transition
+import infrastructure.main.EnvironmentSingleton
 import infrastructure.menu.contextmenu.state.item.{AddEntryActionMenuItem, AddExitActionMenuItem}
 import infrastructure.toolbox.section.item.fsm.TransitionItem
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}

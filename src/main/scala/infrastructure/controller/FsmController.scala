@@ -8,8 +8,8 @@ import application.commandhandler.fsm.add.{AddFsmHandler, LoadFsmHandler}
 import application.commandhandler.fsm.modify.{ModifyFsmBaseUriHandler, ModifyFsmNameHandler, SelectFsmHandler}
 import application.commandhandler.fsm.remove.RemoveFsmHandler
 import application.commandhandler.fsm.save.SaveFsmHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.fsm.FiniteStateMachine
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of an fsm

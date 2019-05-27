@@ -8,12 +8,12 @@ import application.commandhandler.state.modify.ModifyStateTypeHandler
 import application.commandhandler.transition.add.AddTransitionToFsmHandler
 import application.commandhandler.transition.modify.ModifyTransitionNameHandler
 import application.commandhandler.transition.remove.RemoveTransitionFromFsmHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.end.End
 import infrastructure.element.fsm.FiniteStateMachine
 import infrastructure.element.start.Start
 import infrastructure.element.state.{State, StateType}
 import infrastructure.element.transition.Transition
+import infrastructure.main.EnvironmentSingleton
 import infrastructure.toolbox.section.selector.mouse.{DeleteMouseSelector, NormalMouseSelector}
 import javafx.scene.input.MouseButton
 

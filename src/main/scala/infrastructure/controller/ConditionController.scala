@@ -6,9 +6,9 @@ import application.command.condition.remove.RemoveConditionFromGuardCommand
 import application.commandhandler.condition.add.AddConditionToGuardHandler
 import application.commandhandler.condition.modify.{ModifyConditionNameHandler, ModifyConditionQueryHandler}
 import application.commandhandler.condition.remove.RemoveConditionFromGuardHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.condition.Condition
 import infrastructure.element.guard.Guard
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of a condition

@@ -6,7 +6,6 @@ import application.command.action.remove.{RemoveActionFromGuardCommand, RemoveAc
 import application.commandhandler.action.add.{AddActionToGuardHandler, AddActionToStateHandler}
 import application.commandhandler.action.modify._
 import application.commandhandler.action.remove.{RemoveActionFromGuardHandler, RemoveActionFromStateHandler}
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.action.ActionType.ActionType
 import infrastructure.element.action.MethodType.MethodType
 import infrastructure.element.action.UriType.UriType
@@ -15,6 +14,7 @@ import infrastructure.element.body.Body
 import infrastructure.element.guard.Guard
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.state.State
+import infrastructure.main.EnvironmentSingleton
 import infrastructure.menu.contextmenu.action.item.DeleteActionMenuItem
 
 /**

@@ -2,9 +2,9 @@ package infrastructure.controller
 
 import application.command.body.modify.{ModifyBodyContentCommand, ModifyBodyNameCommand, ModifyBodyTypeCommand}
 import application.commandhandler.body.modify.{ModifyBodyContentHandler, ModifyBodyNameHandler, ModifyBodyTypeHandler}
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.body.Body
 import infrastructure.element.body.BodyType.BodyType
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of a body

@@ -6,9 +6,9 @@ import application.command.prototypeuriparameter.remove.RemovePrototypeUriParame
 import application.commandhandler.prototypeuriparameter.add.AddPrototypeUriParameterToPrototypeUriHandler
 import application.commandhandler.prototypeuriparameter.modify.{ModifyPrototypeUriParameterNameHandler, ModifyPrototypeUriParameterPlaceholderHandler, ModifyPrototypeUriParameterQueryHandler}
 import application.commandhandler.prototypeuriparameter.remove.RemovePrototypeUriParameterFromPrototypeUriHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.prototypeuri.PrototypeUri
 import infrastructure.element.prototypeuriparameter.PrototypeUriParameter
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of a prototype uri parameter

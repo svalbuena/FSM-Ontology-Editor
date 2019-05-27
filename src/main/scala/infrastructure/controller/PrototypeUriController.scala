@@ -2,8 +2,8 @@ package infrastructure.controller
 
 import application.command.prototypeuri.modify.{ModifyPrototypeUriNameCommand, ModifyPrototypeUriStructureCommand}
 import application.commandhandler.prototypeuri.modify.{ModifyPrototypeUriNameHandler, ModifyPrototypeUriStructureHandler}
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.prototypeuri.PrototypeUri
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of a prototype uri

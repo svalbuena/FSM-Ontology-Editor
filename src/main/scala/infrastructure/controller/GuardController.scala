@@ -6,9 +6,9 @@ import application.command.guard.remove.RemoveGuardFromTransitionCommand
 import application.commandhandler.guard.add.AddGuardToTransitionHandler
 import application.commandhandler.guard.modify.ModifyGuardNameHandler
 import application.commandhandler.guard.remove.RemoveGuardFromTransitionHandler
-import infrastructure.EnvironmentSingleton
 import infrastructure.element.guard.Guard
 import infrastructure.element.transition.Transition
+import infrastructure.main.EnvironmentSingleton
 
 /**
   * Controls the visual and behavior aspects of a guard

@@ -1,4 +1,4 @@
-import infrastructure.MainApplication
+import infrastructure.main.MainApplication
 import javafx.application.Application
 
 object Main {
