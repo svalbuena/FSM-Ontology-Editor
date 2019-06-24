@@ -24,7 +24,7 @@ class PrototypeUriPropertiesBox extends VBox {
 
   def setName(name: String): Unit = nameSection.setText(name)
 
-  def setOnNameChanged(nameChangedHandler: String => Unit): Unit = structureSection.setOnTextChanged(nameChangedHandler)
+  def setOnNameChanged(nameChangedHandler: String => Unit): Unit = nameSection.setOnTextChanged(nameChangedHandler)
 
   def setStructure(structure: String): Unit = structureSection.setText(structure)
 

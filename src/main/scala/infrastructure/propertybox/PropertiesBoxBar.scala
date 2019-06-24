@@ -49,7 +49,7 @@ class PropertiesBoxBar extends ScrollPane {
   }
 
   def removeFsmPropertiesBox(): Unit = {
-    fsmPropertiesBoxWrapper.setContent _
+    fsmPropertiesBoxWrapper.setContent(null)
     fsmPropertiesBoxWrapper.setVisible(false)
   }
 
@@ -73,7 +73,7 @@ class PropertiesBoxBar extends ScrollPane {
   }
 
   def removeOtherPropertiesBoxContent(): Unit = {
-    otherPropertiesBoxWrapper.setContent _
+    otherPropertiesBoxWrapper.setContent(null)
     otherPropertiesBoxWrapper.setVisible(false)
   }
 
