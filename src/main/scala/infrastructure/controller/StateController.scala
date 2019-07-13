@@ -80,7 +80,7 @@ class StateController(state: State, drawingPaneController: DrawingPaneController
   })
 
   contextMenu.getItems.forEach {
-    case menuItem: AddEntryActionMenuItem => menuItem.setOnAction(_ => addExitActionToState())
+    case menuItem: AddEntryActionMenuItem => menuItem.setOnAction(_ => addEntryActionToState())
     case menuItem: AddExitActionMenuItem => menuItem.setOnAction(_ => addExitActionToState())
   }
 
