@@ -36,7 +36,7 @@ class State(name: String,
       case Right(fsm) => Some(fsm)
     }
 
-    if (fsmOption.isDefined && (newStateType == StateType.INITIAL || newStateType == StateType.INITIAL_FINAL) && !(stateType == StateType.INITIAL && newStateType == StateType.INITIAL_FINAL) && fsmOption.get.hasInitialState) {
+    if (fsmOption.isDefined && (newStateType == StateType.INITIAL || newStateType == StateType.INITIAL_FINAL) && !(stateType == StateType.INITIAL || stateType == StateType.INITIAL_FINAL) && fsmOption.get.hasInitialState) {
       Left(new StartError("A state is already defined as start"))
     } else {
       _stateType = newStateType
