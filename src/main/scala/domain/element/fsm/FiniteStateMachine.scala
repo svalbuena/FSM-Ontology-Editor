@@ -122,5 +122,5 @@ class FiniteStateMachine(name: String,
     *
     * @return all the names of the states and transitions of the fsm
     */
-  def getChildrenNames: List[String] = states.flatMap(_.getChildrenNames) ::: transitions.flatMap(_.getChildrenNames)
+  def getChildrenNames: List[String] = states.map(_.name) ::: states.flatMap(_.getChildrenNames) ::: transitions.map(_.name) ::: transitions.flatMap(_.getChildrenNames)
 }

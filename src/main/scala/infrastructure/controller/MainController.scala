@@ -78,17 +78,11 @@ class MainController(scene: Scene, stage: Stage, drawingPane: DrawingPane, val t
     * @return exception or nothing if successful
     */
   def selectFsm(fsm: FiniteStateMachine): Either[Exception, _] = {
-    FsmController.selectFsm(fsm.name) match {
-      case Left(error) =>
-        println(error.getMessage)
-        Left(error)
-      case Right(_) =>
-        selectedFsmOption = Some(fsm)
-        drawingPaneController.setFsm(fsm)
-        propertiesBox.removeOtherPropertiesBoxContent()
-        propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
-        Right(())
-    }
+      selectedFsmOption = Some(fsm)
+      drawingPaneController.setFsm(fsm)
+      propertiesBox.removeOtherPropertiesBoxContent()
+      propertiesBox.setFsmPropertiesBox(fsm.propertiesBox)
+      Right(())
   }
 
   /**

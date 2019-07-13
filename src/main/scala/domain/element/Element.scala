@@ -23,7 +23,7 @@ abstract class Element(private var _name: String, private val environment: Envir
         environment.addName(newName)
         _name = newName
         Right(name)
-      } else Left(new NameNotUniqueError(s"Error -> Name '$name is not unique"))
+      } else Left(new NameNotUniqueError(s"Error -> Name '$name' is not unique"))
     } else Left(new DomainError("The name can't contain spaces"))
   }
 

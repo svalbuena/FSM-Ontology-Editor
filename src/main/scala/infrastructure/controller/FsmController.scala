@@ -1,11 +1,11 @@
 package infrastructure.controller
 
 import application.command.fsm.add.{AddFsmCommand, LoadFsmCommand}
-import application.command.fsm.modify.{ModifyFsmBaseUriCommand, ModifyFsmNameCommand, SelectFsmCommand}
+import application.command.fsm.modify.{ModifyFsmBaseUriCommand, ModifyFsmNameCommand}
 import application.command.fsm.remove.RemoveFsmCommand
 import application.command.fsm.save.SaveFsmCommand
 import application.commandhandler.fsm.add.{AddFsmHandler, LoadFsmHandler}
-import application.commandhandler.fsm.modify.{ModifyFsmBaseUriHandler, ModifyFsmNameHandler, SelectFsmHandler}
+import application.commandhandler.fsm.modify.{ModifyFsmBaseUriHandler, ModifyFsmNameHandler}
 import application.commandhandler.fsm.remove.RemoveFsmHandler
 import application.commandhandler.fsm.save.SaveFsmHandler
 import infrastructure.element.fsm.FiniteStateMachine
@@ -60,14 +60,6 @@ object FsmController {
   def saveFsm(filename: String): Either[Exception, _] = new SaveFsmHandler(environment).execute(new SaveFsmCommand(filename))
 
   /**
-    * Selects the fsm to use
-    *
-    * @param fsmName name of the fsm to be selected
-    * @return exception or nothing if successful
-    */
-  def selectFsm(fsmName: String): Either[Exception, _] = new SelectFsmHandler(environment).execute(new SelectFsmCommand(fsmName))
-
-  /**
     * Modifies the name of an fsm
     *
     * @param fsm        fsm to be modified
@@ -77,7 +69,10 @@ object FsmController {
     new ModifyFsmNameHandler(environment).execute(new ModifyFsmNameCommand(newFsmName)) match {
       case Left(error) => println(error.getMessage)
       case Right(_) =>
+
         fsm.name = newFsmName
+
+        println("Fsm name changed to -> " + newFsmName)
     }
   }
 

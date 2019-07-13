@@ -22,7 +22,6 @@ class Environment(private val fsmRepository: FsmRepository) {
   private val idGenerator = new IdGenerator()
   private var selectedFsmOption: Option[FiniteStateMachine] = None
   private var nameList: List[String] = List()
-  private var fsmList: List[FiniteStateMachine] = List()
 
   /**
     * Saves the fsm to a file, error if the fsm is not selected
@@ -61,37 +60,22 @@ class Environment(private val fsmRepository: FsmRepository) {
     * @return exception or nothing if successful
     */
   def addFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
-    if (isNameUnique(fsm.name)) {
-      fsmList = fsm :: fsmList
-      (fsm.name :: fsm.getChildrenNames).foreach(addName)
-      Right(())
-    } else {
-      Left(new NameNotUniqueError(s"Error -> Name '${fsm.name} is not unique"))
+    selectedFsmOption = Some(fsm)
+    nameList = List()
+    for (name <-  fsm.name :: fsm.getChildrenNames) {
+      println("name -> " + name)
+      addName(name)
     }
+
+    Right(())
   }
 
   def isNameUnique(name: String): Boolean = !isNameRepeated(name)
 
   def isNameRepeated(name: String): Boolean = nameList.contains(name)
 
-  def addName(name: String): Unit = nameList = name :: nameList
-
-  /**
-    * Selects the fsm to use, error if the fsm to select doesn't exist
-    *
-    * @param name name of the fsm to select
-    * @return exception or name of the selected fsm
-    */
-  def selectFsm(name: String): Either[DomainError, String] = {
-    val fsmOption = fsmList.find(fsm => fsm.name.equals(name))
-
-    if (fsmOption.isDefined) {
-      println(s"Select fsm -> ${fsmOption.get.name}")
-      selectedFsmOption = Some(fsmOption.get)
-      Right(fsmOption.get.name)
-    } else {
-      Left(new ElementNotFoundError("Fsm not found"))
-    }
+  def addName(name: String): Unit = {
+    nameList = name :: nameList
   }
 
   /**
@@ -101,9 +85,8 @@ class Environment(private val fsmRepository: FsmRepository) {
     * @return exception or nothing if successful
     */
   def removeFsm(fsm: FiniteStateMachine): Either[DomainError, _] = {
-    if (fsmList.contains(fsm)) {
-      fsmList = fsmList.filterNot(f => f == fsm)
-      (fsm.name :: fsm.getChildrenNames).foreach(removeName)
+    if (selectedFsmOption.isDefined && selectedFsmOption.get == fsm) {
+      nameList = List()
       Right(())
     } else {
       Left(new ElementNotFoundError("Fsm not found"))
