@@ -144,7 +144,7 @@ object StateController {
     new StateController(state, drawingPaneController)
 
     if (state.stateType == StateType.INITIAL || state.stateType == StateType.INITIAL_FINAL) {
-      val start = new Start("start", state.x, state.y)
+      val start = new Start("start", state.x + 300, state.y)
       StartController.drawStart(start, drawingPaneController)
 
       val transition = new Transition("startToStateTransition", start, state, isEditable = false, state.parent)
@@ -154,7 +154,7 @@ object StateController {
     }
 
     if (state.stateType == StateType.FINAL || state.stateType == StateType.INITIAL_FINAL) {
-      val end = new End("start", state.x, state.y)
+      val end = new End("start", state.x + 300, state.y + 200)
       EndController.drawEnd(end, drawingPaneController)
 
       val transition = new Transition("stateToEndTransition", state, end, isEditable = false, state.parent)

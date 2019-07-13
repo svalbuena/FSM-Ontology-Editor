@@ -191,26 +191,24 @@ object TransitionController {
     var success = false
 
     (transition.source, transition.destination) match {
-      case (_: Start, state: State) =>
+      case (start: Start, state: State) =>
         val (newInfStateType, newAppStateType) = state.stateType match {
           case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.FINAL, application.command.state.modify.StateType.FINAL)
           case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
         }
         new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
-          case Left(error) => println(error.getMessage)
-          case Right(_) =>
+          case _ =>
             state.stateType = newInfStateType
             success = true
         }
 
-      case (state: State, _: End) =>
+      case (state: State, end: End) =>
         val (newInfStateType, newAppStateType) = state.stateType match {
           case infrastructure.element.state.StateType.INITIAL_FINAL => (StateType.INITIAL, application.command.state.modify.StateType.INITIAL)
           case _ => (StateType.SIMPLE, application.command.state.modify.StateType.SIMPLE)
         }
         new ModifyStateTypeHandler(environment).execute(new ModifyStateTypeCommand(state.name, newAppStateType)) match {
-          case Left(error) => println(error.getMessage)
-          case Right(_) =>
+          case _ =>
             state.stateType = newInfStateType
             success = true
         }

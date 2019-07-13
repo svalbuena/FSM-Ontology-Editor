@@ -22,6 +22,8 @@ class JenaFsmRepository extends FsmRepository {
 
     RDFDataMgr.write(outputStream, fsmModel, RDFLanguages.TURTLE)
 
+    outputStream.close()
+
     Right(())
   }
 
@@ -33,7 +35,12 @@ class JenaFsmRepository extends FsmRepository {
       val fsmInferredModel = ModelFactory.createRDFSModel(fsmSchema, fsmModel)
       val jenaReader = new JenaReader(properties)
 
-      jenaReader.readFsm(fsmInferredModel)
+      val fsm = jenaReader.readFsm(fsmInferredModel)
+
+      fsmModel.close()
+      fsmSchema.close()
+
+      fsm
     } catch {
       case e: Exception => Left(new Exception("The content of the file is not valid"))
     }
